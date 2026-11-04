@@ -1,0 +1,91 @@
+<?php
+require_once "funcoes.php";
+if (isset($_SESSION['usuario_id'])) {
+    header("Location: dashboard.php");
+    exit();
+}
+require_once "conexao.php";
+$mensagem = "";
+$tipo = "mensagem";
+$nome = $telefone = $usuario_digitado = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verificar_csrf();
+    $nome = trim($_POST['nome'] ?? '');
+    $telefone = trim($_POST['telefone'] ?? '');
+    $usuario_digitado = trim($_POST['usuario'] ?? '');
+    $senha = $_POST['senha'] ?? '';
+    $confirmar_senha = $_POST['confirmar_senha'] ?? '';
+    if ($nome === "" || $telefone === "" || $usuario_digitado === "") {
+        $mensagem = "Preencha nome, telefone e usuário.";
+        $tipo = "erro";
+    } elseif (!telefone_valido($telefone)) {
+        $mensagem = "Informe o telefone com DDD, exatamente como está cadastrado na loja.";
+        $tipo = "erro";
+    } elseif (!preg_match('/^[A-Za-z0-9._-]{3,50}$/', $usuario_digitado)) {
+        $mensagem = "O usuário deve ter de 3 a 50 caracteres: letras, números, ponto, traço ou sublinhado (sem espaços).";
+        $tipo = "erro";
+    } elseif (strlen($senha) < 8) {
+        $mensagem = "A senha deve ter no mínimo 8 caracteres.";
+        $tipo = "erro";
+    } elseif ($senha !== $confirmar_senha) {
+        $mensagem = "A confirmação da senha não confere.";
+        $tipo = "erro";
+    } else {
+        $telefone = formatar_telefone($telefone);
+        $stmt_duplicado = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ?");
+        $stmt_duplicado->bind_param("s", $usuario_digitado);
+        $stmt_duplicado->execute();
+        $stmt_duplicado->store_result();
+        $usuario_existe = $stmt_duplicado->num_rows > 0;
+        $stmt_duplicado->close();
+        $numeros_telefone = so_numeros($telefone);
+        $stmt_pendente = $conn->prepare("SELECT id FROM usuarios WHERE nivel = 'cliente' AND status = 'pendente' AND " . sql_telefone_numeros("telefone_solicitado") . " = ?");
+        $stmt_pendente->bind_param("s", $numeros_telefone);
+        $stmt_pendente->execute();
+        $stmt_pendente->store_result();
+        $ja_tem_pedido = $stmt_pendente->num_rows > 0;
+        $stmt_pendente->close();
+        if ($usuario_existe) {
+            $mensagem = "Este nome de usuário já está em uso. Escolha outro.";
+            $tipo = "erro";
+        } elseif ($ja_tem_pedido) {
+            $mensagem = "Já existe uma solicitação pendente com este telefone. Aguarde o administrador aprovar.";
+            $tipo = "erro";
+        } else {
+            $hash = password_hash($senha, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("INSERT INTO usuarios (nome, usuario, senha, nivel, status, telefone_solicitado) VALUES (?, ?, ?, 'cliente', 'pendente', ?)");
+            $stmt->bind_param("ssss", $nome, $usuario_digitado, $hash, $telefone);
+            if ($stmt->execute()) {
+                $mensagem = "Solicitação enviada! Quando o administrador aprovar, você poderá entrar com o usuário e a senha que criou.";
+                $nome = $telefone = $usuario_digitado = "";
+            } else {
+                $mensagem = "Erro ao enviar a solicitação. Tente novamente.";
+                $tipo = "erro";
+            }
+            $stmt->close();
+        }
+    }
+}
+$titulo_pagina = "Solicitar acesso";
+$classe_container = "container-pequeno";
+require "cabecalho.php";
+?>
+<h1>Solicitar acesso de cliente</h1>
+<p class="subtitulo">Com este acesso você só consegue ver a sua própria dívida.</p>
+<?php if ($mensagem): ?><div class="<?php echo $tipo; ?>" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
+<form method="POST" action="solicitar_acesso.php">
+    <?php campo_csrf(); ?>
+    <label for="nome">Nome completo</label>
+    <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" maxlength="100" required>
+    <label for="telefone">Telefone cadastrado na loja</label>
+    <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>" required>
+    <label for="usuario">Usuário (login)</label>
+    <input type="text" id="usuario" name="usuario" value="<?php echo htmlspecialchars($usuario_digitado); ?>" autocomplete="username" required>
+    <label for="senha">Senha (mínimo 8 caracteres)</label>
+    <input type="password" id="senha" name="senha" autocomplete="new-password" required>
+    <label for="confirmar_senha">Confirmar senha</label>
+    <input type="password" id="confirmar_senha" name="confirmar_senha" autocomplete="new-password" required>
+    <button type="submit" class="botao-total">Enviar solicitação</button>
+</form>
+<div class="barra-botoes"><a href="login.php" class="botao botao-secundario botao-total">Voltar ao login</a></div>
+<?php require "rodape.php"; ?>
