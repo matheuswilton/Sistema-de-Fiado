@@ -1,94 +1,66 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
-
 $mensagem = "";
-$tipo     = "mensagem";
 $nome = $telefone = $endereco = "";
 $limite_credito = 500.00;
-
-// Processa o formulário de cadastro
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome     = trim($_POST['nome']);
-    $telefone = trim($_POST['telefone']);
-    $endereco = trim($_POST['endereco']);
-
-    // REGRA: só o administrador define o limite; usuário comum usa o padrão (R$ 500)
-    $limite_credito = eh_admin() ? floatval($_POST['limite_credito']) : 500.00;
-
+    verificar_csrf();
+    $nome = trim($_POST['nome'] ?? '');
+    $telefone = trim($_POST['telefone'] ?? '');
+    $endereco = trim($_POST['endereco'] ?? '');
+    // so o administrador define o limite; usuario comum usa o padrao de R$ 500
+    $limite_credito = eh_admin() ? round(floatval($_POST['limite_credito'] ?? 500), 2) : 500.00;
     if ($nome === "") {
         $mensagem = "O nome do cliente é obrigatório.";
-        $tipo = "erro";
+    } elseif ($telefone !== "" && !telefone_valido($telefone)) {
+        $mensagem = "Telefone inválido. Informe o DDD e o número, ex.: (62) 99999-9999.";
     } elseif ($limite_credito < 0) {
-        // REGRA 1: limite de crédito não pode ser negativo
         $mensagem = "O limite de crédito não pode ser negativo.";
-        $tipo = "erro";
+    } elseif ($limite_credito > 99999999.99) {
+        $mensagem = "O limite de crédito informado é alto demais.";
+    } elseif (telefone_ja_cadastrado($conn, $telefone)) {
+        $mensagem = "Já existe um cliente cadastrado com este telefone.";
     } else {
-        // REGRA 2: não permitir telefone duplicado
-        $duplicado = false;
-        if ($telefone !== "") {
-            $stmt_dup = $conn->prepare("SELECT id FROM clientes WHERE telefone = ?");
-            $stmt_dup->bind_param("s", $telefone);
-            $stmt_dup->execute();
-            $stmt_dup->store_result();
-            $duplicado = $stmt_dup->num_rows > 0;
-            $stmt_dup->close();
-        }
-
-        if ($duplicado) {
-            $mensagem = "Já existe um cliente cadastrado com este telefone.";
-            $tipo = "erro";
-        } else {
-            $stmt = $conn->prepare("INSERT INTO clientes (nome, telefone, endereco, limite_credito) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("sssd", $nome, $telefone, $endereco, $limite_credito);
-
-            if ($stmt->execute()) {
-                $mensagem = "Cliente cadastrado com sucesso!";
-                $nome = $telefone = $endereco = "";
-                $limite_credito = 500.00;
-            } else {
-                $mensagem = "Erro ao cadastrar cliente.";
-                $tipo = "erro";
-            }
+        $telefone = formatar_telefone($telefone);
+        $stmt = $conn->prepare("INSERT INTO clientes (nome, telefone, endereco, limite_credito) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssd", $nome, $telefone, $endereco, $limite_credito);
+        if ($stmt->execute()) {
+            $novo_id = $conn->insert_id;
             $stmt->close();
+            definir_flash("Cliente cadastrado com sucesso! Agora você já pode registrar a primeira compra.");
+            header("Location: cliente.php?id=" . $novo_id);
+            exit();
         }
+        $mensagem = "Erro ao cadastrar o cliente.";
+        $stmt->close();
     }
 }
-$conn->close();
+$titulo_pagina = "Cadastrar cliente";
+$menu_ativo = "clientes";
+$classe_container = "container-medio";
+require "cabecalho.php";
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastrar Cliente — Sistema Fiado</title>
-    <link rel="stylesheet" href="css/estilo.css">
-</head>
-<body>
-
-<div class="container">
-    <h1>Cadastrar Cliente</h1>
-
-    <?php if ($mensagem): ?>
-        <p class="<?php echo $tipo; ?>"><?php echo htmlspecialchars($mensagem); ?></p>
+<h1>Cadastrar cliente</h1>
+<p class="subtitulo">Só o nome é obrigatório.</p>
+<?php if ($mensagem): ?><div class="erro" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
+<div class="painel">
+<form method="POST" action="cadastro_cliente.php">
+    <?php campo_csrf(); ?>
+    <label for="nome">Nome completo *</label>
+    <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" maxlength="100" autofocus required>
+    <label for="telefone">Telefone</label>
+    <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>">
+    <label for="endereco">Endereço</label>
+    <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($endereco); ?>" maxlength="200">
+    <label for="limite_credito">Limite de crédito (R$)</label>
+    <?php if (eh_admin()): ?>
+        <input type="number" id="limite_credito" name="limite_credito" step="0.01" min="0" value="<?php echo $limite_credito; ?>">
+        <div class="dica">Quanto o cliente pode dever ao mesmo tempo.</div>
+    <?php else: ?>
+        <input type="text" id="limite_credito" value="R$ 500,00 (limite padrão — somente o administrador altera)" disabled>
     <?php endif; ?>
-
-    <form method="POST" action="cadastro_cliente.php">
-        <input type="text" name="nome"     placeholder="Nome completo" value="<?php echo htmlspecialchars($nome); ?>" required>
-        <input type="text" name="telefone" placeholder="Telefone"      value="<?php echo htmlspecialchars($telefone); ?>">
-        <input type="text" name="endereco" placeholder="Endereço"      value="<?php echo htmlspecialchars($endereco); ?>">
-
-        <?php if (eh_admin()): ?>
-            <input type="number" name="limite_credito" placeholder="Limite de crédito (R$)" step="0.01" min="0"
-                   value="<?php echo $limite_credito; ?>">
-        <?php else: ?>
-            <input type="text" value="Limite padrão: R$ 500,00 (somente o administrador altera)" disabled>
-        <?php endif; ?>
-
-        <button type="submit">Cadastrar</button>
-    </form>
-
-    <a href="dashboard.php"><button>Voltar</button></a>
+    <div class="barra-botoes"><button type="submit">Cadastrar</button><a href="listar_clientes.php" class="botao botao-secundario">Cancelar</a></div>
+</form>
 </div>
-
-</body>
-</html>
+<?php require "rodape.php"; ?>

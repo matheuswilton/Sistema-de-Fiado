@@ -1,94 +1,47 @@
 <?php
-// RELATÓRIO 1 — Dashboard com cards de resumo (somente administrador)
+// Resumo financeiro (somente administrador)
 require_once "verifica_admin.php";
 require_once "conexao.php";
-
-// Executa uma consulta (sem parâmetros) e devolve a primeira linha
-function linha($conn, $sql) {
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
-    return $row;
+$lista = buscar_clientes_situacao($conn);
+$total_clientes = count($lista);
+$quantidade_devendo = 0;
+$quantidade_inadimplentes = 0;
+$total_a_receber = 0;
+$maiores_devedores = [];
+foreach ($lista as $linha) {
+    if ($linha['saldo_devedor'] > 0) {
+        $quantidade_devendo++;
+        $total_a_receber += $linha['saldo_devedor'];
+        if (count($maiores_devedores) < 5) { $maiores_devedores[] = $linha; }
+    }
+    if ($linha['situacao'] === 'inadimplente') { $quantidade_inadimplentes++; }
 }
-
-// COUNT de clientes cadastrados
-$total_clientes = linha($conn, "SELECT COUNT(*) AS qtd FROM clientes")['qtd'];
-
-// SUM e AVG das compras (fiado)
-$compras = linha($conn, "SELECT COUNT(*) AS qtd, COALESCE(SUM(valor), 0) AS total, COALESCE(AVG(valor), 0) AS media FROM compras");
-
-// SUM dos pagamentos recebidos
-$pagamentos = linha($conn, "SELECT COALESCE(SUM(valor), 0) AS total FROM pagamentos");
-
-// COUNT, SUM e AVG dos clientes que estão devendo
-$devedores = linha($conn, "
-    SELECT COUNT(*) AS qtd,
-           COALESCE(SUM(saldo), 0) AS total,
-           COALESCE(AVG(saldo), 0) AS media,
-           COALESCE(SUM(CASE WHEN dias > 30 THEN 1 ELSE 0 END), 0) AS inadimplentes
-    FROM (
-        SELECT COALESCE((SELECT SUM(co.valor) FROM compras co WHERE co.cliente_id = c.id), 0)
-             - COALESCE((SELECT SUM(p.valor)  FROM pagamentos p  WHERE p.cliente_id = c.id), 0) AS saldo,
-               COALESCE(DATEDIFF(NOW(), (SELECT MIN(co2.data_compra) FROM compras co2 WHERE co2.cliente_id = c.id)), 0) AS dias
-        FROM clientes c
-    ) t
-    WHERE saldo > 0
-");
-
-function reais($v) { return "R$ " . number_format($v, 2, ',', '.'); }
+$media_por_devedor = $quantidade_devendo > 0 ? $total_a_receber / $quantidade_devendo : 0;
+$dados_compras = $conn->query("SELECT COUNT(*) AS quantidade, COALESCE(SUM(valor), 0) AS total, COALESCE(AVG(valor), 0) AS media FROM compras")->fetch_assoc();
+$dados_pagamentos = $conn->query("SELECT COALESCE(SUM(valor), 0) AS total FROM pagamentos")->fetch_assoc();
+$titulo_pagina = "Resumo financeiro";
+$menu_ativo = "resumo";
+require "cabecalho.php";
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Resumo Financeiro — Sistema Fiado</title>
-    <link rel="stylesheet" href="css/estilo.css">
-</head>
-<body>
-
-<div class="container">
-    <h1>Resumo Financeiro</h1>
-
-    <div class="cards">
-        <div class="card">
-            <span class="card-titulo">Clientes cadastrados</span>
-            <span class="card-valor"><?php echo (int)$total_clientes; ?></span>
-        </div>
-        <div class="card">
-            <span class="card-titulo">Clientes devendo</span>
-            <span class="card-valor"><?php echo (int)$devedores['qtd']; ?></span>
-        </div>
-        <div class="card card-alerta">
-            <span class="card-titulo">Inadimplentes (+30 dias)</span>
-            <span class="card-valor"><?php echo (int)$devedores['inadimplentes']; ?></span>
-        </div>
-        <div class="card card-alerta">
-            <span class="card-titulo">Total a receber</span>
-            <span class="card-valor"><?php echo reais($devedores['total']); ?></span>
-        </div>
-        <div class="card card-ok">
-            <span class="card-titulo">Total já recebido</span>
-            <span class="card-valor"><?php echo reais($pagamentos['total']); ?></span>
-        </div>
-        <div class="card">
-            <span class="card-titulo">Total vendido no fiado</span>
-            <span class="card-valor"><?php echo reais($compras['total']); ?></span>
-        </div>
-        <div class="card">
-            <span class="card-titulo">Ticket médio por compra</span>
-            <span class="card-valor"><?php echo reais($compras['media']); ?></span>
-        </div>
-        <div class="card">
-            <span class="card-titulo">Dívida média por devedor</span>
-            <span class="card-valor"><?php echo reais($devedores['media']); ?></span>
-        </div>
-    </div>
-
-    <a href="relatorio.php"><button>Ver relatório detalhado</button></a>
-    <a href="dashboard.php"><button class="btn-sair">Voltar</button></a>
+<h1>Resumo financeiro</h1>
+<p class="subtitulo">Visão geral do fiado de toda a loja.</p>
+<div class="cards">
+    <div class="card"><span class="card-titulo">Clientes cadastrados</span><span class="card-valor"><?php echo $total_clientes; ?></span></div>
+    <div class="card card-aviso"><span class="card-titulo">Clientes devendo</span><span class="card-valor"><?php echo $quantidade_devendo; ?></span></div>
+    <div class="card card-alerta"><span class="card-titulo">Inadimplentes (+30 dias)</span><span class="card-valor"><?php echo $quantidade_inadimplentes; ?></span></div>
+    <div class="card card-alerta"><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div>
+    <div class="card card-ok"><span class="card-titulo">Total já recebido</span><span class="card-valor"><?php echo dinheiro($dados_pagamentos['total']); ?></span></div>
+    <div class="card"><span class="card-titulo">Total vendido no fiado</span><span class="card-valor"><?php echo dinheiro($dados_compras['total']); ?></span></div>
+    <div class="card"><span class="card-titulo">Ticket médio por compra</span><span class="card-valor"><?php echo dinheiro($dados_compras['media']); ?></span></div>
+    <div class="card"><span class="card-titulo">Dívida média por devedor</span><span class="card-valor"><?php echo dinheiro($media_por_devedor); ?></span></div>
 </div>
-
-</body>
-</html>
-<?php $conn->close(); ?>
+<h2>Maiores devedores</h2>
+<div class="tabela-rolagem"><table>
+    <tr><th>Cliente</th><th class="num">Saldo devedor</th><th class="num">Dias em aberto</th></tr>
+    <?php foreach ($maiores_devedores as $linha): ?>
+    <tr><td><a href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo htmlspecialchars($linha['nome']); ?></a></td><td class="num"><?php echo dinheiro($linha['saldo_devedor']); ?></td><td class="num"><?php echo $linha['dias_devendo']; ?></td></tr>
+    <?php endforeach; ?>
+    <?php if (count($maiores_devedores) === 0): ?><tr><td colspan="3" class="vazio">Nenhum cliente devendo. 🎉</td></tr><?php endif; ?>
+</table></div>
+<div class="barra-botoes"><a href="relatorio.php" class="botao">Ver relatório detalhado</a></div>
+<?php require "rodape.php"; ?>

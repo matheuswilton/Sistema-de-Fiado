@@ -4,3 +4,5 @@
 .env
 Thumbs.db
 desktop.ini
+# Senhas do banco (nunca versionar)
+config.local.php
