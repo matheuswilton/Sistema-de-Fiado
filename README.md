@@ -1,5 +1,8 @@
 # FiadoFácil — Sistema de Fiado
 Sistema web em PHP e MySQL para controlar compras no fiado, pagamentos e dívidas de clientes de um comércio.
+
+🔗 **Site no ar:** https://fiadofacil.free.je
+
 Projeto acadêmico de Matheus Wilton, Luiz Guilherme e Henrique Nascimento (GTI — FPM, Goiânia/GO).
 ## Funcionalidades
 - Login com dois perfis de funcionário: **Administrador** e **Usuário comum**
