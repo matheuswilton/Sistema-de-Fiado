@@ -1,122 +1,82 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
-
-$mensagem = "";
-$tipo     = "mensagem";
-
-// Valida o ID recebido pela URL
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
     header("Location: listar_clientes.php");
     exit();
 }
-
-// Processa o formulário de edição
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome     = trim($_POST['nome']);
-    $telefone = trim($_POST['telefone']);
-    $endereco = trim($_POST['endereco']);
-
-    if (eh_admin()) {
-        $limite_credito = floatval($_POST['limite_credito']);
-    } else {
-        // REGRA: usuário comum não altera o limite — mantém o valor atual do banco
-        $stmt_lim = $conn->prepare("SELECT limite_credito FROM clientes WHERE id = ?");
-        $stmt_lim->bind_param("i", $id);
-        $stmt_lim->execute();
-        $limite_credito = (float)($stmt_lim->get_result()->fetch_assoc()['limite_credito'] ?? 0);
-        $stmt_lim->close();
-    }
-
-    if ($nome === "") {
-        $mensagem = "O nome do cliente é obrigatório.";
-        $tipo = "erro";
-    } elseif ($limite_credito < 0) {
-        $mensagem = "O limite de crédito não pode ser negativo.";
-        $tipo = "erro";
-    } else {
-        // REGRA: telefone duplicado (ignorando o próprio cliente)
-        $duplicado = false;
-        if ($telefone !== "") {
-            $stmt_dup = $conn->prepare("SELECT id FROM clientes WHERE telefone = ? AND id <> ?");
-            $stmt_dup->bind_param("si", $telefone, $id);
-            $stmt_dup->execute();
-            $stmt_dup->store_result();
-            $duplicado = $stmt_dup->num_rows > 0;
-            $stmt_dup->close();
-        }
-
-        if ($duplicado) {
-            $mensagem = "Já existe outro cliente cadastrado com este telefone.";
-            $tipo = "erro";
-        } else {
-            $stmt = $conn->prepare("UPDATE clientes SET nome=?, telefone=?, endereco=?, limite_credito=? WHERE id=?");
-            $stmt->bind_param("sssdi", $nome, $telefone, $endereco, $limite_credito, $id);
-
-            if ($stmt->execute()) {
-                $mensagem = "Dados atualizados com sucesso!";
-            } else {
-                $mensagem = "Erro ao atualizar cliente.";
-                $tipo = "erro";
-            }
-            $stmt->close();
-        }
-    }
-}
-
-// Busca os dados atuais do cliente
 $stmt = $conn->prepare("SELECT nome, telefone, endereco, limite_credito FROM clientes WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
+$cliente = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+if (!$cliente) {
+    definir_flash("Cliente não encontrado.", "erro");
     header("Location: listar_clientes.php");
     exit();
 }
-
-$cliente = $result->fetch_assoc();
-$stmt->close();
-$conn->close();
+$mensagem = "";
+$nome = $cliente['nome'];
+$telefone = $cliente['telefone'] ?? '';
+$endereco = $cliente['endereco'] ?? '';
+$limite_credito = (float)$cliente['limite_credito'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verificar_csrf();
+    $nome = trim($_POST['nome'] ?? '');
+    $telefone = trim($_POST['telefone'] ?? '');
+    $endereco = trim($_POST['endereco'] ?? '');
+    // usuario comum nao altera o limite: continua o que esta no banco
+    $novo_limite = eh_admin() ? round(floatval($_POST['limite_credito'] ?? 0), 2) : (float)$cliente['limite_credito'];
+    if ($nome === "") {
+        $mensagem = "O nome do cliente é obrigatório.";
+    } elseif ($telefone !== "" && !telefone_valido($telefone)) {
+        $mensagem = "Telefone inválido. Informe o DDD e o número, ex.: (62) 99999-9999.";
+    } elseif ($novo_limite < 0) {
+        $mensagem = "O limite de crédito não pode ser negativo.";
+    } elseif ($novo_limite > 99999999.99) {
+        $mensagem = "O limite de crédito informado é alto demais.";
+    } elseif (telefone_ja_cadastrado($conn, $telefone, $id)) {
+        $mensagem = "Já existe outro cliente cadastrado com este telefone.";
+    } else {
+        $telefone = formatar_telefone($telefone);
+        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, telefone = ?, endereco = ?, limite_credito = ? WHERE id = ?");
+        $stmt->bind_param("sssdi", $nome, $telefone, $endereco, $novo_limite, $id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            definir_flash("Dados do cliente atualizados com sucesso!");
+            header("Location: cliente.php?id=" . $id);
+            exit();
+        }
+        $mensagem = "Erro ao atualizar o cliente.";
+        $stmt->close();
+    }
+    $limite_credito = $novo_limite;
+}
+$titulo_pagina = "Editar cliente";
+$menu_ativo = "clientes";
+$classe_container = "container-medio";
+require "cabecalho.php";
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Cliente — Sistema Fiado</title>
-    <link rel="stylesheet" href="css/estilo.css">
-</head>
-<body>
-
-<div class="container">
-    <h1>Editar Cliente</h1>
-
-    <?php if ($mensagem): ?>
-        <p class="<?php echo $tipo; ?>"><?php echo htmlspecialchars($mensagem); ?></p>
+<h1>Editar cliente</h1>
+<p class="subtitulo"><?php echo htmlspecialchars($cliente['nome']); ?></p>
+<?php if ($mensagem): ?><div class="erro" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
+<div class="painel">
+<form method="POST" action="editar_cliente.php?id=<?php echo $id; ?>">
+    <?php campo_csrf(); ?>
+    <label for="nome">Nome completo *</label>
+    <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" maxlength="100" required>
+    <label for="telefone">Telefone</label>
+    <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>">
+    <label for="endereco">Endereço</label>
+    <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($endereco); ?>" maxlength="200">
+    <label for="limite_credito">Limite de crédito (R$)</label>
+    <?php if (eh_admin()): ?>
+        <input type="number" id="limite_credito" name="limite_credito" step="0.01" min="0" value="<?php echo $limite_credito; ?>">
+    <?php else: ?>
+        <input type="text" id="limite_credito" value="<?php echo dinheiro($limite_credito); ?> (somente o administrador altera)" disabled>
     <?php endif; ?>
-
-    <form method="POST" action="editar_cliente.php?id=<?php echo $id; ?>">
-        <input type="text" name="nome"     placeholder="Nome completo"
-               value="<?php echo htmlspecialchars($cliente['nome']); ?>" required>
-        <input type="text" name="telefone" placeholder="Telefone"
-               value="<?php echo htmlspecialchars($cliente['telefone'] ?? ''); ?>">
-        <input type="text" name="endereco" placeholder="Endereço"
-               value="<?php echo htmlspecialchars($cliente['endereco'] ?? ''); ?>">
-
-        <?php if (eh_admin()): ?>
-            <input type="number" name="limite_credito" placeholder="Limite de crédito (R$)" step="0.01" min="0"
-                   value="<?php echo $cliente['limite_credito']; ?>">
-        <?php else: ?>
-            <input type="text" disabled
-                   value="Limite: R$ <?php echo number_format($cliente['limite_credito'], 2, ',', '.'); ?> (somente o administrador altera)">
-        <?php endif; ?>
-
-        <button type="submit">Salvar Alterações</button>
-    </form>
-
-    <a href="listar_clientes.php"><button>Voltar</button></a>
+    <div class="barra-botoes"><button type="submit">Salvar alterações</button><a href="cliente.php?id=<?php echo $id; ?>" class="botao botao-secundario">Cancelar</a></div>
+</form>
 </div>
-
-</body>
-</html>
+<?php require "rodape.php"; ?>

@@ -1,0 +1,10 @@
+# Bloqueia o download direto de arquivos sensiveis (so tem efeito em servidores Apache)
+<FilesMatch "\.(sql|md|txt)$|^config\.local\.example\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
