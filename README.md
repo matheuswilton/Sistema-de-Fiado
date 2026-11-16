@@ -1,159 +1,160 @@
-# FiadoFácil: Sistema de Fiado
+# FiadoFácil: Store Credit System
 
-Sistema web para pequenos comércios controlarem compras no fiado, pagamentos e dívidas de clientes, com relatórios, ranking de confiabilidade e uma área em que o próprio cliente consulta o que deve.
+A web system that helps small stores track purchases on credit ("fiado", very common in Brazilian neighborhood shops), payments and customer debts, with reports, a reliability ranking and an area where customers check what they owe.
 
-🔗 **Site no ar:** https://fiadofacil.free.je (contas de teste mais abaixo)
+🔗 **Live site:** https://fiadofacil.free.je (test accounts below)
 
-Projeto Integrador do curso de Gestão da TI (FPM, Goiânia/GO), feito por Matheus Wilton, Luiz Guilherme e Henrique Nascimento.
+Capstone project (Projeto Integrador) for the IT Management program at FPM (Goiânia, Brazil), built by Matheus Wilton, Luiz Guilherme and Henrique Nascimento.
 
-## Por que esse projeto existe
+> The system itself is in Portuguese, because it was built for Brazilian stores.
 
-Muitos comércios de bairro ainda anotam o fiado num caderno. Fica difícil saber quem está devendo há muito tempo, quanto cada cliente ainda pode comprar e quem paga em dia. O FiadoFácil organiza isso: cada compra respeita o limite de crédito do cliente, cada pagamento abate a dívida mais antiga primeiro e o dono do comércio vê em um relatório quem está em dia, devendo ou inadimplente.
+## Why this project exists
 
-O problema é grande: em 2026 a Serasa registrou mais de 84 milhões de brasileiros inadimplentes (metade dos adultos), e pesquisas do Sebrae indicam que cerca de 4 em cada 10 microempreendedores vendem fiado, muitas vezes controlando tudo no papel. Os números e as fontes estão no [pitch](docs/PITCH.md).
+Many neighborhood stores still write down credit purchases in a notebook. It's hard to know who has owed money for too long, how much each customer can still buy and who pays on time. FiadoFácil organizes this: every purchase respects the customer's credit limit, every payment pays off the oldest debt first, and the owner sees in one report who is up to date, owing or in default.
 
-## Documentação do Projeto Integrador
+The problem is big: in 2026 Serasa recorded more than 84 million Brazilians in default (half of all adults), and Sebrae surveys show that about 4 in 10 micro-entrepreneurs sell on credit, often tracking everything on paper. Numbers and sources are in the [pitch](docs/PITCH.md).
 
-| Documento | Conteúdo |
+## Capstone documentation (in Portuguese)
+
+| Document | Contents |
 |---|---|
-| [Diagramas](docs/DIAGRAMAS.md) | Banco de dados (DER e diagrama de classes UML), casos de uso, fluxo do sistema, fluxo de compra e de pagamento, estados do cliente, sequência e arquitetura |
-| [Case](docs/CASE.md) | Estudo de caso: problema, requisitos, solução aplicada e resultados |
-| [Pitch](docs/PITCH.md) | Roteiro da apresentação, dados que justificam o projeto, comparação com outras soluções e fontes |
-| [Demonstração ao vivo](docs/APRESENTACAO.md) | Roteiro para mostrar o sistema no computador e no celular |
-| [Imagens](docs/img/) | Diagramas em PNG para os slides |
+| [Diagrams](docs/DIAGRAMAS.md) | Database (ERD and UML class diagram), use cases, system flow, purchase and payment flows, customer states, sequence and architecture |
+| [Case study](docs/CASE.md) | Problem, requirements, solution and results |
+| [Pitch](docs/PITCH.md) | Presentation script, data behind the project, comparison with other solutions and sources |
+| [Live demo](docs/APRESENTACAO.md) | Script to show the system on a computer and on a phone |
+| [Images](docs/img/) | Diagrams as PNG files for the slides |
 
-![Diagrama do banco de dados](docs/img/banco-der.png)
+![Database diagram](docs/img/banco-der.png)
 
-## Tecnologias
+## Tech
 
-PHP · MySQL (SQL, transações) · HTML · CSS · JavaScript (layout responsivo: funciona no computador e no celular) · Git e GitHub · hospedagem na InfinityFree
+PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout: works on desktop and mobile) · Git and GitHub · GitHub Actions (automatic deploy) · InfinityFree hosting
 
-## Destaques técnicos
+## Technical highlights
 
-- **Banco relacional com 4 tabelas** (`clientes`, `usuarios`, `compras`, `pagamentos`) e relatórios feitos com consultas SQL (filtros por período e situação, maiores devedores, resumo financeiro).
-- **Transações com trava** (`SELECT ... FOR UPDATE`): duas compras feitas ao mesmo tempo não conseguem estourar o limite de crédito do cliente.
-- **Segurança**:
-  - consultas preparadas, contra SQL injection;
-  - senhas guardadas com `password_hash`;
-  - proteção CSRF nos formulários;
-  - saída escapada com `htmlspecialchars`, contra XSS;
-  - cookie de sessão `HttpOnly` e `SameSite`, e nova sessão a cada login;
-  - a senha do banco fica fora do código.
-- **Controle de acesso por perfil**: administrador, usuário comum e cliente (somente leitura).
+- **Relational database with 4 tables** (`clientes`, `usuarios`, `compras`, `pagamentos`) and reports built with SQL queries (filters by period and status, top debtors, financial summary).
+- **Locked transactions** (`SELECT ... FOR UPDATE`): two purchases made at the same time can't push a customer over their credit limit.
+- **Security**:
+  - prepared statements, against SQL injection;
+  - passwords stored with `password_hash`;
+  - CSRF protection on forms;
+  - output escaped with `htmlspecialchars`, against XSS;
+  - `HttpOnly` and `SameSite` session cookie, and a new session on every login;
+  - the database password stays out of the code.
+- **Role-based access**: administrator, regular user and customer (read only).
+- **Automatic deploy**: GitHub Actions publishes the site by FTP whenever the app changes on `main`.
 
-## Funcionalidades
+## Features
 
-- Login com dois perfis de funcionário: **Administrador** e **Usuário comum**.
-- Cadastro, edição, busca (por nome ou telefone) e exclusão de clientes. Só o administrador exclui.
-- Extrato de cada cliente com dívida, limite disponível, compras e pagamentos.
-- Registro de compras no fiado com validação do limite de crédito.
-- Registro de pagamentos, com bloqueio de pagamento maior que a dívida e botão "Quitar dívida inteira".
-- Relatório de dívidas com filtros por período e situação, pronto para imprimir.
-- Ranking de confiabilidade dos clientes.
-- Resumo financeiro e maiores devedores (somente administrador).
-- Gestão de funcionários: criar, bloquear, desbloquear e redefinir senha (somente administrador).
-- Troca da própria senha em "Minha senha".
-- **Acesso do cliente (somente leitura):** o cliente pede um usuário na tela de login, o administrador aprova e o cliente passa a ver apenas a própria dívida.
+- Login with two staff roles: **Administrator** and **Regular user**.
+- Add, edit, search (by name or phone) and delete customers. Only the administrator can delete.
+- Statement for each customer with debt, available limit, purchases and payments.
+- Credit purchases with credit limit validation.
+- Payments, blocking payments larger than the debt, plus a "Pay off full debt" button.
+- Debt report with filters by period and status, ready to print.
+- Customer reliability ranking.
+- Financial summary and top debtors (administrator only).
+- Staff management: create, block, unblock and reset passwords (administrator only).
+- Everyone can change their own password under "Minha senha".
+- **Customer access (read only):** the customer requests a login on the sign-in page, the administrator approves it and the customer can then see only their own debt.
 
-## Regras de negócio
+## Business rules
 
-- **Situação do cliente**: *em dia* (sem dívida), *devendo* ou *inadimplente* (a compra mais antiga ainda não paga tem mais de 30 dias). Os pagamentos quitam as compras mais antigas primeiro.
-- **Score do ranking**: começa em 100, perde 2 pontos por dia acima de 7 em aberto, perde 10 se a dívida passa de 50% do limite e ganha 5 se o cliente já pagou alguma vez.
-- O usuário comum cadastra clientes com limite padrão de R$ 500. Só o administrador altera limites.
-- Cliente com dívida em aberto não pode ser excluído. Excluir um cliente apaga o histórico e o acesso dele.
+- **Customer status**: *em dia* (no debt), *devendo* (owing) or *inadimplente* (in default: the oldest unpaid purchase is more than 30 days old). Payments pay off the oldest purchases first.
+- **Ranking score**: starts at 100, loses 2 points per day open beyond 7 days, loses 10 if the debt is over 50% of the limit, and gains 5 if the customer has paid at least once.
+- Regular users add customers with a default limit of R$ 500. Only the administrator changes limits.
+- A customer with open debt can't be deleted. Deleting a customer erases their history and access.
 
-## Contas de teste
+## Test accounts
 
-| Perfil | Usuário | Senha |
+| Role | User | Password |
 |---|---|---|
-| Administrador | `admin` | `admin123` |
-| Usuário comum | `usuario` | `user123` |
+| Administrator | `admin` | `admin123` |
+| Regular user | `usuario` | `user123` |
 
-Clientes de exemplo: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, Carlos Pereira `(62) 97777-7777` e Ana Lima `(62) 96666-6666`.
+Sample customers: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, Carlos Pereira `(62) 97777-7777` and Ana Lima `(62) 96666-6666`.
 
-> As contas de teste são públicas. Ao instalar o sistema para uso real, troque as senhas no primeiro acesso (menu **Minha senha**). O sistema avisa enquanto a senha de exemplo estiver em uso.
+> The test accounts are public. When installing the system for real use, change the passwords on first login (menu **Minha senha**). The system shows a warning while a sample password is still in use.
 
-## Equipe
+## Team
 
-| Integrante | Responsabilidades |
+| Member | Responsibilities |
 |---|---|
-| Matheus Wilton | _(preencher: ex. banco de dados, publicação do site)_ |
-| Luiz Guilherme | _(preencher)_ |
-| Henrique Nascimento | _(preencher)_ |
+| Matheus Wilton | _(to fill in: e.g. database, site deployment)_ |
+| Luiz Guilherme | _(to fill in)_ |
+| Henrique Nascimento | _(to fill in)_ |
 
-> Coloquem só o que cada um realmente fez: é a primeira pergunta da banca.
+## Running locally (XAMPP)
 
-## Como rodar no computador (XAMPP)
-
-1. Copie a pasta `fiadofacil` para `C:\xampp\htdocs\fiadofacil`. O `login.php` deve ficar direto dentro dela.
-2. No XAMPP, ligue o **Apache** e o **MySQL**.
-3. Em `http://localhost/phpmyadmin`, crie um banco chamado `sistema_fiado` (utf8mb4), selecione-o, vá em **Importar** e envie `fiadofacil/sql/banco.sql`.
-4. Copie `config.local.example.php` para `config.local.php` (dentro de `fiadofacil`) e confira os dados. No XAMPP o padrão é host `localhost`, usuário `root`, senha vazia e banco `sistema_fiado`.
-5. Acesse `http://localhost/fiadofacil/login.php`.
+1. Copy the `fiadofacil` folder to `C:\xampp\htdocs\fiadofacil`. `login.php` must be directly inside it.
+2. In XAMPP, start **Apache** and **MySQL**.
+3. At `http://localhost/phpmyadmin`, create a database called `sistema_fiado` (utf8mb4), select it, go to **Import** and upload `fiadofacil/sql/banco.sql`.
+4. Copy `config.local.example.php` to `config.local.php` (inside `fiadofacil`) and check the values. XAMPP defaults are host `localhost`, user `root`, empty password and database `sistema_fiado`.
+5. Open `http://localhost/fiadofacil/login.php`.
 
 <details>
-<summary><b>Publicação automática na InfinityFree</b></summary>
+<summary><b>Automatic deploy to InfinityFree</b></summary>
 
-Toda vez que a `main` recebe mudanças na pasta `fiadofacil`, o GitHub Actions envia os arquivos por FTP para a `htdocs` da InfinityFree. O `config.local.php` e a pasta `sql` nunca são enviados.
+Every time `main` receives changes in the `fiadofacil` folder, GitHub Actions uploads the files by FTP to the InfinityFree `htdocs` folder. `config.local.php` and the `sql` folder are never uploaded.
 
-Configuração (uma vez só): no GitHub, em **Settings → Secrets and variables → Actions → New repository secret**, crie:
+One-time setup: on GitHub, under **Settings → Secrets and variables → Actions → New repository secret**, create:
 
-| Nome | Valor (painel da InfinityFree → FTP Details) |
+| Name | Value (InfinityFree panel → FTP Details) |
 |---|---|
-| `FTP_SERVER` | FTP Hostname (ex.: `ftpupload.net`) |
-| `FTP_USERNAME` | FTP Username (ex.: `if0_12345678`) |
+| `FTP_SERVER` | FTP Hostname (e.g. `ftpupload.net`) |
+| `FTP_USERNAME` | FTP Username (e.g. `if0_12345678`) |
 | `FTP_PASSWORD` | FTP Password |
 
-Para publicar na hora, sem mudar código: aba **Actions → Publicar na InfinityFree → Run workflow**.
+To publish right away without changing code: **Actions → Publicar na InfinityFree → Run workflow**.
 
 </details>
 
 <details>
-<summary><b>Publicar na InfinityFree</b></summary>
+<summary><b>Manual deploy to InfinityFree</b></summary>
 
-1. No painel, crie o banco MySQL e anote host, usuário, senha e nome do banco.
-2. No phpMyAdmin da hospedagem, selecione o banco, vá em **Importar** e envie `sql/banco.sql`. Dá para importar de novo sem duplicar dados.
-3. Envie o conteúdo da pasta `fiadofacil` para `htdocs`, sem deixar uma subpasta extra. **Não precisa enviar a pasta `sql`.**
-4. Edite o `config.local.php` com os dados do banco **direto no servidor** (ou preencha antes de enviar).
-5. Abra o endereço do site. O `index.php` encaminha para o login.
+1. In the panel, create the MySQL database and write down host, user, password and database name.
+2. In the host's phpMyAdmin, select the database, go to **Import** and upload `sql/banco.sql`. Importing again doesn't duplicate data.
+3. Upload the contents of the `fiadofacil` folder to `htdocs`, without an extra subfolder. **You don't need to upload the `sql` folder.**
+4. Edit `config.local.php` with the database details **directly on the server** (or fill it in before uploading).
+5. Open the site address. `index.php` redirects to the login page.
 
 </details>
 
 <details>
-<summary><b>Problemas comuns</b></summary>
+<summary><b>Troubleshooting</b></summary>
 
-- **404 ao abrir o login:** a pasta não está em `htdocs` ou está duplicada (`fiadofacil\fiadofacil`).
-- **"Falta o arquivo config.local.php":** copie o `config.local.example.php` para `config.local.php` e preencha.
-- **"Não foi possível conectar ao banco":** confira host, usuário, senha e nome do banco no `config.local.php`.
-- **O MySQL não liga no XAMPP:** outro MySQL do Windows pode estar usando a porta 3306. Pare o serviço dele em `services.msc`.
+- **404 when opening the login page:** the folder isn't in `htdocs` or is nested twice (`fiadofacil\fiadofacil`).
+- **"Falta o arquivo config.local.php" (missing config file):** copy `config.local.example.php` to `config.local.php` and fill it in.
+- **"Não foi possível conectar ao banco" (can't connect to the database):** check host, user, password and database name in `config.local.php`.
+- **MySQL won't start in XAMPP:** another Windows MySQL service may be using port 3306. Stop it in `services.msc`.
 
 </details>
 
-## Segurança da configuração
+## Configuration security
 
-- A senha do banco **nunca** fica no código. Ela fica só no `config.local.php`, que está no `.gitignore`. **Cuidado: o botão "Upload files" do GitHub ignora o `.gitignore`, então não envie o `config.local.php` por ele.**
-- Se alguma senha de banco já foi publicada no GitHub, troque-a no painel da hospedagem. Apagar do arquivo não adianta, porque o histórico do Git guarda a versão antiga.
-- Senhas novas precisam ter no mínimo 8 caracteres.
+- The database password **never** goes in the code. It only lives in `config.local.php`, which is in `.gitignore`. **Careful: GitHub's "Upload files" button ignores `.gitignore`, so don't upload `config.local.php` through it.**
+- If a database password was ever published on GitHub, change it in the hosting panel. Deleting it from the file isn't enough, because Git history keeps the old version.
+- New passwords must have at least 8 characters.
 
-## Estrutura
+## Structure
 
 ```
 fiadofacil/
-├── *.php                       páginas do sistema
-├── cabecalho.php / rodape.php  layout e menu comuns a todas as páginas
-├── funcoes.php                 funções compartilhadas (sessão, segurança, regras de compra e pagamento, situação dos clientes)
-├── conexao.php                 conecta no banco usando o config.local.php
-├── config.local.example.php    modelo do arquivo de configuração
-├── css/estilo.css              visual
-├── js/script.js                menu do celular, confirmações, máscara de telefone
-└── sql/banco.sql               criação das tabelas e dados de exemplo
+├── *.php                       system pages
+├── cabecalho.php / rodape.php  shared layout and menu
+├── funcoes.php                 shared functions (session, security, purchase and payment rules, customer status)
+├── conexao.php                 connects to the database using config.local.php
+├── config.local.example.php    config file template
+├── css/estilo.css              styles
+├── js/script.js                mobile menu, confirmations, phone mask
+└── sql/banco.sql               table creation and sample data
 ```
 
-## Próximos passos
+## Next steps
 
-- Lembrete de cobrança pelo WhatsApp.
-- Pagamento por Pix com QR Code.
-- Versão instalável no celular (PWA).
-- Testes automatizados das regras de negócio (limite de crédito, situação, score).
-- Exportar o relatório em CSV.
-- Capturas de tela neste README.
+- Payment reminders on WhatsApp.
+- Pix payments with a QR code.
+- Installable mobile version (PWA).
+- Automated tests for the business rules (credit limit, status, score).
+- Export the report to CSV.
+- Screenshots in this README.
