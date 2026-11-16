@@ -4,6 +4,16 @@ Sistema web em PHP e MySQL para controlar compras no fiado, pagamentos e dívida
 🔗 **Site no ar:** https://fiadofacil.free.je
 
 Projeto acadêmico de Matheus Wilton, Luiz Guilherme e Henrique Nascimento (GTI — FPM, Goiânia/GO).
+## Documentação do Projeto Integrador
+| Documento | Conteúdo |
+|---|---|
+| [Diagramas](docs/DIAGRAMAS.md) | Banco de dados (DER e diagrama de classes UML), casos de uso, fluxo do sistema, fluxo de compra e pagamento, estados do cliente, sequência e arquitetura |
+| [Case](docs/CASE.md) | Estudo de caso: problema, requisitos, solução aplicada e resultados |
+| [Pitch](docs/PITCH.md) | Roteiro da apresentação, dados que justificam o projeto, comparação com outras soluções e fontes |
+| [Demonstração ao vivo](docs/APRESENTACAO.md) | Checklist e roteiro para mostrar o sistema no computador e no celular |
+| [Imagens dos diagramas](docs/img/) | PNGs prontos para colocar nos slides |
+
+![Diagrama do banco de dados](docs/img/banco-der.png)
 ## Funcionalidades
 - Login com dois perfis de funcionário: **Administrador** e **Usuário comum**
 - Cadastro, edição, busca (por nome ou telefone) e exclusão de clientes (exclusão só do administrador)
