@@ -92,6 +92,23 @@ Clientes de exemplo: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888
 5. Acesse `http://localhost/fiadofacil/login.php`.
 
 <details>
+<summary><b>Publicação automática na InfinityFree</b></summary>
+
+Toda vez que a `main` recebe mudanças na pasta `fiadofacil`, o GitHub Actions envia os arquivos por FTP para a `htdocs` da InfinityFree. O `config.local.php` e a pasta `sql` nunca são enviados.
+
+Configuração (uma vez só): no GitHub, em **Settings → Secrets and variables → Actions → New repository secret**, crie:
+
+| Nome | Valor (painel da InfinityFree → FTP Details) |
+|---|---|
+| `FTP_SERVER` | FTP Hostname (ex.: `ftpupload.net`) |
+| `FTP_USERNAME` | FTP Username (ex.: `if0_12345678`) |
+| `FTP_PASSWORD` | FTP Password |
+
+Para publicar na hora, sem mudar código: aba **Actions → Publicar na InfinityFree → Run workflow**.
+
+</details>
+
+<details>
 <summary><b>Publicar na InfinityFree</b></summary>
 
 1. No painel, crie o banco MySQL e anote host, usuário, senha e nome do banco.
