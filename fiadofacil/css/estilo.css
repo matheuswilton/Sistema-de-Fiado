@@ -217,17 +217,42 @@ tr:hover td { background: var(--superficie-2); }
 .botao-so-celular, .texto-celular { display: none; }
 
 /* ===================== Tela de entrada (login) ===================== */
-body:not(.com-menu) { background: linear-gradient(180deg, var(--faixa-login) 0, var(--faixa-login) 400px, var(--fundo) 400px); background-repeat: no-repeat; background-color: var(--fundo); }
-.marca-login { text-align: center; padding: 36px 16px 0; color: white; }
-.marca-login-link { color: white; text-decoration: none; display: inline-block; }
-.logo-login { margin: 0 auto; width: 150px; height: 150px; box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+/* ---- Tela de login: faixa azul com o letreiro 3D ocupando a largura ---- */
+body:not(.com-menu) { background: var(--fundo); }
+.marca-login { position: relative; overflow: hidden; color: white; text-align: center;
+    background:
+        radial-gradient(700px 300px at 15% 0%, rgba(96, 165, 250, .35), transparent 70%),
+        radial-gradient(600px 280px at 90% 100%, rgba(250, 204, 21, .14), transparent 70%),
+        linear-gradient(160deg, #2563eb 0%, #1e3a8a 55%, #172554 100%);
+    padding: 66px 0 96px; }
+:root[data-tema="escuro"] .marca-login { background:
+        radial-gradient(700px 300px at 15% 0%, rgba(59, 130, 246, .25), transparent 70%),
+        radial-gradient(600px 280px at 90% 100%, rgba(250, 204, 21, .08), transparent 70%),
+        linear-gradient(160deg, #1e3a8a 0%, #172554 60%, #0b1120 100%); }
+/* textura discreta de pontinhos */
+.marca-login::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.2px); background-size: 22px 22px; mask-image: linear-gradient(180deg, #000 0%, transparent 85%); -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%); pointer-events: none; }
+.marca-login-conteudo { position: relative; max-width: none; margin: 0 auto; padding: 0 max(20px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.login-topo { position: absolute; top: 14px; left: max(16px, env(safe-area-inset-left, 0px)); z-index: 3; }
+.marca-login-link { color: #e0e7ff; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; }
+.marca-login-link:hover span { text-decoration: underline; color: #fff; }
+.logo-login { width: 46px; height: 46px; box-shadow: 0 6px 16px rgba(0,0,0,.35); transition: transform .3s cubic-bezier(.2,.8,.2,1); }
 .marca-login-link:hover .logo-login { transform: scale(1.07) rotate(-5deg); }
-.voltar-inicio { display: inline-block; margin-top: 8px; color: #dbeafe; font-size: 14px; text-decoration: none; opacity: .9; }
+.letreiro-palco { width: 100%; margin-top: 4px; }
+.letreiro { display: inline-block; white-space: nowrap; font-family: "Baloo 2", "Inter", system-ui, sans-serif; font-weight: 800; font-size: clamp(56px, 15vw, 280px); line-height: .9; letter-spacing: -.02em; transition: transform .25s ease-out; padding-bottom: .12em; }
+.letreiro .letra { display: inline-block; animation: letra-entra .8s cubic-bezier(.2,.9,.25,1.15) both; animation-delay: calc(var(--i) * 55ms + 150ms); }
+/* profundidade 3D: camadas de sombra, cada uma um pouco mais escura e mais baixa */
+.letreiro-fiado { color: #ffffff; text-shadow:
+    0 .010em 0 #dde5ff, 0 .020em 0 #c4d1fb, 0 .030em 0 #aabcf3, 0 .040em 0 #8fa5e7, 0 .050em 0 #758cd7, 0 .060em 0 #5c73c3, 0 .070em 0 #475cab,
+    0 .085em .02em rgba(8, 15, 45, .55), 0 .14em .14em rgba(8, 15, 45, .35), 0 .25em .3em rgba(8, 15, 45, .25); }
+.letreiro-facil { color: #facc15; text-shadow:
+    0 .010em 0 #f2c010, 0 .020em 0 #e6b00c, 0 .030em 0 #d79d09, 0 .040em 0 #c58a07, 0 .050em 0 #b07805, 0 .060em 0 #996504, 0 .070em 0 #805303,
+    0 .085em .02em rgba(40, 20, 0, .5), 0 .14em .14em rgba(8, 15, 45, .35), 0 .25em .3em rgba(8, 15, 45, .25); }
+@keyframes letra-entra { from { opacity: 0; transform: perspective(600px) translateY(.45em) rotateX(-75deg); } to { opacity: 1; transform: perspective(600px) translateY(0) rotateX(0); } }
+.marca-frase { margin: 2px 0 0; color: #e0e7ff; font-size: clamp(17px, 1.6vw, 22px); font-weight: 500; letter-spacing: .01em; }
+.voltar-inicio { display: inline-block; margin-top: 4px; color: #dbeafe; font-size: 15px; text-decoration: none; opacity: .9; }
 .voltar-inicio:hover { opacity: 1; text-decoration: underline; }
-.marca-login img { border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
-.marca-login .marca-grande { color: white; margin-top: 14px; font-size: 60px; line-height: 1.05; font-weight: 800; letter-spacing: -.03em; text-shadow: 0 2px 12px rgba(0,0,0,.25); }
-.marca-frase { margin: 8px 0 0; color: #e0e7ff; font-size: 20px; font-weight: 500; }
-body:not(.com-menu) .container-pequeno { margin-top: 20px; box-shadow: 0 10px 30px rgba(15, 23, 42, .18); }
+body:not(.com-menu) main.container-pequeno { position: relative; z-index: 2; margin-top: -74px; box-shadow: 0 18px 44px rgba(15, 23, 42, .22); }
+@media (prefers-reduced-motion: reduce) { .letreiro .letra { animation: none; } .letreiro { transition: none; } }
 .tema-flutuante { background: rgba(255,255,255,.15); color: white; border: 0; box-shadow: none; }
 .tema-flutuante:hover { background: rgba(255,255,255,.25); }
 
@@ -499,13 +524,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
     .marca .logo { width: 36px; height: 36px; }
     .container { margin: 16px auto; padding: 0 12px; }
     .container-pequeno { margin-top: 16px; padding: 20px 16px; }
-    .marca-login { padding-top: 52px; }
-    .logo-login { width: 112px; height: 112px; }
-    .marca-login .marca-grande { font-size: 46px; }
-    .marca-frase { font-size: 18px; }
-    body:not(.com-menu) { background: linear-gradient(180deg, var(--faixa-login) 0, var(--faixa-login) 330px, var(--fundo) 330px); }
-    body:not(.com-menu) .container-pequeno { margin-top: 16px; }
     .card-com-icone { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .marca-login { padding: 76px 0 96px; }
+    .logo-login { width: 40px; height: 40px; }
+    body:not(.com-menu) main.container-pequeno { margin-top: -66px; }
     .lista-detalhe { display: none; }
     .lista-inicio .selo { display: none; }
     .card-icone { width: 36px; height: 36px; }
