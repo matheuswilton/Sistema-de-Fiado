@@ -53,7 +53,7 @@ require "cabecalho.php";
             <option value="inadimplente" <?php if ($situacao === 'inadimplente') echo 'selected'; ?>>Inadimplente (+30 dias)</option>
             <option value="em_dia" <?php if ($situacao === 'em_dia') echo 'selected'; ?>>Em dia</option>
         </select></div>
-    <div style="flex:0 0 auto"><button type="submit">Filtrar</button> <a href="relatorio.php" class="botao botao-secundario">Limpar</a></div>
+    <div style="flex:0 0 auto; display:flex; gap:8px; align-items:flex-end"><button type="submit">Filtrar</button><a href="relatorio.php" class="botao botao-secundario">Limpar</a></div>
 </form>
 <?php if ($erro): ?>
     <div class="erro" role="alert"><?php echo htmlspecialchars($erro); ?></div>
