@@ -66,7 +66,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-180.png">
-<link rel="stylesheet" href="css/estilo.css?v=3">
+<link rel="stylesheet" href="css/estilo.css?v=4">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>

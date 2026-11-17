@@ -1,32 +1,32 @@
 /* ===================== Cores: modo claro (padrao) ===================== */
 :root {
-    --fundo: #f4f6f9;
-    --superficie: #ffffff;
-    --superficie-2: #f8fafc;
-    --texto: #111827;
-    --texto-suave: #6b7280;
-    --rotulo: #374151;
-    --borda: #e5e7eb;
-    --campo-borda: #d1d5db;
+    --fundo: #e8edf2;
+    --superficie: #f8fafc;
+    --superficie-2: #eef2f6;
+    --texto: #0b1220;
+    --texto-suave: #475467;
+    --rotulo: #1f2937;
+    --borda: #d3dae3;
+    --campo-borda: #a9b4c2;
     --campo-fundo: #ffffff;
-    --campo-desativado: #f3f4f6;
-    --link: #1d4ed8;
+    --campo-desativado: #e5e9ef;
+    --link: #1e40af;
     --primaria: #1d4ed8;
     --primaria-forte: #1e3a8a;
-    --primaria-suave: #eff6ff;
+    --primaria-suave: #dbe6fb;
     --primaria-texto: #1e3a8a;
-    --secundario: #e5e7eb;
-    --secundario-forte: #d1d5db;
-    --secundario-texto: #1f2937;
-    --ok: #15803d; --ok-fundo: #f0fdf4; --ok-borda: #bbf7d0; --ok-msg: #166534;
-    --alerta: #b91c1c; --alerta-fundo: #fef2f2; --alerta-borda: #fecaca; --alerta-msg: #991b1b;
-    --aviso: #a16207; --aviso-fundo: #fffbeb; --aviso-borda: #fde68a; --aviso-msg: #854d0e;
+    --secundario: #dce2ea;
+    --secundario-forte: #c9d1dc;
+    --secundario-texto: #0f172a;
+    --ok: #166534; --ok-fundo: #e3f6e9; --ok-borda: #a7e3bb; --ok-msg: #14532d;
+    --alerta: #b91c1c; --alerta-fundo: #fbe7e7; --alerta-borda: #f3b4b4; --alerta-msg: #7f1d1d;
+    --aviso: #92400e; --aviso-fundo: #fdf3d7; --aviso-borda: #efd27a; --aviso-msg: #713f12;
     --botao-verde: #15803d; --botao-verde-forte: #166534;
     --botao-perigo: #b91c1c; --botao-perigo-forte: #991b1b;
     --topo: #1e3a8a; --topo-texto: #dbeafe;
-    --lateral: #ffffff; --lateral-texto: #4b5563; --lateral-icone: #6b7280;
-    --lateral-ativo: #eff6ff; --lateral-ativo-texto: #1e3a8a; --lateral-hover: #f3f4f6;
-    --sombra: 0 1px 3px rgba(15, 23, 42, .07), 0 1px 2px rgba(15, 23, 42, .04);
+    --lateral: #f8fafc; --lateral-texto: #1f2937; --lateral-icone: #344054;
+    --lateral-ativo: #dbe6fb; --lateral-ativo-texto: #1e3a8a; --lateral-hover: #e8edf2;
+    --sombra: 0 1px 3px rgba(15, 23, 42, .10), 0 1px 2px rgba(15, 23, 42, .06);
     color-scheme: light;
 }
 /* ===================== Cores: modo noturno ===================== */
