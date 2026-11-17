@@ -46,7 +46,7 @@ require "cabecalho.php";
     <tr><th>Nome</th><th>Telefone</th><th class="num">Limite</th><th class="num">Saldo devedor</th><th>Ações</th></tr>
     <?php $quantidade_linhas = 0; while ($linha = $resultado->fetch_assoc()): $quantidade_linhas++; ?>
     <tr>
-        <td><a class="link-nome" href="cliente.php?id=<?php echo $linha['id']; ?>" title="Ver extrato"><?php echo htmlspecialchars($linha['nome']); ?></a></td>
+        <td><a class="link-nome com-avatar" href="cliente.php?id=<?php echo $linha['id']; ?>" title="Ver extrato"><?php echo avatar($linha['nome']); ?><span><?php echo htmlspecialchars($linha['nome']); ?></span></a></td>
         <td><?php echo htmlspecialchars($linha['telefone'] ?? ''); ?></td>
         <td class="num"><?php echo dinheiro($linha['limite_credito']); ?></td>
         <td class="num"><?php echo $linha['saldo_devedor'] > 0 ? '<span class="alerta">' . dinheiro($linha['saldo_devedor']) . '</span>' : '<span class="ok">' . dinheiro(0) . '</span>'; ?></td>
@@ -63,7 +63,16 @@ require "cabecalho.php";
         </td>
     </tr>
     <?php endwhile; ?>
-    <?php if ($quantidade_linhas === 0): ?><tr><td colspan="5" class="vazio">Nenhum cliente encontrado.</td></tr><?php endif; ?>
+    <?php if ($quantidade_linhas === 0): ?><tr><td colspan="5" class="vazio">
+        <?php if ($busca === ""): ?>
+            <strong>Nenhum cliente cadastrado ainda.</strong>
+            <span>Cadastre o primeiro cliente para começar a anotar o fiado.</span>
+            <a href="cadastro_cliente.php" class="botao">+ Cadastrar primeiro cliente</a>
+        <?php else: ?>
+            <strong>Nenhum cliente encontrado.</strong>
+            <span>Confira o nome ou o telefone digitado.</span>
+        <?php endif; ?>
+    </td></tr><?php endif; ?>
 </table>
 </div>
 <?php mostrar_paginacao($pagina, $total_paginas, ['busca' => $busca]); ?>

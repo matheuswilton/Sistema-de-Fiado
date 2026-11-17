@@ -33,9 +33,15 @@ $titulo_pagina = "Relatório de dívidas";
 $menu_ativo = "relatorio";
 require "cabecalho.php";
 ?>
-<div class="cabecalho-pagina">
+<div class="cabecalho-pagina nao-imprimir">
     <div><h1>Relatório de dívidas</h1><p class="subtitulo">Inadimplente = dívida mais antiga com mais de 30 dias.</p></div>
     <button type="button" class="botao-secundario nao-imprimir" onclick="window.print()">Imprimir</button>
+</div>
+<div class="so-impressao cabecalho-impressao">
+    <strong>FiadoFácil — Relatório de dívidas</strong>
+    <span>Emitido em <?php echo date('d/m/Y H:i'); ?>
+    · Período: <?php echo $data_inicio !== "" ? date('d/m/Y', strtotime($data_inicio)) : "início"; ?> a <?php echo $data_fim !== "" ? date('d/m/Y', strtotime($data_fim)) : "hoje"; ?>
+    · Situação: <?php echo $situacao === 'todos' ? 'Todas' : htmlspecialchars($rotulos[$situacao] ?? $situacao); ?></span>
 </div>
 <form method="GET" action="relatorio.php" class="painel form-filtros nao-imprimir">
     <div><label for="data_ini">De</label><input type="date" id="data_ini" name="data_ini" value="<?php echo htmlspecialchars($data_inicio); ?>"></div>
@@ -63,8 +69,8 @@ require "cabecalho.php";
     <div class="tabela-rolagem"><table>
         <tr><th>Cliente</th><th class="num">Compras no período</th><th class="num">Pagamentos no período</th><th class="num">Saldo devedor</th><th class="num">Dias em aberto</th><th>Situação</th></tr>
         <?php foreach ($linhas_da_pagina as $linha): ?>
-        <tr>
-            <td><a href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo htmlspecialchars($linha['nome']); ?></a></td>
+        <tr<?php if ($linha['situacao'] === 'inadimplente') echo ' class="linha-alerta"'; ?>>
+            <td><a class="link-nome com-avatar" href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo avatar($linha['nome']); ?><span><?php echo htmlspecialchars($linha['nome']); ?></span></a></td>
             <td class="num"><?php echo dinheiro($linha['compras_periodo']); ?></td>
             <td class="num"><?php echo dinheiro($linha['pagamentos_periodo']); ?></td>
             <td class="num"><?php echo dinheiro(max(0, $linha['saldo_devedor'])); ?></td>
@@ -72,7 +78,7 @@ require "cabecalho.php";
             <td><span class="selo <?php echo $classes[$linha['situacao']]; ?>"><?php echo $rotulos[$linha['situacao']]; ?></span></td>
         </tr>
         <?php endforeach; ?>
-        <?php if ($total_clientes === 0): ?><tr><td colspan="6" class="vazio">Nenhum cliente encontrado com esses filtros.</td></tr><?php endif; ?>
+        <?php if ($total_clientes === 0): ?><tr><td colspan="6" class="vazio"><strong>Nenhum cliente encontrado.</strong><span>Tente outro período ou outra situação.</span></td></tr><?php endif; ?>
     </table></div>
     <?php if ($data_inicio !== "" || $data_fim !== ""): ?><p class="dica">Compras e pagamentos somados só dentro do período escolhido. O saldo devedor considera todo o histórico.</p><?php endif; ?>
     <?php mostrar_paginacao($pagina, $total_paginas, ['data_ini' => $data_inicio, 'data_fim' => $data_fim, 'situacao' => $situacao]); ?>

@@ -22,6 +22,16 @@ function mostrar_flash() {
         echo '<div class="' . $flash['tipo'] . '" role="alert">' . htmlspecialchars($flash['texto']) . '</div>';
     }
 }
+// Circulo com as iniciais do nome (ex.: "Carlos Pereira" -> "CP"). A cor depende do nome, para cada cliente ter sempre a mesma.
+function avatar($nome, $classe = "") {
+    $partes = preg_split('/\s+/', trim((string)$nome), -1, PREG_SPLIT_NO_EMPTY);
+    $iniciais = "";
+    if (count($partes) > 0) { $iniciais .= mb_substr($partes[0], 0, 1, 'UTF-8'); }
+    if (count($partes) > 1) { $iniciais .= mb_substr($partes[count($partes) - 1], 0, 1, 'UTF-8'); }
+    $iniciais = mb_strtoupper($iniciais === "" ? "?" : $iniciais, 'UTF-8');
+    $cor = abs(crc32((string)$nome)) % 6;
+    return '<span class="avatar avatar-cor-' . $cor . ' ' . $classe . '" aria-hidden="true">' . htmlspecialchars($iniciais) . '</span>';
+}
 // protecao contra CSRF: todo formulario POST leva um token escondido
 function campo_csrf() {
     if (empty($_SESSION['csrf'])) {

@@ -40,9 +40,9 @@ require "cabecalho.php";
 <div class="tabela-rolagem"><table>
     <tr><th>#</th><th>Cliente</th><th class="num">Saldo devedor</th><th class="num">Dias em aberto</th><th>Score</th></tr>
     <?php foreach ($linhas_da_pagina as $posicao => $linha): ?>
-    <tr>
+    <tr<?php if ($linha['score'] < 50) echo ' class="linha-alerta"'; ?>>
         <td><?php echo $offset + $posicao + 1; ?>º</td>
-        <td><a href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo htmlspecialchars($linha['nome']); ?></a></td>
+        <td><a class="link-nome com-avatar" href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo avatar($linha['nome']); ?><span><?php echo htmlspecialchars($linha['nome']); ?></span></a></td>
         <td class="num"><?php echo dinheiro(max(0, $linha['saldo_devedor'])); ?></td>
         <td class="num"><?php echo $linha['dias_devendo']; ?> dias</td>
         <td><strong><?php echo $linha['score']; ?>/100</strong>
@@ -51,7 +51,7 @@ require "cabecalho.php";
             <?php else: ?><span class="selo selo-alerta">Risco</span><?php endif; ?></td>
     </tr>
     <?php endforeach; ?>
-    <?php if ($total === 0): ?><tr><td colspan="5" class="vazio">Nenhum cliente cadastrado.</td></tr><?php endif; ?>
+    <?php if ($total === 0): ?><tr><td colspan="5" class="vazio"><strong>Nenhum cliente cadastrado ainda.</strong><span>O ranking aparece quando houver clientes.</span></td></tr><?php endif; ?>
 </table></div>
 <?php mostrar_paginacao($pagina, $total_paginas); ?>
 <?php require "rodape.php"; ?>

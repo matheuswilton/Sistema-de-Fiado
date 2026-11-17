@@ -47,12 +47,20 @@ require "cabecalho.php";
 <div class="painel">
 <form method="POST" action="cadastro_cliente.php">
     <?php campo_csrf(); ?>
+    <div class="grade-form">
+    <div class="campo campo-largo">
     <label for="nome">Nome completo *</label>
     <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" maxlength="100" autofocus required>
+    </div>
+    <div class="campo">
     <label for="telefone">Telefone</label>
     <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>">
+    </div>
+    <div class="campo campo-largo campo-fim">
     <label for="endereco">Endereço</label>
     <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($endereco); ?>" maxlength="200">
+    </div>
+    <div class="campo">
     <label for="limite_credito">Limite de crédito (R$)</label>
     <?php if (eh_admin()): ?>
         <input type="number" id="limite_credito" name="limite_credito" step="0.01" min="0" value="<?php echo $limite_credito; ?>">
@@ -60,6 +68,8 @@ require "cabecalho.php";
     <?php else: ?>
         <input type="text" id="limite_credito" value="R$ 500,00 (limite padrão — somente o administrador altera)" disabled>
     <?php endif; ?>
+    </div>
+    </div>
     <div class="barra-botoes"><button type="submit">Cadastrar</button><a href="listar_clientes.php" class="botao botao-secundario">Cancelar</a></div>
 </form>
 </div>
