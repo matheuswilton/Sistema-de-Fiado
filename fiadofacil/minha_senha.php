@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 $titulo_pagina = "Minha senha";
-$menu_ativo = "minha_senha";
+$menu_ativo = "senha";
 $classe_container = "container-medio";
 require "cabecalho.php";
 ?>

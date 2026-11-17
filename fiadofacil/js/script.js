@@ -64,3 +64,21 @@ document.querySelectorAll('table').forEach(function (tabela) {
         });
     });
 });
+// Modo noturno: o botao troca entre claro e escuro e guarda a escolha neste aparelho
+document.querySelectorAll('.tema-botao').forEach(function (botao) {
+    botao.addEventListener('click', function () {
+        var raiz = document.documentElement;
+        var novoTema = raiz.getAttribute('data-tema') === 'escuro' ? 'claro' : 'escuro';
+        raiz.setAttribute('data-tema', novoTema);
+        try { localStorage.setItem('tema', novoTema); } catch (e) {}
+        var corBarra = document.querySelector('meta[name="theme-color"]');
+        if (corBarra) { corBarra.setAttribute('content', novoTema === 'escuro' ? '#0f172a' : '#1e3a8a'); }
+    });
+});
+// ajusta a cor da barra do celular ao abrir a pagina
+(function () {
+    var corBarra = document.querySelector('meta[name="theme-color"]');
+    if (corBarra && document.documentElement.getAttribute('data-tema') === 'escuro') {
+        corBarra.setAttribute('content', '#0f172a');
+    }
+})();

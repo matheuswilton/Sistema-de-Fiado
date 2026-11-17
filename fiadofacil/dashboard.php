@@ -32,7 +32,7 @@ $menu_ativo = "inicio";
 require "cabecalho.php";
 ?>
 <h1>Olá, <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>!</h1>
-<p class="subtitulo">Perfil: <strong><?php echo eh_admin() ? "Administrador" : "Usuário comum"; ?></strong>. O que você quer fazer agora?</p>
+<p class="subtitulo">Perfil: <strong><?php echo eh_admin() ? "Administrador" : "Usuário comum"; ?></strong>. Veja o resumo do fiado e o que fazer agora.</p>
 <?php mostrar_flash(); ?>
 <?php if ($senha_de_exemplo): ?>
 <div class="aviso-caixa">Você ainda está usando a senha de exemplo do sistema. Por segurança, <a href="minha_senha.php">troque a sua senha agora</a>.</div>
@@ -48,7 +48,12 @@ require "cabecalho.php";
     <div class="card card-alerta"><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div>
     <?php endif; ?>
 </div>
-<h2>Atalhos</h2>
+<div class="acoes-rapidas">
+    <a class="botao" href="registrar_compra.php"><?php echo icone('compra'); ?>Registrar compra</a>
+    <a class="botao botao-verde" href="registrar_pagamento.php"><?php echo icone('pagamento'); ?>Registrar pagamento</a>
+    <a class="botao botao-secundario" href="cadastro_cliente.php"><?php echo icone('mais'); ?>Cadastrar cliente</a>
+</div>
+<h2 class="atalhos-titulo">Atalhos</h2>
 <div class="atalhos">
     <a class="atalho" href="registrar_compra.php"><strong>Registrar compra (fiado)</strong><span>Anotar uma compra no fiado de um cliente.</span></a>
     <a class="atalho" href="registrar_pagamento.php"><strong>Registrar pagamento</strong><span>Receber um pagamento e abater da dívida.</span></a>
