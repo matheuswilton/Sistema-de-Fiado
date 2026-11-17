@@ -203,7 +203,8 @@ if (!semAnimacao) {
     function ajustar() {
         letreiro.style.fontSize = '100px';
         var larguraTexto = letreiro.offsetWidth;
-        var larguraPalco = palco.clientWidth * 0.95;
+        // deixa uma margem dos dois lados: 80% da largura no computador, 90% no celular
+        var larguraPalco = palco.clientWidth * (window.innerWidth <= 640 ? 0.9 : 0.8);
         if (!larguraTexto || !larguraPalco) { return; }
         // ocupa a largura toda, mas sem empurrar o formulario de login para fora da tela
         var limiteAltura = (window.innerHeight - 448) / 1.09;

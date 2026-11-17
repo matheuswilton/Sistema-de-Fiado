@@ -195,7 +195,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
-<script src="js/script.js?v=12"></script>
+<script src="js/script.js?v=13"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
