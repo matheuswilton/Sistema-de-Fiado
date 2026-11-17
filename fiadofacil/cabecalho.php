@@ -49,14 +49,14 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=14">
+<link rel="stylesheet" href="css/estilo.css?v=16">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
 <header class="topo">
     <div class="topo-conteudo">
         <div class="marca-linha">
-            <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(30, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
+            <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(40, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
             <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('recolher'); ?></button>
         </div>
         <nav class="menu" aria-label="Menu principal">
@@ -98,7 +98,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php botao_tema("tema-flutuante"); ?>
 <div class="marca-login">
     <a href="index.php" class="marca-login-link" title="Voltar à página inicial">
-        <?php echo logo(72, "logo-login"); ?>
+        <?php echo logo(150, "logo-login"); ?>
         <div class="marca-grande">FiadoFácil</div>
     </a>
     <p class="marca-frase">Controle do fiado sem caderninho</p>

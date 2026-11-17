@@ -33,15 +33,15 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=14">
-<link rel="stylesheet" href="css/inicio.css?v=6">
+<link rel="stylesheet" href="css/estilo.css?v=16">
+<link rel="stylesheet" href="css/inicio.css?v=7">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
 
 <header class="inicio-topo">
     <div class="inicio-largura inicio-topo-conteudo">
-        <a href="index.php" class="inicio-marca"><?php echo logo(36); ?><span>FiadoFácil</span></a>
+        <a href="index.php" class="inicio-marca"><?php echo logo(48); ?><span>FiadoFácil</span></a>
         <nav class="inicio-nav" aria-label="Seções da página">
             <a href="#problema">O problema</a>
             <a href="#funcoes">Funcionalidades</a>
@@ -191,7 +191,7 @@ if (isset($_SESSION['usuario_id'])) {
 
 <footer class="inicio-rodape">
     <div class="inicio-largura">
-        <span class="rodape-marca"><?php echo logo(24); ?><strong>FiadoFácil</strong></span> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO
+        <span class="rodape-marca"><?php echo logo(32); ?><strong>FiadoFácil</strong></span> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO
     </div>
 </footer>
 
