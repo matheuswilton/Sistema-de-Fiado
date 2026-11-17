@@ -89,6 +89,87 @@ document.querySelectorAll('.mensagem, .erro, .aviso-caixa').forEach(function (ca
     botao.className = 'fechar-msg';
     botao.setAttribute('aria-label', 'Fechar mensagem');
     botao.innerHTML = '&times;';
-    botao.addEventListener('click', function () { caixa.remove(); });
+    botao.addEventListener('click', function () { caixa.classList.add('saindo'); setTimeout(function () { caixa.remove(); }, 250); });
     caixa.appendChild(botao);
 });
+// Menu lateral: botao para recolher (so os icones) ou expandir. A escolha fica salva neste aparelho.
+var botaoRecolher = document.querySelector('.recolher-botao');
+if (botaoRecolher) {
+    botaoRecolher.addEventListener('click', function () {
+        var raiz = document.documentElement;
+        var recolhido = raiz.getAttribute('data-menu') === 'recolhido';
+        if (recolhido) { raiz.removeAttribute('data-menu'); } else { raiz.setAttribute('data-menu', 'recolhido'); }
+        botaoRecolher.title = recolhido ? 'Recolher menu' : 'Expandir menu';
+        try { localStorage.setItem('menu', recolhido ? 'aberto' : 'recolhido'); } catch (e) {}
+    });
+}
+// Quem pediu "reduzir movimento" no aparelho nao recebe animacoes
+var semAnimacao = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!semAnimacao) {
+    // Entrada em cascata: cartoes, atalhos e linhas das tabelas aparecem um depois do outro
+    document.querySelectorAll('.cards, .atalhos, .acoes-rapidas').forEach(function (grupo) {
+        Array.prototype.forEach.call(grupo.children, function (item, indice) {
+            item.style.setProperty('--i', indice);
+            item.classList.add('entrada');
+        });
+    });
+    document.querySelectorAll('table').forEach(function (tabela) {
+        tabela.querySelectorAll('tr').forEach(function (linha, indice) {
+            if (indice > 0 && indice < 25) { linha.style.setProperty('--i', indice); linha.classList.add('entrada'); }
+        });
+    });
+    // Numeros dos cartoes "contam" do zero ate o valor
+    document.querySelectorAll('.card-valor').forEach(function (campo) {
+        var texto = campo.textContent.trim();
+        var dinheiro = texto.indexOf('R$') === 0;
+        var numero = parseFloat(texto.replace(/[^\d,]/g, '').replace(',', '.'));
+        if (isNaN(numero) || numero === 0) { return; }
+        var inicio = null, duracao = 800;
+        function formatar(v) {
+            return dinheiro ? 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : Math.round(v).toString();
+        }
+        function passo(agora) {
+            if (inicio === null) { inicio = agora; }
+            var t = Math.min(1, (agora - inicio) / duracao);
+            var suave = 1 - Math.pow(1 - t, 3);
+            campo.textContent = formatar(numero * suave);
+            if (t < 1) { requestAnimationFrame(passo); } else { campo.textContent = texto; }
+        }
+        campo.textContent = formatar(0);
+        requestAnimationFrame(passo);
+    });
+    // Efeito de onda ao clicar em botoes
+    document.querySelectorAll('.botao, button[type="submit"], .botao-icone, .tema-botao:not(.tema-flutuante), .recolher-botao').forEach(function (botao) {
+        botao.classList.add('tem-onda');
+        botao.addEventListener('pointerdown', function (e) {
+            var caixa = botao.getBoundingClientRect();
+            var tamanho = Math.max(caixa.width, caixa.height);
+            var onda = document.createElement('span');
+            onda.className = 'onda';
+            onda.style.width = onda.style.height = tamanho + 'px';
+            onda.style.left = (e.clientX - caixa.left - tamanho / 2) + 'px';
+            onda.style.top = (e.clientY - caixa.top - tamanho / 2) + 'px';
+            botao.appendChild(onda);
+            setTimeout(function () { onda.remove(); }, 600);
+        });
+    });
+    // Troca de pagina com uma saida rapida e suave
+    document.querySelectorAll('a[href]').forEach(function (link) {
+        var destino = link.getAttribute('href');
+        if (!destino || destino.charAt(0) === '#' || link.target === '_blank' || link.hasAttribute('data-confirmar') || /^(https?:|mailto:|tel:)/.test(destino)) { return; }
+        link.addEventListener('click', function (e) {
+            if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) { return; }
+            e.preventDefault();
+            document.body.classList.add('saindo-pagina');
+            setTimeout(function () { window.location.href = link.href; }, 140);
+        });
+    });
+    window.addEventListener('pageshow', function () { document.body.classList.remove('saindo-pagina'); });
+    // Troca de tema com transicao de cores
+    document.querySelectorAll('.tema-botao').forEach(function (botao) {
+        botao.addEventListener('click', function () {
+            document.documentElement.classList.add('trocando-tema');
+            setTimeout(function () { document.documentElement.classList.remove('trocando-tema'); }, 400);
+        });
+    });
+}

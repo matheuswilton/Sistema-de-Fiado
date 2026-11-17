@@ -74,6 +74,8 @@ h2 { font-size: 18px; margin: 24px 0 10px; }
 .topo { background: var(--topo); color: white; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
 .topo-conteudo { max-width: 1100px; margin: 0 auto; padding: 0 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; }
 .marca { color: white; font-weight: bold; font-size: 19px; text-decoration: none; padding: 14px 0; }
+.marca-linha { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.marca-curta, .recolher-botao { display: none; }
 .topo-botoes { display: flex; gap: 8px; align-items: center; }
 .menu { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; }
 .menu a { color: var(--topo-texto); text-decoration: none; padding: 8px 10px; border-radius: 6px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
@@ -204,6 +206,11 @@ tr:hover td { background: var(--superficie-2); }
 /* ===================== Tela de entrada (login) ===================== */
 body:not(.com-menu) { background: linear-gradient(180deg, var(--faixa-login) 0, var(--faixa-login) 280px, var(--fundo) 280px); background-repeat: no-repeat; background-color: var(--fundo); }
 .marca-login { text-align: center; padding: 40px 16px 0; color: white; }
+.marca-login-link { color: white; text-decoration: none; display: inline-block; }
+.marca-login-link img { transition: transform .25s ease; }
+.marca-login-link:hover img { transform: scale(1.06) rotate(-4deg); }
+.voltar-inicio { display: inline-block; margin-top: 8px; color: #dbeafe; font-size: 14px; text-decoration: none; opacity: .9; }
+.voltar-inicio:hover { opacity: 1; text-decoration: underline; }
 .marca-login img { border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
 .marca-login .marca-grande { color: white; margin-top: 10px; font-size: 32px; letter-spacing: -.01em; }
 .marca-frase { margin: 2px 0 0; color: #dbeafe; font-size: 15px; }
@@ -255,6 +262,34 @@ main.container { animation: aparecer .25s ease-out; }
     *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+
+/* ===================== Interatividade e transicoes ===================== */
+/* entrada em cascata (o script coloca a classe "entrada" e o atraso --i em cada item) */
+.entrada { animation: subir .45s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 55ms); }
+@keyframes subir { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* efeito de onda ao clicar em botoes */
+.tem-onda { position: relative; overflow: hidden; }
+.onda { position: absolute; border-radius: 50%; background: currentColor; opacity: .28; transform: scale(0); animation: onda .55s ease-out forwards; pointer-events: none; }
+@keyframes onda { to { transform: scale(2.6); opacity: 0; } }
+/* mensagens entram deslizando */
+.mensagem, .erro, .aviso-caixa { animation: deslizar .35s cubic-bezier(.2,.8,.2,1); }
+@keyframes deslizar { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+.saindo { animation: sumir .25s ease forwards !important; }
+@keyframes sumir { to { opacity: 0; transform: translateY(-6px); height: 0; padding-top: 0; padding-bottom: 0; margin: 0; } }
+/* icones dos cartoes reagem ao mouse */
+.card-icone { transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+.card:hover .card-icone { transform: scale(1.12) rotate(-6deg); }
+/* linhas das tabelas */
+tr td { transition: background-color .15s ease; }
+.link-nome .avatar { transition: transform .2s ease; }
+.link-nome:hover .avatar { transform: scale(1.1); }
+/* troca de pagina: some rapidinho antes de abrir a proxima */
+body.saindo-pagina main.container { opacity: 0; transform: translateY(4px); transition: opacity .15s ease, transform .15s ease; }
+/* troca de tema suave */
+:root.trocando-tema *, :root.trocando-tema *::before, :root.trocando-tema *::after { transition: background-color .35s ease, color .35s ease, border-color .35s ease !important; }
+/* foco visivel ao navegar pelo teclado */
+a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outline-offset: 2px; }
+
 /* ===================== Outros ===================== */
 .form-busca { display: flex; gap: 8px; margin-bottom: 14px; }
 .form-busca input { flex: 1; }
@@ -302,6 +337,40 @@ main.container { animation: aparecer .25s ease-out; }
     .card-ok { border-top-color: #16a34a; }
     .card-aviso { border-top-color: #ca8a04; }
     .card-valor { font-size: 26px; }
+
+    /* ---- botao de recolher o menu lateral ---- */
+    .com-menu .marca-linha { padding: 0 0 12px; }
+    .com-menu .marca { padding: 2px 10px 4px; }
+    .com-menu .recolher-botao { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border-radius: 8px; background: transparent; color: var(--lateral-icone); border: 1px solid var(--borda); flex-shrink: 0; }
+    .com-menu .recolher-botao:hover { background: var(--lateral-hover); color: var(--texto); }
+    .com-menu .recolher-botao .icone { width: 16px; height: 16px; transition: transform .3s ease; }
+    .com-menu .topo { transition: width .28s cubic-bezier(.2,.8,.2,1); }
+    body.com-menu { transition: padding-left .28s cubic-bezier(.2,.8,.2,1); }
+    /* indicador animado do item ativo */
+    .com-menu .menu a { position: relative; }
+    .com-menu .menu a::before { content: ""; position: absolute; left: -14px; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: var(--primaria); transform: scaleY(0); transition: transform .2s ease; }
+    .com-menu .menu a.ativo::before { transform: scaleY(1); }
+    .com-menu .menu a .icone { transition: transform .2s ease; }
+    .com-menu .menu a:hover .icone { transform: translateX(2px) scale(1.08); }
+    /* ---- menu recolhido: so os icones ---- */
+    :root[data-menu="recolhido"] body.com-menu { padding-left: 76px; }
+    :root[data-menu="recolhido"] .com-menu .topo { width: 76px; overflow: visible; }
+    :root[data-menu="recolhido"] .com-menu .topo-conteudo { padding: 20px 12px; }
+    :root[data-menu="recolhido"] .com-menu .marca-linha { flex-direction: column; gap: 10px; }
+    :root[data-menu="recolhido"] .com-menu .marca { padding: 2px 0; }
+    :root[data-menu="recolhido"] .com-menu .marca-texto { display: none; }
+    :root[data-menu="recolhido"] .com-menu .marca-curta { display: inline; }
+    :root[data-menu="recolhido"] .com-menu .recolher-botao .icone { transform: rotate(180deg); }
+    :root[data-menu="recolhido"] .com-menu .menu-texto, :root[data-menu="recolhido"] .com-menu .menu-grupo,
+    :root[data-menu="recolhido"] .com-menu .menu-usuario span, :root[data-menu="recolhido"] .com-menu .tema-texto { display: none !important; }
+    :root[data-menu="recolhido"] .com-menu .menu-usuario { padding: 12px 0 6px; text-align: center; }
+    :root[data-menu="recolhido"] .com-menu .menu-usuario strong { font-size: 0; }
+    :root[data-menu="recolhido"] .com-menu .menu a, :root[data-menu="recolhido"] .com-menu .tema-botao { justify-content: center; padding: 10px 0; }
+    :root[data-menu="recolhido"] .com-menu .menu .contador { position: absolute; top: 2px; right: 4px; margin: 0; font-size: 10px; padding: 0 5px; }
+    :root[data-menu="recolhido"] .com-menu .menu-separador { display: block; width: auto; height: 1px; margin: 8px 6px; background: var(--borda); }
+    /* dica com o nome do item ao passar o mouse */
+    :root[data-menu="recolhido"] .com-menu .menu a::after { content: attr(data-dica); position: absolute; left: calc(100% + 12px); top: 50%; transform: translate(-6px, -50%); opacity: 0; pointer-events: none; white-space: nowrap; background: #0f172a; color: #f8fafc; font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,.25); transition: opacity .15s ease, transform .15s ease; z-index: 30; }
+    :root[data-menu="recolhido"] .com-menu .menu a:hover::after { opacity: 1; transform: translate(0, -50%); }
     /* tela inicial no computador: sem a lista de atalhos (o menu lateral ja tem tudo) */
     .atalhos-titulo, .atalhos { display: none; }
     .acoes-rapidas { display: flex; flex-wrap: wrap; gap: 10px; }
