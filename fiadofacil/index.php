@@ -33,7 +33,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=20">
+<link rel="stylesheet" href="css/estilo.css?v=22">
 <link rel="stylesheet" href="css/inicio.css?v=7">
 </head>
 <body class="pagina-inicio">
@@ -195,7 +195,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
-<script src="js/script.js?v=13"></script>
+<script src="js/script.js?v=15"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
