@@ -248,3 +248,20 @@ if (!semAnimacao) {
     letreiro.addEventListener('touchstart', function () { onda(); setTimeout(function () { emCima = false; aplicar(); }, 700); }, { passive: true });
     letreiro.addEventListener('animationend', function (e) { if (e.animationName === 'pulinho' && e.target === letreiro.lastElementChild.lastElementChild) { letreiro.classList.remove('letras-pulando'); } }, true);
 })();
+// Frases de efeito que trocam sozinhas (tela de login)
+(function () {
+    var alvo = document.querySelector('.frase-atual[data-frases]');
+    if (!alvo) { return; }
+    var frases = alvo.getAttribute('data-frases').split('|');
+    var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (frases.length < 2 || reduzir) { return; }
+    var indice = 0;
+    setInterval(function () {
+        alvo.classList.add('trocando');
+        setTimeout(function () {
+            indice = (indice + 1) % frases.length;
+            alvo.textContent = frases[indice];
+            alvo.classList.remove('trocando');
+        }, 450);
+    }, 3600);
+})();

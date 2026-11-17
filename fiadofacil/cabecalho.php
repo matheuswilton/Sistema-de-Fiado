@@ -49,7 +49,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=22">
+<link rel="stylesheet" href="css/estilo.css?v=23">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
@@ -106,7 +106,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
                 <span class="letreiro-parte letreiro-fiado" aria-hidden="true"><?php foreach (preg_split('//u', 'Fiado', -1, PREG_SPLIT_NO_EMPTY) as $i => $letra): ?><span class="letra" style="--i:<?php echo $i; ?>"><?php echo $letra; ?></span><?php endforeach; ?></span><span class="letreiro-parte letreiro-facil" aria-hidden="true"><?php foreach (preg_split('//u', 'Fácil', -1, PREG_SPLIT_NO_EMPTY) as $i => $letra): ?><span class="letra" style="--i:<?php echo $i + 5; ?>"><?php echo $letra; ?></span><?php endforeach; ?></span>
             </div>
         </div>
-        <p class="marca-frase">Controle do fiado sem caderninho</p>
+        <p class="marca-frase" aria-live="polite"><span class="frase-atual" data-frases="Controle do fiado sem caderninho.|Quem anota, recebe.|Adeus, caderninho. Olá, controle.|Cada real anotado é um real recebido.|Fiado organizado, cliente fiel.|Seu caderninho agora cabe no bolso.">Controle do fiado sem caderninho.</span></p>
     </div>
 </div>
 <?php endif; ?>

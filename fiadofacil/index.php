@@ -33,8 +33,8 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=22">
-<link rel="stylesheet" href="css/inicio.css?v=8">
+<link rel="stylesheet" href="css/estilo.css?v=23">
+<link rel="stylesheet" href="css/inicio.css?v=10">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -62,8 +62,8 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="inicio-largura inicio-hero-grade">
             <div class="revelar">
                 <span class="inicio-selo">Projeto Integrador · GTI · FPM</span>
-                <h1>O fiado da sua loja, organizado e <span class="destaque-texto">sem caderninho</span>.</h1>
-                <p class="inicio-lead">O FiadoFácil anota as compras a prazo, controla o limite de cada cliente e mostra quem está devendo — no computador e no celular, de graça.</p>
+                <h1><span class="h1-linha">Quem anota, recebe.</span> O fiado da sua loja <span class="destaque-texto">sem caderninho</span>.</h1>
+                <p class="inicio-lead">Anote cada compra a prazo, trave o limite de cada cliente e saiba na hora quem está devendo. No computador e no celular, de graça.</p>
                 <div class="inicio-botoes">
                     <a href="login.php" class="botao botao-grande">Entrar no sistema <?php echo icone('seta'); ?></a>
                     <a href="solicitar_acesso.php" class="botao botao-secundario botao-grande">Sou cliente e quero ver minha dívida</a>
@@ -84,6 +84,11 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </section>
+
+    <!-- Faixa de frases de efeito correndo -->
+    <div class="faixa-frases" role="marquee" aria-label="Quem anota, recebe. Adeus, caderninho. Fiado organizado, cliente fiel. Cada real anotado é um real recebido. Seu caderninho agora cabe no bolso. Vender a prazo sem perder o sono. Confiança se constrói. Controle também.">
+        <div class="faixa-frases-trilho" aria-hidden="true"><div class="faixa-frases-grupo"><span>Quem anota, recebe</span><i aria-hidden="true">✓</i><span>Adeus, caderninho</span><i aria-hidden="true">✓</i><span>Fiado organizado, cliente fiel</span><i aria-hidden="true">✓</i><span>Cada real anotado é um real recebido</span><i aria-hidden="true">✓</i><span>Seu caderninho agora cabe no bolso</span><i aria-hidden="true">✓</i><span>Vender a prazo sem perder o sono</span><i aria-hidden="true">✓</i><span>Confiança se constrói. Controle também</span><i aria-hidden="true">✓</i></div><div class="faixa-frases-grupo"><span>Quem anota, recebe</span><i aria-hidden="true">✓</i><span>Adeus, caderninho</span><i aria-hidden="true">✓</i><span>Fiado organizado, cliente fiel</span><i aria-hidden="true">✓</i><span>Cada real anotado é um real recebido</span><i aria-hidden="true">✓</i><span>Seu caderninho agora cabe no bolso</span><i aria-hidden="true">✓</i><span>Vender a prazo sem perder o sono</span><i aria-hidden="true">✓</i><span>Confiança se constrói. Controle também</span><i aria-hidden="true">✓</i></div></div>
+    </div>
 
     <!-- O problema -->
     <section id="problema" class="inicio-secao">
@@ -118,7 +123,7 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
                 <span class="inicio-sobretitulo">Funcionalidades</span>
-                <h2>Tudo o que o caderninho não faz</h2>
+                <h2>Tudo o que o caderninho nunca fez por você</h2>
             </div>
             <div class="grade-inicio grade-funcoes">
                 <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('compra'); ?></span><h3>Compra com limite</h3><p>Cada cliente tem um limite de crédito. Se a compra passar dele, o sistema bloqueia.</p></div>
@@ -135,8 +140,8 @@ if (isset($_SESSION['usuario_id'])) {
     <section id="como" class="inicio-secao">
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
-                <span class="inicio-sobretitulo">Como funciona</span>
-                <h2>Três passos no dia a dia da loja</h2>
+                <span class="inicio-sobretitulo">Como funciona · três passos no dia a dia da loja</span>
+                <h2>Anotou. Controlou. Recebeu.</h2>
             </div>
             <ol class="passos-inicio">
                 <li class="revelar"><span>1</span><h3>Cadastre o cliente</h3><p>Nome, telefone e o limite de crédito que você confia a ele.</p></li>
@@ -179,8 +184,8 @@ if (isset($_SESSION['usuario_id'])) {
     <!-- Chamada final -->
     <section class="inicio-chamada">
         <div class="inicio-largura revelar">
-            <h2>Pronto para deixar o caderninho de lado?</h2>
-            <p>Entre com seu usuário ou peça acesso como cliente.</p>
+            <h2>Fiado sem dor de cabeça começa agora.</h2>
+            <p>Adeus, caderninho. Entre com seu usuário ou peça acesso como cliente.</p>
             <div class="inicio-botoes">
                 <a href="login.php" class="botao botao-grande botao-claro">Entrar no sistema <?php echo icone('seta'); ?></a>
                 <a href="solicitar_acesso.php" class="botao botao-grande botao-contorno">Sou cliente</a>
@@ -195,7 +200,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
-<script src="js/script.js?v=15"></script>
+<script src="js/script.js?v=16"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
