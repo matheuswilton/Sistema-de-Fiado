@@ -203,8 +203,8 @@ if (!semAnimacao) {
     function ajustar() {
         letreiro.style.fontSize = '100px';
         var larguraTexto = letreiro.offsetWidth;
-        // deixa uma margem dos dois lados: 80% da largura no computador, 90% no celular
-        var larguraPalco = palco.clientWidth * (window.innerWidth <= 640 ? 0.9 : 0.8);
+        // margem grande dos dois lados: ocupa 60% da largura no computador e 80% no celular
+        var larguraPalco = palco.clientWidth * (window.innerWidth <= 640 ? 0.8 : 0.6);
         if (!larguraTexto || !larguraPalco) { return; }
         // ocupa a largura toda, mas sem empurrar o formulario de login para fora da tela
         var limiteAltura = (window.innerHeight - 448) / 1.09;
@@ -217,13 +217,34 @@ if (!semAnimacao) {
     window.addEventListener('resize', function () { clearTimeout(espera); espera = setTimeout(ajustar, 80); });
     var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var faixa = document.querySelector('.marca-login');
-    if (faixa && !reduzir && window.matchMedia('(hover: hover)').matches) {
+    if (reduzir) { return; }
+    // quando a letra termina de entrar, passa a reagir ao mouse
+    letreiro.querySelectorAll('.letra').forEach(function (letra) {
+        letra.addEventListener('animationend', function fim(e) {
+            if (e.animationName === 'letra-entra') { letra.classList.add('pronta'); letra.removeEventListener('animationend', fim); }
+        });
+    });
+    // inclinacao 3D acompanhando o mouse + cresce quando o mouse esta em cima
+    var inclinaX = 0, inclinaY = 0, emCima = false;
+    function aplicar() {
+        letreiro.style.transform = 'perspective(1200px) rotateY(' + inclinaX + 'deg) rotateX(' + inclinaY + 'deg) scale(' + (emCima ? 1.12 : 1) + ')';
+    }
+    if (faixa && window.matchMedia('(hover: hover)').matches) {
         faixa.addEventListener('mousemove', function (e) {
             var caixa = faixa.getBoundingClientRect();
-            var x = (e.clientX - caixa.left) / caixa.width - 0.5;
-            var y = (e.clientY - caixa.top) / caixa.height - 0.5;
-            letreiro.style.transform = 'perspective(1200px) rotateY(' + (x * 6) + 'deg) rotateX(' + (-y * 5) + 'deg)';
+            inclinaX = ((e.clientX - caixa.left) / caixa.width - 0.5) * 12;
+            inclinaY = -((e.clientY - caixa.top) / caixa.height - 0.5) * 10;
+            aplicar();
         });
-        faixa.addEventListener('mouseleave', function () { letreiro.style.transform = ''; });
+        faixa.addEventListener('mouseleave', function () { inclinaX = 0; inclinaY = 0; emCima = false; aplicar(); });
     }
+    // ao passar por cima (ou tocar no celular): cresce e as letras pulam em onda
+    function onda() {
+        emCima = true; aplicar();
+        letreiro.classList.remove('letras-pulando'); void letreiro.offsetWidth; letreiro.classList.add('letras-pulando');
+    }
+    letreiro.addEventListener('mouseenter', onda);
+    letreiro.addEventListener('mouseleave', function () { emCima = false; aplicar(); });
+    letreiro.addEventListener('touchstart', function () { onda(); setTimeout(function () { emCima = false; aplicar(); }, 700); }, { passive: true });
+    letreiro.addEventListener('animationend', function (e) { if (e.animationName === 'pulinho' && e.target === letreiro.lastElementChild.lastElementChild) { letreiro.classList.remove('letras-pulando'); } }, true);
 })();
