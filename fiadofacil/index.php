@@ -32,9 +32,9 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=23">
-<link rel="stylesheet" href="css/inicio.css?v=18">
+<link rel="stylesheet" href="css/inicio.css?v=19">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -159,27 +159,18 @@ if (isset($_SESSION['usuario_id'])) {
                 <h2>Quem está por trás do FiadoFácil</h2>
                 <p>Sou aluno do curso de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o meu Projeto Integrador: um sistema simples e gratuito para ajudar o pequeno comércio a trocar o caderninho por um controle seguro.</p>
             </div>
-            <article class="perfil-autor perfil-revista revelar">
-                <figure class="retrato">
-                    <img src="img/matheus-retrato.jpg" alt="Foto de Matheus Wilton" width="480" height="600" loading="lazy">
-                </figure>
-                <div class="perfil-corpo">
-                    <span class="perfil-eyebrow">Idealizador e desenvolvedor</span>
-                    <h3 class="perfil-nome">Matheus Wilton</h3>
-                    <p class="perfil-local">Gestão da Tecnologia da Informação · FPM · Goiânia/GO</p>
-                    <blockquote class="perfil-citacao">
-                        <p>Criei o FiadoFácil para que o comerciante de bairro tenha o mesmo controle que uma grande loja, sem perder a confiança no cliente.</p>
-                    </blockquote>
-                    <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: regras de negócio, banco de dados, programação, segurança e publicação.</p>
-                    <dl class="perfil-numeros">
-                        <div><dt>4</dt><dd>tabelas no banco de dados</dd></div>
-                        <div><dt>18</dt><dd>telas no sistema</dd></div>
-                        <div><dt>3</dt><dd>perfis de acesso</dd></div>
-                        <div><dt>2</dt><dd>versões: computador e celular</dd></div>
-                    </dl>
-                    <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
+            <div class="perfil-autor revelar">
+                <div class="perfil-topo">
+                    <img src="img/matheus.jpg" class="foto-autor" alt="Foto de Matheus Wilton" width="120" height="120">
+                    <div>
+                        <h3>Matheus Wilton</h3>
+                        <p class="perfil-cargo">Idealizador e desenvolvedor do FiadoFácil</p>
+                        <p class="perfil-local">Gestão da Tecnologia da Informação · FPM · Goiânia/GO</p>
+                    </div>
                 </div>
-            </article>
+                <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: entendi como o fiado funciona no comércio de bairro, transformei isso em regras de negócio, modelei o banco de dados, programei o sistema e cuidei da segurança e da publicação.</p>
+                <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
+            </div>
             <dialog id="detalhes-tecnicos" class="janela-tecnica" aria-labelledby="t-detalhes">
                 <div class="janela-conteudo">
                     <button type="button" class="janela-fechar" data-fechar aria-label="Fechar">&times;</button>
