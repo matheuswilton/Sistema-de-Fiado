@@ -23,6 +23,8 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 .inicio-hero-grade { display: grid; grid-template-columns: 1.05fr .95fr; gap: 72px; align-items: center; }
 .inicio-selo { display: inline-block; font-size: 14px; font-weight: 600; color: var(--primaria-texto); background: var(--primaria-suave); padding: 5px 12px; border-radius: 999px; margin-bottom: 18px; }
 .inicio-hero h1 { font-size: 52px; line-height: 1.08; letter-spacing: -.025em; margin: 0 0 18px; }
+.inicio-hero h1 { text-wrap: balance; }
+.h1-linha { display: block; }
 .destaque-texto { color: var(--primaria); background: linear-gradient(transparent 62%, color-mix(in srgb, #facc15 45%, transparent) 62%); }
 :root[data-tema="escuro"] .destaque-texto { color: #93c5fd; }
 .inicio-lead { font-size: 20px; line-height: 1.6; color: var(--texto-suave); margin: 0 0 28px; max-width: 560px; }
@@ -126,6 +128,18 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 .passos-inicio li { transition: transform .25s ease, box-shadow .25s ease; }
 .passos-inicio li:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(15, 23, 42, .12); }
 
+
+/* ---------- faixa de frases de efeito correndo ---------- */
+.faixa-frases { overflow: hidden; background: #0f1f4d; color: #f8fafc; border-block: 1px solid rgba(255,255,255,.08); padding-block: 16px; }
+:root[data-tema="escuro"] .faixa-frases { background: #111a2e; }
+.faixa-frases-trilho { display: flex; width: max-content; animation: correr 38s linear infinite; }
+.faixa-frases:hover .faixa-frases-trilho { animation-play-state: paused; }
+.faixa-frases-grupo { display: flex; align-items: center; gap: 28px; padding-right: 28px; }
+.faixa-frases span { font-size: 22px; font-weight: 800; letter-spacing: -.01em; white-space: nowrap; }
+.faixa-frases span:nth-of-type(3n+2) { color: #facc15; }
+.faixa-frases i { font-style: normal; color: #facc15; font-weight: 800; }
+@keyframes correr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
 /* ---------- quem fez: perfil do autor ---------- */
 .perfil-autor { max-width: 980px; margin: 0 auto; background: var(--fundo); border: 1px solid var(--borda); border-radius: 20px; padding: 32px; box-shadow: var(--sombra); }
 .perfil-topo { display: flex; align-items: center; gap: 20px; margin-bottom: 18px; }
@@ -179,7 +193,7 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 }
 @media (prefers-reduced-motion: reduce) {
     .revelar { opacity: 1; transform: none; transition: none; }
-    .mock-linha, .bolha { animation: none; }
+    .mock-linha, .bolha, .faixa-frases-trilho { animation: none; }
     .destaque-texto { animation: none; background-size: 100% 100%; }
 }
 @media (max-width: 640px) {
