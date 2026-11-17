@@ -34,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=23">
-<link rel="stylesheet" href="css/inicio.css?v=15">
+<link rel="stylesheet" href="css/inicio.css?v=16">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -169,14 +169,23 @@ if (isset($_SESSION['usuario_id'])) {
                     </div>
                 </div>
                 <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: entendi como o fiado funciona no comércio de bairro, transformei isso em regras de negócio, modelei o banco de dados, programei o sistema e cuidei da segurança e da publicação.</p>
-                <ul class="perfil-lista">
-                    <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong>Limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas e score de confiabilidade.</span></li>
-                    <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong>Modelagem MySQL com 4 tabelas relacionadas, dívida sempre calculada e transações com trava para nenhuma compra estourar o limite.</span></li>
-                    <li><?php echo icone('celular'); ?><span><strong>Desenvolvimento</strong>PHP, HTML, CSS e JavaScript; layout para computador e celular, modo noturno e página de apresentação.</span></li>
-                    <li><?php echo icone('escudo'); ?><span><strong>Segurança e publicação</strong>Senhas com hash, proteção contra SQL Injection e CSRF, perfis de acesso e publicação automática do GitHub para a InfinityFree.</span></li>
-                </ul>
-                <div class="perfil-tags"><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML e CSS</span><span>Git e GitHub</span><span>UML</span></div>
+                <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
             </div>
+            <dialog id="detalhes-tecnicos" class="janela-tecnica" aria-labelledby="t-detalhes">
+                <div class="janela-conteudo">
+                    <button type="button" class="janela-fechar" data-fechar aria-label="Fechar">&times;</button>
+                    <span class="inicio-sobretitulo">Detalhes técnicos</span>
+                    <h3 id="t-detalhes">Por dentro do FiadoFácil</h3>
+                    <p class="janela-intro">Como o sistema foi construído, para quem é da área de tecnologia.</p>
+                    <ul class="perfil-lista">
+                        <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong>Limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas e score de confiabilidade.</span></li>
+                        <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong>Modelagem MySQL com 4 tabelas relacionadas, dívida sempre calculada e transações com trava para nenhuma compra estourar o limite.</span></li>
+                        <li><?php echo icone('celular'); ?><span><strong>Desenvolvimento</strong>PHP, HTML, CSS e JavaScript; layout para computador e celular, modo noturno e página de apresentação.</span></li>
+                        <li><?php echo icone('escudo'); ?><span><strong>Segurança e publicação</strong>Senhas com hash, proteção contra SQL Injection e CSRF, perfis de acesso e publicação automática do GitHub para a InfinityFree.</span></li>
+                    </ul>
+                    <div class="perfil-tags"><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML e CSS</span><span>Git e GitHub</span><span>UML</span></div>
+                </div>
+            </dialog>
             </div>
         </div>
     </section>
@@ -200,7 +209,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
-<script src="js/script.js?v=16"></script>
+<script src="js/script.js?v=17"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
