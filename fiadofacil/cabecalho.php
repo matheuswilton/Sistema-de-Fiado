@@ -48,8 +48,8 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="apple-touch-icon" href="img/icone-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=16">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=20">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
@@ -97,12 +97,17 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php else: ?>
 <?php botao_tema("tema-flutuante"); ?>
 <div class="marca-login">
-    <a href="index.php" class="marca-login-link" title="Voltar à página inicial">
-        <?php echo logo(150, "logo-login"); ?>
-        <div class="marca-grande">FiadoFácil</div>
-    </a>
-    <p class="marca-frase">Controle do fiado sem caderninho</p>
-    <a href="index.php" class="voltar-inicio">&larr; Conheça o FiadoFácil</a>
+    <div class="login-topo">
+        <a href="index.php" class="marca-login-link" title="Voltar à página inicial"><?php echo logo(46, "logo-login"); ?><span>Conheça o FiadoFácil</span></a>
+    </div>
+    <div class="marca-login-conteudo">
+        <div class="letreiro-palco">
+            <div class="letreiro" role="img" aria-label="FiadoFácil">
+                <span class="letreiro-parte letreiro-fiado" aria-hidden="true"><?php foreach (preg_split('//u', 'Fiado', -1, PREG_SPLIT_NO_EMPTY) as $i => $letra): ?><span class="letra" style="--i:<?php echo $i; ?>"><?php echo $letra; ?></span><?php endforeach; ?></span><span class="letreiro-parte letreiro-facil" aria-hidden="true"><?php foreach (preg_split('//u', 'Fácil', -1, PREG_SPLIT_NO_EMPTY) as $i => $letra): ?><span class="letra" style="--i:<?php echo $i + 5; ?>"><?php echo $letra; ?></span><?php endforeach; ?></span>
+            </div>
+        </div>
+        <p class="marca-frase">Controle do fiado sem caderninho</p>
+    </div>
 </div>
 <?php endif; ?>
 <main class="container <?php echo $classe_container; ?>">

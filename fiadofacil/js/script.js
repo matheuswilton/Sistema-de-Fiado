@@ -195,3 +195,34 @@ if (!semAnimacao) {
         }
     });
 })();
+// Tela de login: o letreiro "FiadoFacil" ocupa a largura toda e se inclina com o mouse
+(function () {
+    var letreiro = document.querySelector('.letreiro');
+    if (!letreiro) { return; }
+    var palco = letreiro.parentElement;
+    function ajustar() {
+        letreiro.style.fontSize = '100px';
+        var larguraTexto = letreiro.offsetWidth;
+        var larguraPalco = palco.clientWidth * 0.95;
+        if (!larguraTexto || !larguraPalco) { return; }
+        // ocupa a largura toda, mas sem empurrar o formulario de login para fora da tela
+        var limiteAltura = (window.innerHeight - 448) / 1.09;
+        var tamanho = Math.max(48, Math.min(440, limiteAltura, 100 * larguraPalco / larguraTexto));
+        letreiro.style.fontSize = tamanho + 'px';
+    }
+    ajustar();
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(ajustar); }
+    var espera;
+    window.addEventListener('resize', function () { clearTimeout(espera); espera = setTimeout(ajustar, 80); });
+    var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var faixa = document.querySelector('.marca-login');
+    if (faixa && !reduzir && window.matchMedia('(hover: hover)').matches) {
+        faixa.addEventListener('mousemove', function (e) {
+            var caixa = faixa.getBoundingClientRect();
+            var x = (e.clientX - caixa.left) / caixa.width - 0.5;
+            var y = (e.clientY - caixa.top) / caixa.height - 0.5;
+            letreiro.style.transform = 'perspective(1200px) rotateY(' + (x * 6) + 'deg) rotateX(' + (-y * 5) + 'deg)';
+        });
+        faixa.addEventListener('mouseleave', function () { letreiro.style.transform = ''; });
+    }
+})();
