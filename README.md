@@ -80,7 +80,7 @@ Sample customers: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, 
 
 | Member | Responsibilities |
 |---|---|
-| Matheus Wilton | _(to fill in: e.g. database, site deployment)_ |
+| Matheus Wilton | Responsible for the whole site: business rules, development and database |
 | Luiz Guilherme | _(to fill in)_ |
 | Henrique Nascimento | _(to fill in)_ |
 

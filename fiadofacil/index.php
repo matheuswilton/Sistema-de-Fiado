@@ -6,7 +6,11 @@ if (isset($_SESSION['usuario_id'])) {
     header("Location: " . ($_SESSION['usuario_nivel'] === 'cliente' ? "minha_divida.php" : "dashboard.php"));
     exit();
 }
-$equipe = ["Matheus Wilton", "Luiz Guilherme", "Henrique Nascimento"];
+$equipe = [
+    ["Matheus Wilton", "Responsável pelo site: regras de negócio, desenvolvimento e banco de dados"],
+    ["Luiz Guilherme", "Aluno de GTI · FPM"],
+    ["Henrique Nascimento", "Aluno de GTI · FPM"],
+];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -33,8 +37,8 @@ $equipe = ["Matheus Wilton", "Luiz Guilherme", "Henrique Nascimento"];
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=7">
-<link rel="stylesheet" href="css/inicio.css?v=1">
+<link rel="stylesheet" href="css/estilo.css?v=8">
+<link rel="stylesheet" href="css/inicio.css?v=2">
 </head>
 <body class="pagina-inicio">
 
@@ -155,9 +159,9 @@ $equipe = ["Matheus Wilton", "Luiz Guilherme", "Henrique Nascimento"];
             <div class="grade-inicio grade-equipe">
                 <?php foreach ($equipe as $integrante): ?>
                 <div class="equipe-cartao revelar">
-                    <?php echo avatar($integrante, 'avatar-equipe'); ?>
-                    <h3><?php echo htmlspecialchars($integrante); ?></h3>
-                    <p>Aluno de GTI · FPM</p>
+                    <?php echo avatar($integrante[0], 'avatar-equipe'); ?>
+                    <h3><?php echo htmlspecialchars($integrante[0]); ?></h3>
+                    <p><?php echo htmlspecialchars($integrante[1]); ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
