@@ -27,9 +27,9 @@ if (isset($_SESSION['usuario_id'])) {
 </script>
 <meta name="theme-color" content="#1e3a8a">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="img/logo.svg">
-<link rel="alternate icon" type="image/png" href="img/icone-192.png">
-<link rel="apple-touch-icon" href="img/icone-180.png">
+<link rel="icon" type="image/svg+xml" href="img/logo.svg?v=2">
+<link rel="alternate icon" type="image/png" href="img/icone-192.png?v=2">
+<link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
