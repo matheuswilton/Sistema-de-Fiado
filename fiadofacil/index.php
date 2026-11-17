@@ -8,8 +8,6 @@ if (isset($_SESSION['usuario_id'])) {
 }
 $equipe = [
     ["Matheus Wilton", "Responsável pelo site: regras de negócio, desenvolvimento e banco de dados"],
-    ["Luiz Guilherme", "Aluno de GTI · FPM"],
-    ["Henrique Nascimento", "Aluno de GTI · FPM"],
 ];
 ?>
 <!DOCTYPE html>
@@ -38,7 +36,7 @@ $equipe = [
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=8">
-<link rel="stylesheet" href="css/inicio.css?v=2">
+<link rel="stylesheet" href="css/inicio.css?v=3">
 </head>
 <body class="pagina-inicio">
 
@@ -49,7 +47,7 @@ $equipe = [
             <a href="#problema">O problema</a>
             <a href="#funcoes">Funcionalidades</a>
             <a href="#como">Como funciona</a>
-            <a href="#equipe">Quem somos</a>
+            <a href="#equipe">Quem fez</a>
         </nav>
         <div class="inicio-topo-botoes">
             <button type="button" class="tema-botao inicio-tema" aria-label="Alternar modo noturno" title="Modo noturno"><?php echo icone('lua', 'icone-lua') . icone('sol', 'icone-sol'); ?></button>
@@ -91,7 +89,7 @@ $equipe = [
     <section id="problema" class="inicio-secao">
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
-                <span class="inicio-sobretitulo">Por que criamos o FiadoFácil</span>
+                <span class="inicio-sobretitulo">Por que criei o FiadoFácil</span>
                 <h2>“Anota aí que eu pago sexta.”</h2>
                 <p>O fiado é tradição no comércio de bairro, mas quase sempre fica num caderno: some, não soma sozinho, não avisa quem está atrasado e gera discussão no balcão.</p>
             </div>
@@ -148,13 +146,13 @@ $equipe = [
         </div>
     </section>
 
-    <!-- Quem somos -->
+    <!-- Quem fez -->
     <section id="equipe" class="inicio-secao inicio-secao-alt">
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
-                <span class="inicio-sobretitulo">Quem somos</span>
-                <h2>Feito por alunos de Gestão da TI</h2>
-                <p>Somos alunos do curso de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o nosso Projeto Integrador: um sistema simples e gratuito para ajudar o pequeno comércio a trocar o caderninho por um controle seguro.</p>
+                <span class="inicio-sobretitulo">Quem fez</span>
+                <h2>Feito por um aluno de Gestão da TI</h2>
+                <p>Sou aluno do curso de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o meu Projeto Integrador: um sistema simples e gratuito para ajudar o pequeno comércio a trocar o caderninho por um controle seguro.</p>
             </div>
             <div class="grade-inicio grade-equipe">
                 <?php foreach ($equipe as $integrante): ?>
