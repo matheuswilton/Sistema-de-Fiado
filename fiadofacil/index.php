@@ -34,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=23">
-<link rel="stylesheet" href="css/inicio.css?v=10">
+<link rel="stylesheet" href="css/inicio.css?v=13">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
