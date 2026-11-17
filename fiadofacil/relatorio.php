@@ -60,7 +60,7 @@ require "cabecalho.php";
 <?php else: ?>
     <div class="cards">
         <div class="card"><span class="card-titulo">Clientes no relatório</span><span class="card-valor"><?php echo $total_clientes; ?></span></div>
-        <div class="card card-alerta"><span class="card-titulo">Saldo devedor somado</span><span class="card-valor"><?php echo dinheiro($soma_saldo); ?></span></div>
+        <div class="card card-ok"><span class="card-titulo">Saldo devedor somado (a receber)</span><span class="card-valor"><?php echo dinheiro($soma_saldo); ?></span></div>
         <?php if ($data_inicio !== "" || $data_fim !== ""): ?>
         <div class="card"><span class="card-titulo">Compras no período</span><span class="card-valor"><?php echo dinheiro($soma_compras); ?></span></div>
         <div class="card card-ok"><span class="card-titulo">Pagamentos no período</span><span class="card-valor"><?php echo dinheiro($soma_pagamentos); ?></span></div>

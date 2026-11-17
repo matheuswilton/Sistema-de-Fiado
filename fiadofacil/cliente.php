@@ -43,14 +43,14 @@ require "cabecalho.php";
         </div>
     </div>
     <div class="acoes nao-imprimir">
-        <a href="registrar_compra.php?cliente_id=<?php echo $id; ?>" class="botao">Registrar compra</a>
+        <a href="registrar_compra.php?cliente_id=<?php echo $id; ?>" class="botao botao-compra">Registrar compra</a>
         <?php if ($saldo > 0): ?><a href="registrar_pagamento.php?cliente_id=<?php echo $id; ?>" class="botao botao-verde">Registrar pagamento</a><?php endif; ?>
         <a href="editar_cliente.php?id=<?php echo $id; ?>" class="botao botao-secundario">Editar</a>
     </div>
 </div>
 <?php mostrar_flash(); ?>
 <div class="cards">
-    <div class="card <?php echo $saldo > 0 ? 'card-alerta' : 'card-ok'; ?>"><span class="card-titulo">Dívida atual</span><span class="card-valor"><?php echo dinheiro(max(0, $saldo)); ?></span></div>
+    <div class="card <?php echo $saldo > 0 ? 'card-aviso' : 'card-ok'; ?>"><span class="card-titulo">Dívida atual</span><span class="card-valor"><?php echo dinheiro(max(0, $saldo)); ?></span></div>
     <div class="card"><span class="card-titulo">Limite de crédito</span><span class="card-valor"><?php echo dinheiro($limite); ?></span></div>
     <div class="card"><span class="card-titulo">Limite disponível</span><span class="card-valor"><?php echo dinheiro($disponivel); ?></span></div>
 </div>

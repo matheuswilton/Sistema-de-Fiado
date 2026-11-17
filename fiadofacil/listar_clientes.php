@@ -49,7 +49,7 @@ require "cabecalho.php";
         <td><a class="link-nome com-avatar" href="cliente.php?id=<?php echo $linha['id']; ?>" title="Ver extrato"><?php echo avatar($linha['nome']); ?><span><?php echo htmlspecialchars($linha['nome']); ?></span></a></td>
         <td><?php echo htmlspecialchars($linha['telefone'] ?? ''); ?></td>
         <td class="num"><?php echo dinheiro($linha['limite_credito']); ?></td>
-        <td class="num"><?php echo $linha['saldo_devedor'] > 0 ? '<span class="alerta">' . dinheiro($linha['saldo_devedor']) . '</span>' : '<span class="ok">' . dinheiro(0) . '</span>'; ?></td>
+        <td class="num"><?php echo $linha['saldo_devedor'] > 0 ? '<span class="aviso">' . dinheiro($linha['saldo_devedor']) . '</span>' : '<span class="ok">' . dinheiro(0) . '</span>'; ?></td>
         <td class="acoes">
             <a href="cliente.php?id=<?php echo $linha['id']; ?>" class="botao-icone botao-so-celular" title="Ver extrato">Extrato</a>
             <a href="editar_cliente.php?id=<?php echo $linha['id']; ?>" class="botao-icone" title="Editar cliente"><?php echo icone('editar'); ?><span>Editar</span></a>

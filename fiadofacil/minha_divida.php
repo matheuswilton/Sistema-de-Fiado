@@ -60,9 +60,9 @@ require "cabecalho.php";
 <p class="subtitulo">Aqui você acompanha suas compras no fiado e seus pagamentos.</p>
 <?php mostrar_flash(); ?>
 <div class="cards">
-    <div class="card <?php echo $saldo_devedor > 0 ? 'card-alerta' : 'card-ok'; ?>"><span class="card-titulo">Quanto você deve</span><span class="card-valor"><?php echo dinheiro(max(0, $saldo_devedor)); ?></span></div>
+    <div class="card card-calma"><span class="card-titulo">Quanto você deve</span><span class="card-valor"><?php echo dinheiro(max(0, $saldo_devedor)); ?></span></div>
     <div class="card"><span class="card-titulo">Limite de crédito</span><span class="card-valor"><?php echo dinheiro($cliente['limite_credito']); ?></span></div>
-    <div class="card"><span class="card-titulo">Limite disponível</span><span class="card-valor"><?php echo dinheiro($limite_disponivel); ?></span></div>
+    <div class="card card-ok"><span class="card-titulo">Limite disponível</span><span class="card-valor"><?php echo dinheiro($limite_disponivel); ?></span></div>
 </div>
 <div class="duas-colunas">
 <div>

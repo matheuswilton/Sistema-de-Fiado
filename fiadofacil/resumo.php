@@ -29,7 +29,7 @@ require "cabecalho.php";
     <div class="card"><span class="card-titulo">Clientes cadastrados</span><span class="card-valor"><?php echo $total_clientes; ?></span></div>
     <div class="card card-aviso"><span class="card-titulo">Clientes devendo</span><span class="card-valor"><?php echo $quantidade_devendo; ?></span></div>
     <div class="card card-alerta"><span class="card-titulo">Inadimplentes (+30 dias)</span><span class="card-valor"><?php echo $quantidade_inadimplentes; ?></span></div>
-    <div class="card card-alerta"><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div>
+    <div class="card card-ok"><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div>
     <div class="card card-ok"><span class="card-titulo">Total já recebido</span><span class="card-valor"><?php echo dinheiro($dados_pagamentos['total']); ?></span></div>
     <div class="card"><span class="card-titulo">Total vendido no fiado</span><span class="card-valor"><?php echo dinheiro($dados_compras['total']); ?></span></div>
     <div class="card"><span class="card-titulo">Ticket médio por compra</span><span class="card-valor"><?php echo dinheiro($dados_compras['media']); ?></span></div>

@@ -56,7 +56,7 @@ require "cabecalho.php";
     <input type="text" id="descricao" name="descricao" placeholder="Ex.: Arroz e feijão" maxlength="200" value="<?php echo htmlspecialchars($descricao); ?>">
     <label for="valor">Valor (R$) *</label>
     <input type="number" id="valor" name="valor" placeholder="0,00" step="0.01" min="0.01" max="99999999.99" value="<?php echo htmlspecialchars($valor_digitado); ?>" required>
-    <div class="barra-botoes"><button type="submit">Registrar compra</button><a href="dashboard.php" class="botao botao-secundario">Cancelar</a></div>
+    <div class="barra-botoes"><button type="submit" class="botao-compra">Registrar compra</button><a href="dashboard.php" class="botao botao-secundario">Cancelar</a></div>
 </form>
 </div>
 <?php require "rodape.php"; ?>

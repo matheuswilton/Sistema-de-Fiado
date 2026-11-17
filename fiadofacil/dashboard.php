@@ -49,7 +49,7 @@ require "cabecalho.php";
     <?php endif; ?>
 </div>
 <div class="acoes-rapidas">
-    <a class="botao" href="registrar_compra.php"><?php echo icone('compra'); ?>Registrar compra</a>
+    <a class="botao botao-compra" href="registrar_compra.php"><?php echo icone('compra'); ?>Registrar compra</a>
     <a class="botao botao-verde" href="registrar_pagamento.php"><?php echo icone('pagamento'); ?>Registrar pagamento</a>
     <a class="botao botao-secundario" href="cadastro_cliente.php"><?php echo icone('mais'); ?>Cadastrar cliente</a>
 </div>

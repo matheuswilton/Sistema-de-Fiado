@@ -36,8 +36,8 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 .mock-barra span { width: 10px; height: 10px; border-radius: 50%; background: var(--campo-borda); }
 .mock-corpo { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
 .mock-cartoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
-.mock-cartao { border: 1px solid var(--borda); border-top: 4px solid var(--botao-verde); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; }
-.mock-cartao.mock-alerta { border-top-color: #dc2626; }
+.mock-cartao { border: 1px solid var(--borda); border-top: 4px solid var(--card-ok); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; }
+.mock-cartao.mock-alerta { border-top-color: var(--card-alerta); }
 .mock-cartao small { color: var(--texto-suave); font-size: 13px; }
 .mock-cartao strong { font-size: 20px; }
 .mock-linha { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; background: var(--superficie-2); animation: flutuar 4s ease-in-out infinite; }
@@ -49,6 +49,8 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 
 /* ---------- secoes ---------- */
 .inicio-secao { padding: 84px 0; }
+/* secao do problema com tom de papel, lembrando o caderninho */
+#problema { background: var(--papel); }
 .inicio-secao-alt { background: var(--superficie); border-top: 1px solid var(--borda); border-bottom: 1px solid var(--borda); }
 .inicio-titulo { text-align: center; max-width: 720px; margin: 0 auto 44px; }
 .inicio-sobretitulo { display: block; font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primaria); margin-bottom: 8px; }
