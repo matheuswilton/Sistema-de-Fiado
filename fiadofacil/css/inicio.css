@@ -6,11 +6,11 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 /* ---------- topo ---------- */
 .inicio-topo { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--fundo) 82%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color .2s ease, box-shadow .2s ease; }
 .inicio-topo.rolou { border-bottom-color: var(--borda); box-shadow: 0 4px 16px rgba(15, 23, 42, .06); }
-.inicio-topo-conteudo { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; }
-.inicio-marca { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--primaria-texto); text-decoration: none; }
+.inicio-topo-conteudo { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 80px; }
+.inicio-marca { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 26px; letter-spacing: -.02em; color: var(--primaria-texto); text-decoration: none; }
 .inicio-marca .logo { box-shadow: 0 2px 6px rgba(15, 23, 42, .2); transition: transform .3s ease; }
 .inicio-marca:hover .logo { transform: rotate(-8deg) scale(1.05); }
-.rodape-marca { display: inline-flex; align-items: center; gap: 8px; vertical-align: middle; }
+.rodape-marca { display: inline-flex; align-items: center; gap: 10px; vertical-align: middle; font-size: 18px; }
 .inicio-nav { display: flex; gap: 4px; }
 .inicio-nav a { color: var(--rotulo); text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 15px; font-weight: 600; transition: background-color .15s ease, color .15s ease; }
 .inicio-nav a:hover { background: var(--secundario); color: var(--texto); }
@@ -164,6 +164,9 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
     .inicio-lead { font-size: 18px; }
     .inicio-botoes .botao-grande { width: 100%; justify-content: center; }
     .inicio-topo-botoes .botao { padding: 9px 14px; }
+    .inicio-marca { font-size: 22px; gap: 10px; }
+    .inicio-marca .logo { width: 40px; height: 40px; }
+    .inicio-topo-conteudo { height: 68px; }
     .inicio-secao { padding: 56px 0; }
     .inicio-titulo h2 { font-size: 28px; }
     .grade-numeros, .grade-equipe, .grade-funcoes, .passos-inicio { grid-template-columns: 1fr; }
