@@ -265,3 +265,20 @@ if (!semAnimacao) {
         }, 450);
     }, 3600);
 })();
+
+// Janela de detalhes tecnicos (pagina de apresentacao): abre com zoom e fecha com o X, a tecla Esc ou clicando fora
+(function () {
+    document.querySelectorAll('[data-abrir]').forEach(function (botao) {
+        var janela = document.getElementById(botao.getAttribute('data-abrir'));
+        if (!janela || typeof janela.showModal !== 'function') { return; }
+        function fechar() {
+            janela.classList.add('fechando');
+            setTimeout(function () { janela.classList.remove('fechando'); janela.close(); }, 200);
+        }
+        botao.addEventListener('click', function () { janela.showModal(); });
+        janela.querySelectorAll('[data-fechar]').forEach(function (x) { x.addEventListener('click', fechar); });
+        janela.addEventListener('click', function (e) { if (e.target === janela) { fechar(); } });
+        janela.addEventListener('cancel', function (e) { e.preventDefault(); fechar(); });
+    });
+
+})();
