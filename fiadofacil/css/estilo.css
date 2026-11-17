@@ -94,6 +94,46 @@ tr:hover td { background: #fafafa; }
     .duas-colunas { grid-template-columns: 1fr; }
     .acoes input, .acoes select { width: 100%; }
 }
+/* Celular: telas de ate 640px */
+@media (max-width: 640px) {
+    body { font-size: 16px; }
+    h1 { font-size: 22px; }
+    .container { margin: 16px auto; padding: 0 12px; }
+    .container-pequeno { margin-top: 16px; padding: 20px 16px; }
+    .painel { padding: 16px; }
+    /* 16px nos campos evita que o iPhone de zoom ao tocar no campo */
+    input, select { font-size: 16px; padding: 12px; }
+    /* botoes maiores para o dedo */
+    .botao, button { padding: 12px 18px; font-size: 16px; }
+    .botao-pequeno { padding: 9px 14px; font-size: 14px; }
+    .menu a { padding: 12px 10px; font-size: 16px; }
+    .cabecalho-pagina > .botao { flex: 1 1 100%; }
+    .barra-botoes .botao, .barra-botoes button { flex: 1 1 auto; }
+    .form-busca { flex-wrap: wrap; }
+    .form-busca input { flex: 1 1 100%; }
+    .form-busca button, .form-busca .botao { flex: 1; }
+    .form-filtros > div { min-width: 130px; }
+    .form-filtros button, .form-filtros .botao { flex: 1; }
+    .cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card { padding: 12px; }
+    .card-valor { font-size: 19px; }
+    .acoes { width: 100%; }
+    .acoes form { flex-wrap: wrap; width: 100%; }
+    .acoes form > * { flex: 1 1 auto; }
+    /* Tabelas viram cartoes: uma linha da tabela = um cartao */
+    .tabela-rolagem { background: transparent; box-shadow: none; overflow: visible; }
+    .tabela-cartoes, .tabela-cartoes tbody, .tabela-cartoes tr, .tabela-cartoes td { display: block; width: 100%; }
+    .tabela-cartoes tr:first-child { display: none; }
+    .tabela-cartoes tr { background: white; border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,.07); margin-bottom: 10px; padding: 6px 0; }
+    .tabela-cartoes tr:hover td { background: transparent; }
+    .tabela-cartoes td { border: 0; padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: right; }
+    .tabela-cartoes td::before { content: attr(data-label); font-size: 13px; font-weight: 600; color: var(--cinza); text-align: left; flex-shrink: 0; }
+    .tabela-cartoes td:not([data-label])::before, .tabela-cartoes td[data-label=""]::before { content: none; }
+    .tabela-cartoes td:first-child { font-weight: bold; font-size: 17px; }
+    .tabela-cartoes td.vazio { display: block; text-align: center; }
+    .tabela-cartoes td .acoes { justify-content: flex-end; }
+    .tabela-cartoes td .acoes > * { flex: 1 1 auto; }
+}
 @media print {
     .topo, .rodape, .nao-imprimir, .paginacao { display: none !important; }
     body { background: white; }

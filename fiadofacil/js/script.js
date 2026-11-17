@@ -41,3 +41,26 @@ if (selecaoCliente && botaoQuitar && campoValor) {
         }
     });
 }
+// Celular: cada linha das tabelas vira um cartao. Aqui cada celula recebe o nome da sua coluna
+// (data-label), que o CSS mostra ao lado do valor quando a tela e pequena.
+document.querySelectorAll('table').forEach(function (tabela) {
+    var linhaTitulos = tabela.querySelector('tr');
+    if (!linhaTitulos || !linhaTitulos.querySelector('th')) {
+        return;
+    }
+    var titulos = [];
+    linhaTitulos.querySelectorAll('th').forEach(function (th) {
+        titulos.push(th.textContent.trim());
+    });
+    tabela.classList.add('tabela-cartoes');
+    tabela.querySelectorAll('tr').forEach(function (linha) {
+        if (linha === linhaTitulos) {
+            return;
+        }
+        linha.querySelectorAll('td').forEach(function (celula, indice) {
+            if (!celula.hasAttribute('colspan') && titulos[indice]) {
+                celula.setAttribute('data-label', titulos[indice]);
+            }
+        });
+    });
+});
