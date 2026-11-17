@@ -21,7 +21,14 @@ function link_menu($arquivo, $texto, $chave, $menu_ativo, $extra = "") {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo htmlspecialchars($titulo_pagina); ?> — FiadoFácil</title>
-<link rel="stylesheet" href="css/estilo.css">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FiadoFácil">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="img/icone-192.png">
+<link rel="apple-touch-icon" href="img/icone-180.png">
+<link rel="stylesheet" href="css/estilo.css?v=2">
 </head>
 <body>
 <?php if ($esta_logado): ?>

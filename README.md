@@ -145,8 +145,10 @@ fiadofacil/
 ├── funcoes.php                 shared functions (session, security, purchase and payment rules, customer status)
 ├── conexao.php                 connects to the database using config.local.php
 ├── config.local.example.php    config file template
-├── css/estilo.css              styles
-├── js/script.js                mobile menu, confirmations, phone mask
+├── css/estilo.css              styles (desktop and mobile)
+├── js/script.js                mobile menu, tables as cards on mobile, confirmations, phone mask
+├── manifest.json               lets users add the site to the phone's home screen
+├── img/                        app icons
 └── sql/banco.sql               table creation and sample data
 ```
 
