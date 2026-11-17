@@ -35,9 +35,12 @@ $menu_ativo = "clientes";
 require "cabecalho.php";
 ?>
 <div class="cabecalho-pagina">
-    <div>
+    <div class="titulo-com-avatar">
+        <?php echo avatar($cliente['nome'], 'avatar-grande'); ?>
+        <div>
         <h1><?php echo htmlspecialchars($cliente['nome']); ?></h1>
         <p class="subtitulo"><?php echo htmlspecialchars($cliente['telefone'] ?: 'Sem telefone'); ?><?php if (!empty($cliente['endereco'])) echo " · " . htmlspecialchars($cliente['endereco']); ?> · cliente desde <?php echo date('d/m/Y', strtotime($cliente['criado_em'])); ?></p>
+        </div>
     </div>
     <div class="acoes nao-imprimir">
         <a href="registrar_compra.php?cliente_id=<?php echo $id; ?>" class="botao">Registrar compra</a>

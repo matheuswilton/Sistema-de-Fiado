@@ -82,3 +82,13 @@ document.querySelectorAll('.tema-botao').forEach(function (botao) {
         corBarra.setAttribute('content', '#0f172a');
     }
 })();
+// Mensagens (sucesso, erro, aviso): adiciona um botao "x" para fechar
+document.querySelectorAll('.mensagem, .erro, .aviso-caixa').forEach(function (caixa) {
+    var botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'fechar-msg';
+    botao.setAttribute('aria-label', 'Fechar mensagem');
+    botao.innerHTML = '&times;';
+    botao.addEventListener('click', function () { caixa.remove(); });
+    caixa.appendChild(botao);
+});
