@@ -34,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=22">
-<link rel="stylesheet" href="css/inicio.css?v=7">
+<link rel="stylesheet" href="css/inicio.css?v=8">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -156,7 +156,7 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
             <div class="perfil-autor revelar">
                 <div class="perfil-topo">
-                    <?php echo avatar("Matheus Wilton", 'avatar-equipe'); ?>
+                    <img src="img/matheus.jpg" class="foto-autor" alt="Foto de Matheus Wilton" width="120" height="120">
                     <div>
                         <h3>Matheus Wilton</h3>
                         <p class="perfil-cargo">Idealizador e desenvolvedor do FiadoFácil</p>
