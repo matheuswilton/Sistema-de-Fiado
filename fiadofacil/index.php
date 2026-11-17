@@ -27,20 +27,21 @@ if (isset($_SESSION['usuario_id'])) {
 </script>
 <meta name="theme-color" content="#1e3a8a">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="img/icone-192.png">
+<link rel="icon" type="image/svg+xml" href="img/logo.svg">
+<link rel="alternate icon" type="image/png" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=11">
-<link rel="stylesheet" href="css/inicio.css?v=5">
+<link rel="stylesheet" href="css/estilo.css?v=14">
+<link rel="stylesheet" href="css/inicio.css?v=6">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
 
 <header class="inicio-topo">
     <div class="inicio-largura inicio-topo-conteudo">
-        <a href="index.php" class="inicio-marca"><img src="img/icone-192.png" alt="" width="34" height="34"><span>FiadoFácil</span></a>
+        <a href="index.php" class="inicio-marca"><?php echo logo(36); ?><span>FiadoFácil</span></a>
         <nav class="inicio-nav" aria-label="Seções da página">
             <a href="#problema">O problema</a>
             <a href="#funcoes">Funcionalidades</a>
@@ -190,11 +191,11 @@ if (isset($_SESSION['usuario_id'])) {
 
 <footer class="inicio-rodape">
     <div class="inicio-largura">
-        <strong>FiadoFácil</strong> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO
+        <span class="rodape-marca"><?php echo logo(24); ?><strong>FiadoFácil</strong></span> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO
     </div>
 </footer>
 
-<script src="js/script.js?v=6"></script>
+<script src="js/script.js?v=7"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {

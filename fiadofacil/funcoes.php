@@ -63,6 +63,21 @@ function icone($nome, $classe = "") {
     ];
     return '<svg class="icone ' . $classe . '" viewBox="0 0 24 24" aria-hidden="true">' . ($desenhos[$nome] ?? '') . '</svg>';
 }
+// Emblema do FiadoFacil (caderninho + moeda com "pago"). Cada chamada usa um id proprio para o degrade.
+function logo($tamanho = 32, $classe = "") {
+    static $contador = 0;
+    $contador++;
+    $id = 'logo-degrade-' . $contador;
+    return '<svg class="logo ' . $classe . '" width="' . $tamanho . '" height="' . $tamanho . '" viewBox="0 0 64 64" aria-hidden="true">'
+        . '<defs><linearGradient id="' . $id . '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient></defs>'
+        . '<rect width="64" height="64" rx="16" fill="url(#' . $id . ')"/>'
+        . '<rect x="14" y="11" width="29" height="37" rx="4" fill="#fff"/>'
+        . '<rect x="14" y="11" width="7" height="37" rx="3.5" fill="#bfdbfe"/>'
+        . '<path d="M25 21h13M25 28h13M25 35h8" stroke="#94a3b8" stroke-width="2.6" stroke-linecap="round"/>'
+        . '<circle cx="45" cy="45" r="12.5" fill="#facc15" stroke="#1e3a8a" stroke-width="3"/>'
+        . '<path d="m39.5 45 4 4 7.2-8" fill="none" stroke="#1e3a8a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>'
+        . '</svg>';
+}
 // Barra que mostra quanto do limite de credito ja foi usado (verde ate 50%, amarelo ate 80%, vermelho acima)
 function barra_limite($divida, $limite, $tela_do_cliente = false) {
     $divida = max(0, (float)$divida);

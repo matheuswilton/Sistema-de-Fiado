@@ -107,7 +107,7 @@ if (botaoRecolher) {
 var semAnimacao = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!semAnimacao) {
     // Entrada em cascata: cartoes, atalhos e linhas das tabelas aparecem um depois do outro
-    document.querySelectorAll('.cards, .atalhos, .acoes-rapidas').forEach(function (grupo) {
+    document.querySelectorAll('.cards, .atalhos, .acoes-rapidas, .paineis-inicio, .lista-inicio').forEach(function (grupo) {
         Array.prototype.forEach.call(grupo.children, function (item, indice) {
             item.style.setProperty('--i', indice);
             item.classList.add('entrada');

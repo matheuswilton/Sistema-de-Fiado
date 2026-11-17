@@ -27,6 +27,23 @@ $total_pendentes = 0;
 if (eh_admin()) {
     $total_pendentes = (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'cliente' AND status = 'pendente'")->fetch_row()[0];
 }
+// quem mais precisa de atencao: inadimplentes primeiro, depois quem deve mais
+$precisam_atencao = array_values(array_filter($lista_clientes, function ($c) { return $c['saldo_devedor'] > 0; }));
+usort($precisam_atencao, function ($a, $b) {
+    $peso_a = $a['situacao'] === 'inadimplente' ? 1 : 0;
+    $peso_b = $b['situacao'] === 'inadimplente' ? 1 : 0;
+    if ($peso_a !== $peso_b) { return $peso_b - $peso_a; }
+    return $b['saldo_devedor'] <=> $a['saldo_devedor'];
+});
+$precisam_atencao = array_slice($precisam_atencao, 0, 5);
+// ultimas compras e pagamentos registrados
+$ultimas = $conn->query("(SELECT 'compra' AS tipo, c.id AS cliente_id, c.nome, co.valor, co.data_compra AS quando, co.descricao FROM compras co JOIN clientes c ON c.id = co.cliente_id)
+    UNION ALL
+    (SELECT 'pagamento', c.id, c.nome, p.valor, p.data_pagamento, '' FROM pagamentos p JOIN clientes c ON c.id = p.cliente_id)
+    ORDER BY quando DESC LIMIT 6");
+$movimentacoes = $ultimas ? $ultimas->fetch_all(MYSQLI_ASSOC) : [];
+$rotulos_situacao = ['em_dia' => 'Em dia', 'devendo' => 'Devendo', 'inadimplente' => 'Inadimplente'];
+$classes_situacao = ['em_dia' => 'selo-ok', 'devendo' => 'selo-aviso', 'inadimplente' => 'selo-alerta'];
 $titulo_pagina = "Início";
 $menu_ativo = "inicio";
 require "cabecalho.php";
@@ -52,6 +69,42 @@ require "cabecalho.php";
     <a class="botao botao-compra" href="registrar_compra.php"><?php echo icone('compra'); ?>Registrar compra</a>
     <a class="botao botao-verde" href="registrar_pagamento.php"><?php echo icone('pagamento'); ?>Registrar pagamento</a>
     <a class="botao botao-secundario" href="cadastro_cliente.php"><?php echo icone('mais'); ?>Cadastrar cliente</a>
+</div>
+<div class="paineis-inicio">
+    <section class="painel painel-lista">
+        <div class="painel-cabecalho"><h2>Precisam de atenção</h2><a href="relatorio.php">Ver relatório</a></div>
+        <?php if (count($precisam_atencao) === 0): ?>
+            <p class="lista-vazia">Ninguém devendo agora. 🎉</p>
+        <?php else: ?>
+        <ul class="lista-inicio">
+            <?php foreach ($precisam_atencao as $c): ?>
+            <li>
+                <a class="link-nome com-avatar" href="cliente.php?id=<?php echo $c['id']; ?>"><?php echo avatar($c['nome']); ?><span><?php echo htmlspecialchars($c['nome']); ?></span></a>
+                <span class="lista-detalhe"><?php echo $c['dias_devendo']; ?> dias</span>
+                <strong class="lista-valor"><?php echo dinheiro($c['saldo_devedor']); ?></strong>
+                <span class="selo <?php echo $classes_situacao[$c['situacao']]; ?>"><?php echo $rotulos_situacao[$c['situacao']]; ?></span>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    </section>
+    <section class="painel painel-lista">
+        <div class="painel-cabecalho"><h2>Últimas movimentações</h2><a href="listar_clientes.php">Ver clientes</a></div>
+        <?php if (count($movimentacoes) === 0): ?>
+            <p class="lista-vazia">Nenhuma compra ou pagamento registrado ainda.</p>
+        <?php else: ?>
+        <ul class="lista-inicio">
+            <?php foreach ($movimentacoes as $m): $e_compra = $m['tipo'] === 'compra'; ?>
+            <li>
+                <span class="mov-icone <?php echo $e_compra ? 'mov-compra' : 'mov-pagamento'; ?>"><?php echo icone($e_compra ? 'compra' : 'pagamento'); ?></span>
+                <span class="mov-texto"><a href="cliente.php?id=<?php echo $m['cliente_id']; ?>"><?php echo htmlspecialchars($m['nome']); ?></a>
+                    <small><?php echo $e_compra ? 'Compra' . ($m['descricao'] !== '' ? ' · ' . htmlspecialchars($m['descricao']) : '') : 'Pagamento'; ?> · <?php echo date('d/m H:i', strtotime($m['quando'])); ?></small></span>
+                <strong class="lista-valor <?php echo $e_compra ? '' : 'ok'; ?>"><?php echo ($e_compra ? '+ ' : '− ') . dinheiro($m['valor']); ?></strong>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    </section>
 </div>
 <h2 class="atalhos-titulo">Atalhos</h2>
 <div class="atalhos">
