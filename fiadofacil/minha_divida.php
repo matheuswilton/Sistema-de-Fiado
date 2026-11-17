@@ -53,7 +53,7 @@ $stmt->close();
 $saldo_devedor = round($total_compras - $total_pagamentos, 2);
 $limite_disponivel = max(0, $cliente['limite_credito'] - $saldo_devedor);
 $titulo_pagina = "Minha dívida";
-$menu_ativo = "minha_divida";
+$menu_ativo = "divida";
 require "cabecalho.php";
 ?>
 <h1>Olá, <?php echo htmlspecialchars($cliente['nome']); ?>!</h1>
