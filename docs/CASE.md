@@ -1,6 +1,6 @@
 # Case: Mercearia de bairro troca o caderninho pelo FiadoFácil
 
-> Case **ilustrativo**: o comércio e os números são um cenário de exemplo, montado com os dados de exemplo do sistema, para mostrar como o FiadoFácil resolve o problema. Se o grupo testou com um comércio real, troque por esses dados.
+> Case **ilustrativo**: o comércio e os números são um cenário de exemplo, montado com os dados de exemplo do sistema, para mostrar como o FiadoFácil resolve o problema. Se você testou com um comércio real, troque por esses dados.
 
 ## 1. Contexto
 Uma mercearia de bairro em Goiânia/GO, com o dono e uma atendente, vende fiado para cerca de 40 clientes fixos. O controle é feito num caderno no balcão: nome do cliente, data, o que levou e o valor.

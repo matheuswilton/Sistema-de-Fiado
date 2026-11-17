@@ -11,7 +11,7 @@ Os diagramas para os slides estão em [`docs/img/`](img/).
 **"Anota aí que eu pago sexta."**
 Quem nunca ouviu isso numa mercearia, padaria ou açougue de bairro? O fiado é tradição no comércio brasileiro, e quase sempre é controlado num **caderninho de papel**.
 
-*Fala:* "Somos Matheus Wilton, Luiz Guilherme e Henrique Nascimento, do curso de GTI da FPM, e criamos o FiadoFácil."
+*Fala:* "Sou Matheus Wilton, do curso de GTI da FPM, e criei o FiadoFácil."
 
 ## Slide 2: O problema
 O caderninho:
@@ -21,7 +21,7 @@ O caderninho:
 - gera **briga**: "eu não comprei isso", e não há histórico para mostrar;
 - só fica com quem está no balcão; o funcionário do outro turno não sabe de nada.
 
-## Slide 3: Os números (por que escolhemos esse tema)
+## Slide 3: Os números (por que escolhi esse tema)
 | Dado | Fonte |
 |---|---|
 | **84,2 milhões** de brasileiros inadimplentes em set/2026, **51,1% da população adulta**, recorde da série iniciada em 2016 | Serasa, Mapa da Inadimplência |
@@ -33,7 +33,7 @@ O caderninho:
 
 *Fala:* "Metade dos adultos já está com o nome sujo, e o pequeno comerciante continua vendendo a prazo sem controle nenhum. Cada real que não volta faz falta no caixa de quem tem margem pequena."
 
-## Slide 4: Nosso público
+## Slide 4: Público
 - Mercearias, padarias, açougues, lanchonetes, salões e pequenos comércios de bairro.
 - Dono que **não tem dinheiro para um ERP** e não quer aprender um sistema complicado.
 - Usa o **celular** no balcão.

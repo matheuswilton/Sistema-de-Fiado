@@ -4,7 +4,7 @@ A web system that helps small stores track purchases on credit ("fiado", very co
 
 🔗 **Live site:** https://fiadofacil.free.je (test accounts below)
 
-Capstone project (Projeto Integrador) for the IT Management program at FPM (Goiânia, Brazil), built by Matheus Wilton, Luiz Guilherme and Henrique Nascimento.
+Capstone project (Projeto Integrador) for the IT Management program at FPM (Goiânia, Brazil), built by Matheus Wilton.
 
 > The system itself is in Portuguese, because it was built for Brazilian stores.
 
@@ -81,8 +81,6 @@ Sample customers: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, 
 | Member | Responsibilities |
 |---|---|
 | Matheus Wilton | Responsible for the whole site: business rules, development and database |
-| Luiz Guilherme | _(to fill in)_ |
-| Henrique Nascimento | _(to fill in)_ |
 
 ## Running locally (XAMPP)
 

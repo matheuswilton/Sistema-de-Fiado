@@ -56,7 +56,8 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 .inicio-titulo h2 { font-size: 38px; letter-spacing: -.02em; margin: 0 0 12px; line-height: 1.15; }
 .inicio-titulo p { font-size: 18px; line-height: 1.65; color: var(--texto-suave); margin: 0; }
 .grade-inicio { display: grid; gap: 20px; }
-.grade-numeros, .grade-equipe { grid-template-columns: repeat(3, 1fr); }
+.grade-numeros { grid-template-columns: repeat(3, 1fr); }
+.grade-equipe { grid-template-columns: minmax(0, 420px); justify-content: center; }
 .grade-funcoes { grid-template-columns: repeat(3, 1fr); }
 
 .numero-cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 16px; padding: 26px; box-shadow: var(--sombra); }
