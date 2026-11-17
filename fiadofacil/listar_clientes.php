@@ -46,18 +46,18 @@ require "cabecalho.php";
     <tr><th>Nome</th><th>Telefone</th><th class="num">Limite</th><th class="num">Saldo devedor</th><th>Ações</th></tr>
     <?php $quantidade_linhas = 0; while ($linha = $resultado->fetch_assoc()): $quantidade_linhas++; ?>
     <tr>
-        <td><a href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo htmlspecialchars($linha['nome']); ?></a></td>
+        <td><a class="link-nome" href="cliente.php?id=<?php echo $linha['id']; ?>" title="Ver extrato"><?php echo htmlspecialchars($linha['nome']); ?></a></td>
         <td><?php echo htmlspecialchars($linha['telefone'] ?? ''); ?></td>
         <td class="num"><?php echo dinheiro($linha['limite_credito']); ?></td>
         <td class="num"><?php echo $linha['saldo_devedor'] > 0 ? '<span class="alerta">' . dinheiro($linha['saldo_devedor']) . '</span>' : '<span class="ok">' . dinheiro(0) . '</span>'; ?></td>
         <td class="acoes">
-            <a href="cliente.php?id=<?php echo $linha['id']; ?>" class="botao botao-pequeno">Extrato</a>
-            <a href="editar_cliente.php?id=<?php echo $linha['id']; ?>" class="botao botao-pequeno botao-verde">Editar</a>
+            <a href="cliente.php?id=<?php echo $linha['id']; ?>" class="botao-icone botao-so-celular" title="Ver extrato">Extrato</a>
+            <a href="editar_cliente.php?id=<?php echo $linha['id']; ?>" class="botao-icone" title="Editar cliente"><?php echo icone('editar'); ?><span>Editar</span></a>
             <?php if (eh_admin()): ?>
             <form method="POST" action="excluir_cliente.php" data-confirmar="Excluir o cliente <?php echo htmlspecialchars($linha['nome'], ENT_QUOTES); ?>?&#10;Todo o histórico de compras, pagamentos e o acesso dele serão apagados. Esta ação não pode ser desfeita.">
                 <?php campo_csrf(); ?>
                 <input type="hidden" name="id" value="<?php echo $linha['id']; ?>">
-                <button type="submit" class="botao-pequeno botao-perigo">Excluir</button>
+                <button type="submit" class="botao-icone botao-icone-perigo" title="Excluir cliente" aria-label="Excluir cliente"><?php echo icone('lixeira'); ?><span class="texto-celular">Excluir</span></button>
             </form>
             <?php endif; ?>
         </td>

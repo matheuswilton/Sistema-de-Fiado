@@ -41,11 +41,11 @@ require "cabecalho.php";
 <div class="aviso-caixa"><strong><?php echo $total_pendentes; ?></strong> solicitação(ões) de acesso de cliente aguardando você. <a href="aprovar_acessos.php">Ver solicitações</a></div>
 <?php endif; ?>
 <div class="cards">
-    <div class="card"><span class="card-titulo">Clientes cadastrados</span><span class="card-valor"><?php echo $quantidade_clientes; ?></span></div>
-    <div class="card card-aviso"><span class="card-titulo">Clientes devendo</span><span class="card-valor"><?php echo $quantidade_devendo; ?></span></div>
-    <div class="card card-alerta"><span class="card-titulo">Inadimplentes (+30 dias)</span><span class="card-valor"><?php echo $quantidade_inadimplentes; ?></span></div>
+    <div class="card card-com-icone"><span class="card-icone"><?php echo icone('clientes'); ?></span><div><span class="card-titulo">Clientes cadastrados</span><span class="card-valor"><?php echo $quantidade_clientes; ?></span></div></div>
+    <div class="card card-aviso card-com-icone"><span class="card-icone"><?php echo icone('relogio'); ?></span><div><span class="card-titulo">Clientes devendo</span><span class="card-valor"><?php echo $quantidade_devendo; ?></span></div></div>
+    <div class="card card-alerta card-com-icone"><span class="card-icone"><?php echo icone('atencao'); ?></span><div><span class="card-titulo">Inadimplentes (+30 dias)</span><span class="card-valor"><?php echo $quantidade_inadimplentes; ?></span></div></div>
     <?php if (eh_admin()): ?>
-    <div class="card card-alerta"><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div>
+    <div class="card card-ok card-com-icone"><span class="card-icone"><?php echo icone('pagamento'); ?></span><div><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div></div>
     <?php endif; ?>
 </div>
 <div class="acoes-rapidas">

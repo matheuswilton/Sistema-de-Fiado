@@ -29,6 +29,10 @@ function icone($nome, $classe = "") {
         'lua'        => '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
         'sol'        => '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
         'mais'       => '<path d="M12 5v14M5 12h14"/>',
+        'relogio'    => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        'atencao'    => '<path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+        'editar'     => '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+        'lixeira'    => '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/>',
     ];
     return '<svg class="icone ' . $classe . '" viewBox="0 0 24 24" aria-hidden="true">' . ($desenhos[$nome] ?? '') . '</svg>';
 }
@@ -66,7 +70,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="img/icone-192.png">
 <link rel="apple-touch-icon" href="img/icone-180.png">
-<link rel="stylesheet" href="css/estilo.css?v=4">
+<link rel="stylesheet" href="css/estilo.css?v=5">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
@@ -110,8 +114,10 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 </header>
 <?php else: ?>
 <?php botao_tema("tema-flutuante"); ?>
+<div class="marca-login">
+    <img src="img/icone-192.png" alt="" width="64" height="64">
+    <div class="marca-grande">FiadoFácil</div>
+    <p class="marca-frase">Controle do fiado sem caderninho</p>
+</div>
 <?php endif; ?>
 <main class="container <?php echo $classe_container; ?>">
-<?php if (!$esta_logado): ?>
-    <div class="marca-grande">FiadoFácil</div>
-<?php endif; ?>
