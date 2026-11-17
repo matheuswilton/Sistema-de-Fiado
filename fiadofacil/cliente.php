@@ -54,6 +54,7 @@ require "cabecalho.php";
     <div class="card"><span class="card-titulo">Limite de crédito</span><span class="card-valor"><?php echo dinheiro($limite); ?></span></div>
     <div class="card"><span class="card-titulo">Limite disponível</span><span class="card-valor"><?php echo dinheiro($disponivel); ?></span></div>
 </div>
+<?php echo barra_limite($saldo, $limite); ?>
 <div class="duas-colunas">
 <div>
     <h2>Compras</h2>

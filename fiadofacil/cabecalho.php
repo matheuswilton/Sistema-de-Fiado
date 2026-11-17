@@ -48,7 +48,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=10">
+<link rel="stylesheet" href="css/estilo.css?v=11">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>

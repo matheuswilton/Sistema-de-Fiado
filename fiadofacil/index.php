@@ -6,9 +6,6 @@ if (isset($_SESSION['usuario_id'])) {
     header("Location: " . ($_SESSION['usuario_nivel'] === 'cliente' ? "minha_divida.php" : "dashboard.php"));
     exit();
 }
-$equipe = [
-    ["Matheus Wilton", "Responsável pelo site: regras de negócio, desenvolvimento e banco de dados"],
-];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -35,10 +32,11 @@ $equipe = [
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=10">
-<link rel="stylesheet" href="css/inicio.css?v=4">
+<link rel="stylesheet" href="css/estilo.css?v=11">
+<link rel="stylesheet" href="css/inicio.css?v=5">
 </head>
 <body class="pagina-inicio">
+<div class="progresso-rolagem" aria-hidden="true"></div>
 
 <header class="inicio-topo">
     <div class="inicio-largura inicio-topo-conteudo">
@@ -59,6 +57,7 @@ $equipe = [
 <main>
     <!-- Abertura -->
     <section class="inicio-hero">
+        <span class="bolha bolha-1" aria-hidden="true"></span><span class="bolha bolha-2" aria-hidden="true"></span>
         <div class="inicio-largura inicio-hero-grade">
             <div class="revelar">
                 <span class="inicio-selo">Projeto Integrador · GTI · FPM</span>
@@ -74,7 +73,7 @@ $equipe = [
                 <div class="mock-barra"><span></span><span></span><span></span></div>
                 <div class="mock-corpo">
                     <div class="mock-cartoes">
-                        <div class="mock-cartao"><small>Total a receber</small><strong>R$ 1.240,00</strong></div>
+                        <div class="mock-cartao"><small>Total a receber</small><strong class="conta" data-valor="1240" data-dinheiro="1">R$ 1.240,00</strong></div>
                         <div class="mock-cartao mock-alerta"><small>Inadimplentes</small><strong>2</strong></div>
                     </div>
                     <div class="mock-linha"><span class="avatar avatar-cor-0">JS</span><b>João Silva</b><i class="selo selo-aviso">Devendo</i></div>
@@ -95,12 +94,12 @@ $equipe = [
             </div>
             <div class="grade-inicio grade-numeros">
                 <div class="numero-cartao revelar">
-                    <strong>84,2 mi</strong>
+                    <strong class="conta" data-valor="84.2" data-casas="1" data-sufixo=" mi">84,2 mi</strong>
                     <p>de brasileiros estavam inadimplentes em setembro de 2026 — mais da metade dos adultos.</p>
                     <small>Fonte: Serasa, Mapa da Inadimplência</small>
                 </div>
                 <div class="numero-cartao revelar">
-                    <strong>4 em 10</strong>
+                    <strong class="conta" data-valor="4" data-sufixo=" em 10">4 em 10</strong>
                     <p>microempreendedores individuais vendem fiado, muitas vezes controlando tudo no papel.</p>
                     <small>Fonte: Sebrae</small>
                 </div>
@@ -151,17 +150,27 @@ $equipe = [
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
                 <span class="inicio-sobretitulo">Quem fez</span>
-                <h2>Feito por um aluno de Gestão da TI</h2>
+                <h2>Quem está por trás do FiadoFácil</h2>
                 <p>Sou aluno do curso de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o meu Projeto Integrador: um sistema simples e gratuito para ajudar o pequeno comércio a trocar o caderninho por um controle seguro.</p>
             </div>
-            <div class="grade-inicio grade-equipe">
-                <?php foreach ($equipe as $integrante): ?>
-                <div class="equipe-cartao revelar">
-                    <?php echo avatar($integrante[0], 'avatar-equipe'); ?>
-                    <h3><?php echo htmlspecialchars($integrante[0]); ?></h3>
-                    <p><?php echo htmlspecialchars($integrante[1]); ?></p>
+            <div class="perfil-autor revelar">
+                <div class="perfil-topo">
+                    <?php echo avatar("Matheus Wilton", 'avatar-equipe'); ?>
+                    <div>
+                        <h3>Matheus Wilton</h3>
+                        <p class="perfil-cargo">Idealizador e desenvolvedor do FiadoFácil</p>
+                        <p class="perfil-local">Gestão da Tecnologia da Informação · FPM · Goiânia/GO</p>
+                    </div>
                 </div>
-                <?php endforeach; ?>
+                <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: entendi como o fiado funciona no comércio de bairro, transformei isso em regras de negócio, modelei o banco de dados, programei o sistema e cuidei da segurança e da publicação.</p>
+                <ul class="perfil-lista">
+                    <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong> — limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas e score de confiabilidade.</span></li>
+                    <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong> — modelagem MySQL com 4 tabelas relacionadas, dívida sempre calculada e transações com trava para nenhuma compra estourar o limite.</span></li>
+                    <li><?php echo icone('celular'); ?><span><strong>Desenvolvimento</strong> — PHP, HTML, CSS e JavaScript; layout para computador e celular, modo noturno e página de apresentação.</span></li>
+                    <li><?php echo icone('escudo'); ?><span><strong>Segurança e publicação</strong> — senhas com hash, proteção contra SQL Injection e CSRF, perfis de acesso e publicação automática do GitHub para a InfinityFree.</span></li>
+                </ul>
+                <div class="perfil-tags"><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML e CSS</span><span>Git e GitHub</span><span>UML</span></div>
+            </div>
             </div>
         </div>
     </section>
@@ -185,7 +194,7 @@ $equipe = [
     </div>
 </footer>
 
-<script src="js/script.js?v=5"></script>
+<script src="js/script.js?v=6"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
@@ -200,9 +209,52 @@ $equipe = [
         });
     }, { threshold: 0.12 });
     blocos.forEach(function (b, i) { b.style.setProperty('--atraso', (i % 3) * 90 + 'ms'); observador.observe(b); });
-    // topo ganha sombra ao rolar
+    // topo ganha sombra ao rolar e a barrinha do topo mostra quanto da pagina ja foi lido
     var topo = document.querySelector('.inicio-topo');
-    window.addEventListener('scroll', function () { topo.classList.toggle('rolou', window.scrollY > 10); }, { passive: true });
+    var progresso = document.querySelector('.progresso-rolagem');
+    function aoRolar() {
+        topo.classList.toggle('rolou', window.scrollY > 10);
+        var total = document.documentElement.scrollHeight - window.innerHeight;
+        progresso.style.transform = 'scaleX(' + (total > 0 ? window.scrollY / total : 0) + ')';
+    }
+    window.addEventListener('scroll', aoRolar, { passive: true });
+    aoRolar();
+
+    // numeros contam do zero quando aparecem na tela
+    function contar(el) {
+        var alvo = parseFloat(el.getAttribute('data-valor'));
+        var casas = parseInt(el.getAttribute('data-casas') || '0', 10);
+        var sufixo = el.getAttribute('data-sufixo') || '';
+        var dinheiro = el.hasAttribute('data-dinheiro');
+        var final = el.textContent, inicio = null;
+        function formatar(v) {
+            var n = v.toLocaleString('pt-BR', { minimumFractionDigits: dinheiro ? 2 : casas, maximumFractionDigits: dinheiro ? 2 : casas });
+            return (dinheiro ? 'R$ ' : '') + n + sufixo;
+        }
+        function passo(agora) {
+            if (inicio === null) { inicio = agora; }
+            var t = Math.min(1, (agora - inicio) / 1400);
+            el.textContent = formatar(alvo * (1 - Math.pow(1 - t, 3)));
+            if (t < 1) { requestAnimationFrame(passo); } else { el.textContent = final; }
+        }
+        requestAnimationFrame(passo);
+    }
+    var observaNumeros = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (e) { if (e.isIntersecting) { contar(e.target); observaNumeros.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.conta').forEach(function (el) { observaNumeros.observe(el); });
+
+    // a "tela" da abertura se inclina acompanhando o mouse
+    var mock = document.querySelector('.inicio-mock');
+    if (mock && window.matchMedia('(hover: hover)').matches) {
+        mock.addEventListener('mousemove', function (e) {
+            var caixa = mock.getBoundingClientRect();
+            var x = (e.clientX - caixa.left) / caixa.width - 0.5;
+            var y = (e.clientY - caixa.top) / caixa.height - 0.5;
+            mock.style.transform = 'perspective(900px) rotateY(' + (x * 10) + 'deg) rotateX(' + (-y * 10) + 'deg) translateY(-4px)';
+        });
+        mock.addEventListener('mouseleave', function () { mock.style.transform = ''; });
+    }
 })();
 </script>
 </body>

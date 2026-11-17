@@ -173,3 +173,25 @@ if (!semAnimacao) {
         });
     });
 }
+// Comemoracao: quando a mensagem diz que a divida foi quitada, caem confetes
+(function () {
+    var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.mensagem').forEach(function (caixa) {
+        if (!/quitada/i.test(caixa.textContent)) { return; }
+        caixa.classList.add('comemora');
+        if (reduzir) { return; }
+        var cores = ['#16a34a', '#2563eb', '#f59e0b', '#ea580c', '#a855f7', '#06b6d4'];
+        for (var i = 0; i < 70; i++) {
+            var confete = document.createElement('span');
+            confete.className = 'confete';
+            confete.style.left = (Math.random() * 100) + 'vw';
+            confete.style.background = cores[i % cores.length];
+            confete.style.setProperty('--desvio', (Math.random() * 160 - 80) + 'px');
+            confete.style.setProperty('--giro', (Math.random() * 720 + 180) + 'deg');
+            confete.style.setProperty('--duracao', (Math.random() * 1.4 + 2) + 's');
+            confete.style.animationDelay = (Math.random() * 0.5) + 's';
+            document.body.appendChild(confete);
+            setTimeout(function (c) { return function () { c.remove(); }; }(confete), 4500);
+        }
+    });
+})();
