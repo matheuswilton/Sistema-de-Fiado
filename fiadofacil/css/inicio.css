@@ -157,6 +157,7 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 .perfil-lista { list-style: none; padding: 0; margin: 0 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .perfil-lista li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: var(--superficie); border: 1px solid var(--borda); font-size: 16px; line-height: 1.55; transition: transform .2s ease, border-color .2s ease; }
 .perfil-lista li:hover { transform: translateX(4px); border-color: var(--primaria); }
+.perfil-lista strong { display: block; color: var(--texto); }
 .perfil-lista .icone { width: 22px; height: 22px; color: var(--primaria); margin-top: 2px; }
 :root[data-tema="escuro"] .perfil-lista .icone { color: #93c5fd; }
 .perfil-tags { display: flex; flex-wrap: wrap; gap: 8px; }
