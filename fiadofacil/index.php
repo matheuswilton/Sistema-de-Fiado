@@ -34,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=23">
-<link rel="stylesheet" href="css/inicio.css?v=14">
+<link rel="stylesheet" href="css/inicio.css?v=15">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -101,12 +101,12 @@ if (isset($_SESSION['usuario_id'])) {
             <div class="grade-inicio grade-numeros">
                 <div class="numero-cartao revelar">
                     <strong class="conta" data-valor="84.2" data-casas="1" data-sufixo=" mi">84,2 mi</strong>
-                    <p>de brasileiros estavam inadimplentes em setembro de 2026 — mais da metade dos adultos.</p>
+                    <p>Brasileiros estavam inadimplentes em setembro de 2026 — mais da metade dos adultos.</p>
                     <small>Fonte: Serasa, Mapa da Inadimplência</small>
                 </div>
                 <div class="numero-cartao revelar">
                     <strong class="conta" data-valor="4" data-sufixo=" em 10">4 em 10</strong>
-                    <p>microempreendedores individuais vendem fiado, muitas vezes controlando tudo no papel.</p>
+                    <p>Microempreendedores individuais vendem fiado, muitas vezes controlando tudo no papel.</p>
                     <small>Fonte: Sebrae</small>
                 </div>
                 <div class="numero-cartao revelar">
@@ -170,10 +170,10 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
                 <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: entendi como o fiado funciona no comércio de bairro, transformei isso em regras de negócio, modelei o banco de dados, programei o sistema e cuidei da segurança e da publicação.</p>
                 <ul class="perfil-lista">
-                    <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong> — limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas e score de confiabilidade.</span></li>
-                    <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong> — modelagem MySQL com 4 tabelas relacionadas, dívida sempre calculada e transações com trava para nenhuma compra estourar o limite.</span></li>
-                    <li><?php echo icone('celular'); ?><span><strong>Desenvolvimento</strong> — PHP, HTML, CSS e JavaScript; layout para computador e celular, modo noturno e página de apresentação.</span></li>
-                    <li><?php echo icone('escudo'); ?><span><strong>Segurança e publicação</strong> — senhas com hash, proteção contra SQL Injection e CSRF, perfis de acesso e publicação automática do GitHub para a InfinityFree.</span></li>
+                    <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong>Limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas e score de confiabilidade.</span></li>
+                    <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong>Modelagem MySQL com 4 tabelas relacionadas, dívida sempre calculada e transações com trava para nenhuma compra estourar o limite.</span></li>
+                    <li><?php echo icone('celular'); ?><span><strong>Desenvolvimento</strong>PHP, HTML, CSS e JavaScript; layout para computador e celular, modo noturno e página de apresentação.</span></li>
+                    <li><?php echo icone('escudo'); ?><span><strong>Segurança e publicação</strong>Senhas com hash, proteção contra SQL Injection e CSRF, perfis de acesso e publicação automática do GitHub para a InfinityFree.</span></li>
                 </ul>
                 <div class="perfil-tags"><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML e CSS</span><span>Git e GitHub</span><span>UML</span></div>
             </div>
