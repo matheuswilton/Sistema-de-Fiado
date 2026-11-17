@@ -131,7 +131,7 @@ require "cabecalho.php";
                 <?php campo_csrf(); ?>
                 <input type="hidden" name="id_usuario" value="<?php echo $linha['id']; ?>">
                 <input type="password" name="nova_senha" placeholder="Nova senha (mín. 8)" autocomplete="new-password" aria-label="Nova senha">
-                <button type="submit" name="acao" value="trocar_senha" class="botao-pequeno botao-verde">Trocar senha</button>
+                <button type="submit" name="acao" value="trocar_senha" class="botao-pequeno">Trocar senha</button>
                 <?php if ($linha['status'] === 'bloqueado'): ?>
                     <button type="submit" name="acao" value="desbloquear" class="botao-pequeno">Desbloquear</button>
                 <?php else: ?>

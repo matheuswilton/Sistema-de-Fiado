@@ -35,8 +35,8 @@ $equipe = [
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=8">
-<link rel="stylesheet" href="css/inicio.css?v=3">
+<link rel="stylesheet" href="css/estilo.css?v=10">
+<link rel="stylesheet" href="css/inicio.css?v=4">
 </head>
 <body class="pagina-inicio">
 
