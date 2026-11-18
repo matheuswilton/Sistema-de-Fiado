@@ -10,8 +10,12 @@ if (isset($_GET['motivo']) && $_GET['motivo'] === 'bloqueado') { definir_flash("
 if (isset($_GET['motivo']) && $_GET['motivo'] === 'saiu') { definir_flash("Você saiu do sistema."); }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
-    require_once "conexao.php";
     $usuario_digitado = trim($_POST['usuario'] ?? '');
+    $minutos_bloqueio = login_bloqueado();
+    if ($minutos_bloqueio > 0) {
+        $erro = "Muitas tentativas erradas. Aguarde " . $minutos_bloqueio . " minuto(s) e tente de novo.";
+    } else {
+    require_once "conexao.php";
     $senha_digitada = $_POST['senha'] ?? '';
     $stmt = $conn->prepare("SELECT id, nome, senha, nivel, status, cliente_id FROM usuarios WHERE usuario = ?");
     $stmt->bind_param("s", $usuario_digitado);
@@ -27,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = "Seu acesso foi bloqueado pelo administrador.";
         } else {
             session_regenerate_id(true);
+            unset($_SESSION['login_falhas'], $_SESSION['login_bloqueado_ate']);
             $_SESSION['usuario_id'] = $linha_usuario['id'];
             $_SESSION['usuario_nome'] = $linha_usuario['nome'];
             $_SESSION['usuario_nivel'] = $linha_usuario['nivel'];
@@ -36,10 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         usleep(600000);
+        registrar_falha_login();
         $erro = "Usuário ou senha inválidos.";
+    }
     }
 }
 $titulo_pagina = "Entrar";
+$descricao_pagina = "Entre no FiadoFácil para anotar compras no fiado, registrar pagamentos e ver quem está devendo.";
 $classe_container = "container-pequeno";
 require "cabecalho.php";
 ?>

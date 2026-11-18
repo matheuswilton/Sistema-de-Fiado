@@ -14,6 +14,7 @@ if (isset($_SESSION['usuario_id'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FiadoFácil — Controle do fiado sem caderninho</title>
 <meta name="description" content="Sistema web gratuito para pequenos comércios controlarem compras no fiado, pagamentos e dívidas de clientes, no computador e no celular.">
+<?php metas_compartilhamento("FiadoFácil — Controle do fiado sem caderninho", "Quem anota, recebe. Sistema gratuito para o comércio de bairro controlar o fiado, no computador e no celular."); ?>
 <script>
 // aplica o tema (claro/noturno) antes de desenhar a pagina, para nao piscar
 (function () {
@@ -33,8 +34,8 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=23">
-<link rel="stylesheet" href="css/inicio.css?v=20">
+<link rel="stylesheet" href="css/estilo.css?v=24">
+<link rel="stylesheet" href="css/inicio.css?v=21">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -206,11 +207,11 @@ if (isset($_SESSION['usuario_id'])) {
 
 <footer class="inicio-rodape">
     <div class="inicio-largura">
-        <span class="rodape-marca"><?php echo logo(32); ?><strong>FiadoFácil</strong></span> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO
+        <span class="rodape-marca"><?php echo logo(32); ?><strong>FiadoFácil</strong></span> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO · <a href="privacidade.php">Política de Privacidade</a>
     </div>
 </footer>
 
-<script src="js/script.js?v=17"></script>
+<script src="js/script.js?v=18"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {

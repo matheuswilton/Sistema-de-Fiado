@@ -37,7 +37,7 @@ jobs:
 
       - name: Verificar se o site responde
         run: |
-          for endereco in https://fiadofacil.free.je/login.php http://fiadofacil.free.je/login.php; do
+          for endereco in https://fiadofacil.free.je/login.php http://fiadofacil.free.je/login.php https://fiadofacil.free.je/privacidade.php https://fiadofacil.free.je/pagina-que-nao-existe; do
             codigo=$(curl -s -o /dev/null -w "%{http_code}" --max-time 25 -A "Mozilla/5.0" "$endereco" || echo "sem resposta")
             echo "$endereco -> $codigo"
           done
