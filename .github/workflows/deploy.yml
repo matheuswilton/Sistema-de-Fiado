@@ -34,3 +34,12 @@ jobs:
             **/.git*/**
             config.local.php
             sql/**
+
+      - name: Verificar se o site responde
+        run: |
+          for endereco in https://fiadofacil.free.je/login.php http://fiadofacil.free.je/login.php; do
+            codigo=$(curl -s -o /dev/null -w "%{http_code}" --max-time 25 -A "Mozilla/5.0" "$endereco" || echo "sem resposta")
+            echo "$endereco -> $codigo"
+          done
+          curl -s --max-time 25 -A "Mozilla/5.0" https://fiadofacil.free.je/dashboard.php | grep -o "Motivo:[^.]*" || echo "Banco: sem mensagem de erro de conexao"
+        continue-on-error: true
