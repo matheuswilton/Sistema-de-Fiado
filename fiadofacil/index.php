@@ -34,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=23">
-<link rel="stylesheet" href="css/inicio.css?v=19">
+<link rel="stylesheet" href="css/inicio.css?v=20">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -169,6 +169,7 @@ if (isset($_SESSION['usuario_id'])) {
                     </div>
                 </div>
                 <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: entendi como o fiado funciona no comércio de bairro, transformei isso em regras de negócio, modelei o banco de dados, programei o sistema e cuidei da segurança e da publicação.</p>
+                <p class="perfil-frase">“Criei o FiadoFácil para que o comerciante de bairro tenha o mesmo controle que uma grande loja, sem perder a confiança no cliente.”</p>
                 <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
             </div>
             <dialog id="detalhes-tecnicos" class="janela-tecnica" aria-labelledby="t-detalhes">
