@@ -26,6 +26,12 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo htmlspecialchars($titulo_pagina); ?> — FiadoFácil</title>
+<?php if (!$esta_logado): ?>
+<meta name="description" content="<?php echo htmlspecialchars($descricao_pagina ?? 'FiadoFácil: controle de compras no fiado, pagamentos e dívidas de clientes, no computador e no celular.'); ?>">
+<?php metas_compartilhamento($titulo_pagina . " — FiadoFácil", $descricao_pagina ?? "Controle do fiado sem caderninho."); ?>
+<?php else: ?>
+<meta name="robots" content="noindex">
+<?php endif; ?>
 <script>
 // aplica o tema (claro/noturno) antes de desenhar a pagina, para nao piscar
 (function () {
@@ -49,7 +55,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=23">
+<link rel="stylesheet" href="css/estilo.css?v=24">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>

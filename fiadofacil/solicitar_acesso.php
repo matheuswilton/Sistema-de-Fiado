@@ -10,12 +10,16 @@ $tipo = "mensagem";
 $nome = $telefone = $usuario_digitado = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
+    $eh_robo = parece_robo('solicitar_acesso');
     $nome = trim($_POST['nome'] ?? '');
     $telefone = trim($_POST['telefone'] ?? '');
     $usuario_digitado = trim($_POST['usuario'] ?? '');
     $senha = $_POST['senha'] ?? '';
     $confirmar_senha = $_POST['confirmar_senha'] ?? '';
-    if ($nome === "" || $telefone === "" || $usuario_digitado === "") {
+    if ($eh_robo) {
+        $mensagem = "Não foi possível enviar. Confira os dados e envie de novo.";
+        $tipo = "erro";
+    } elseif ($nome === "" || $telefone === "" || $usuario_digitado === "") {
         $mensagem = "Preencha nome, telefone e usuário.";
         $tipo = "erro";
     } elseif (!telefone_valido($telefone)) {
@@ -67,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 $titulo_pagina = "Solicitar acesso";
+$descricao_pagina = "Cliente da loja: peça seu acesso ao FiadoFácil para acompanhar a sua dívida pelo celular.";
 $classe_container = "container-pequeno";
 require "cabecalho.php";
 ?>
@@ -74,7 +79,7 @@ require "cabecalho.php";
 <p class="subtitulo">Com este acesso você só consegue ver a sua própria dívida.</p>
 <?php if ($mensagem): ?><div class="<?php echo $tipo; ?>" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
 <form method="POST" action="solicitar_acesso.php">
-    <?php campo_csrf(); ?>
+    <?php campo_csrf(); campo_antispam('solicitar_acesso'); ?>
     <label for="nome">Nome completo</label>
     <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" maxlength="100" required>
     <label for="telefone">Telefone cadastrado na loja</label>
@@ -85,6 +90,7 @@ require "cabecalho.php";
     <input type="password" id="senha" name="senha" autocomplete="new-password" required>
     <label for="confirmar_senha">Confirmar senha</label>
     <input type="password" id="confirmar_senha" name="confirmar_senha" autocomplete="new-password" required>
+    <p class="dica aviso-privacidade">Ao enviar, você concorda com o uso do seu nome e telefone para a loja liberar o seu acesso, conforme a <a href="privacidade.php" target="_blank">Política de Privacidade</a>.</p>
     <button type="submit" class="botao-total">Enviar solicitação</button>
 </form>
 <div class="barra-botoes"><a href="login.php" class="botao botao-secundario botao-total">Voltar ao login</a></div>

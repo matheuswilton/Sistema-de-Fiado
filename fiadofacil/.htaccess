@@ -1,5 +1,14 @@
+# Sempre usar conexao segura (HTTPS). As duas condicoes evitam redirecionar em loop atras do proxy da hospedagem.
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Pagina propria para enderecos que nao existem
+ErrorDocument 404 /404.php
+
 # Bloqueia o download direto de arquivos sensiveis (so tem efeito em servidores Apache)
-<FilesMatch "\.(sql|md|txt)$|^config\.local\.example\.php$">
+<FilesMatch "\.(sql|md|txt)$|^config\.local\.example\.php$|^layout_publico\.php$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

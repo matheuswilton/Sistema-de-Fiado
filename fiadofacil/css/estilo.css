@@ -395,6 +395,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
 .mov-texto a { font-weight: 600; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mov-texto small { color: var(--texto-suave); font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* campo invisivel contra robos (spam) */
+.aviso-privacidade { margin-top: 14px; }
+.campo-armadilha { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
 /* ===================== Outros ===================== */
 .form-busca { display: flex; gap: 8px; margin-bottom: 14px; }
 .form-busca input { flex: 1; }

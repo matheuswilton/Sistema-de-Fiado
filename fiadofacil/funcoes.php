@@ -98,6 +98,49 @@ function barra_limite($divida, $limite, $tela_do_cliente = false) {
     $html .= '<div class="uso-limite-legenda">' . dinheiro($divida) . ' de ' . dinheiro($limite) . '</div></div>';
     return $html;
 }
+// Endereco do site no ar (usado na previa de links no WhatsApp e redes sociais)
+const ENDERECO_SITE = "https://fiadofacil.free.je";
+// Titulo, descricao e imagem que aparecem quando alguem compartilha o link
+function metas_compartilhamento($titulo, $descricao) {
+    $t = htmlspecialchars($titulo);
+    $d = htmlspecialchars($descricao);
+    $caminho = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+    echo '<meta property="og:type" content="website">' . "\n";
+    echo '<meta property="og:site_name" content="FiadoFácil">' . "\n";
+    echo '<meta property="og:locale" content="pt_BR">' . "\n";
+    echo '<meta property="og:title" content="' . $t . '">' . "\n";
+    echo '<meta property="og:description" content="' . $d . '">' . "\n";
+    echo '<meta property="og:url" content="' . htmlspecialchars(ENDERECO_SITE . $caminho) . '">' . "\n";
+    echo '<meta property="og:image" content="' . ENDERECO_SITE . '/img/previa.png">' . "\n";
+    echo '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">' . "\n";
+    echo '<meta property="og:image:alt" content="FiadoFácil: controle do fiado sem caderninho">' . "\n";
+    echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+}
+// Protecao contra robos (spam) em formularios publicos:
+// 1) um campo "site" invisivel: pessoas nao veem e deixam vazio, robos costumam preencher;
+// 2) tempo minimo: ninguem preenche o formulario em menos de 3 segundos.
+function campo_antispam($nome_form) {
+    $_SESSION['antispam_' . $nome_form] = time();
+    echo '<div class="campo-armadilha" aria-hidden="true"><label for="site">Não preencha este campo</label><input type="text" id="site" name="site" tabindex="-1" autocomplete="off"></div>';
+}
+function parece_robo($nome_form) {
+    $inicio = $_SESSION['antispam_' . $nome_form] ?? 0;
+    $preencheu_armadilha = trim((string)($_POST['site'] ?? '')) !== '';
+    $rapido_demais = !$inicio || (time() - $inicio) < 3;
+    return $preencheu_armadilha || $rapido_demais;
+}
+// Limite de tentativas de login: depois de 5 erros seguidos, espera 5 minutos
+function login_bloqueado() {
+    $ate = $_SESSION['login_bloqueado_ate'] ?? 0;
+    return $ate > time() ? (int)ceil(($ate - time()) / 60) : 0;
+}
+function registrar_falha_login() {
+    $_SESSION['login_falhas'] = ($_SESSION['login_falhas'] ?? 0) + 1;
+    if ($_SESSION['login_falhas'] >= 5) {
+        $_SESSION['login_bloqueado_ate'] = time() + 300;
+        $_SESSION['login_falhas'] = 0;
+    }
+}
 // protecao contra CSRF: todo formulario POST leva um token escondido
 function campo_csrf() {
     if (empty($_SESSION['csrf'])) {

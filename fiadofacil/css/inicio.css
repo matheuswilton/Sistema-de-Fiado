@@ -241,3 +241,28 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
     .perfil-topo h3 { font-size: 23px; }
     .bolha { opacity: .3; }
 }
+
+/* ---------- paginas de texto (Politica de Privacidade) e 404 ---------- */
+.texto-legal { max-width: 780px; }
+.texto-legal h1 { font-size: 40px; letter-spacing: -.02em; margin: 6px 0 4px; line-height: 1.15; }
+.texto-legal-data { color: var(--texto-suave); margin: 0 0 26px; font-size: 15px; }
+.texto-legal h2 { font-size: 23px; margin: 34px 0 10px; letter-spacing: -.01em; }
+.texto-legal p, .texto-legal li { font-size: 17px; line-height: 1.7; }
+.texto-legal ul { padding-left: 22px; margin: 0 0 12px; display: grid; gap: 6px; }
+.texto-legal-voltar { margin-top: 34px; }
+.inicio-rodape a { color: inherit; font-weight: 600; }
+.erro-404 { text-align: center; max-width: 720px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.erro-404-numero { display: flex; align-items: center; gap: 10px; font-size: 140px; font-weight: 800; line-height: 1; color: var(--primaria); letter-spacing: -.04em; }
+:root[data-tema="escuro"] .erro-404-numero { color: #93c5fd; }
+.erro-404-numero .logo { width: 120px; height: 120px; animation: balancar 3s ease-in-out infinite; transform-origin: 50% 0; }
+@keyframes balancar { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+.erro-404 h1 { margin: 6px 0 0; font-size: 34px; letter-spacing: -.02em; text-wrap: balance; }
+.erro-404 p { margin: 0; color: var(--texto-suave); font-size: 18px; }
+.erro-404-botoes { justify-content: center; margin-top: 8px; }
+@media (max-width: 640px) {
+    .texto-legal h1 { font-size: 30px; }
+    .erro-404-numero { font-size: 92px; }
+    .erro-404-numero .logo { width: 80px; height: 80px; }
+    .erro-404 h1 { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { .erro-404-numero .logo { animation: none; } }
