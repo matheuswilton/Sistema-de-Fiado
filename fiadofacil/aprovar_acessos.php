@@ -1,14 +1,15 @@
 <?php
 require_once "verifica_admin.php";
 require_once "conexao.php";
+$loja = loja_id();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
     $id_usuario = (int)($_POST['id_usuario'] ?? 0);
     $acao = $_POST['acao'] ?? '';
     if ($acao === 'aprovar') {
         $id_cliente = (int)($_POST['id_cliente'] ?? 0);
-        $stmt_cliente = $conn->prepare("SELECT id FROM clientes WHERE id = ?");
-        $stmt_cliente->bind_param("i", $id_cliente);
+        $stmt_cliente = $conn->prepare("SELECT id FROM clientes WHERE id = ? AND comercio_id = ?");
+        $stmt_cliente->bind_param("ii", $id_cliente, $loja);
         $stmt_cliente->execute();
         $stmt_cliente->store_result();
         $cliente_existe = $stmt_cliente->num_rows > 0;
@@ -16,15 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$cliente_existe) {
             definir_flash("Escolha a qual cliente esse acesso pertence antes de aprovar.", "erro");
         } else {
-            $stmt = $conn->prepare("UPDATE usuarios SET status = 'aprovado', cliente_id = ? WHERE id = ? AND nivel = 'cliente' AND status = 'pendente'");
-            $stmt->bind_param("ii", $id_cliente, $id_usuario);
+            $stmt = $conn->prepare("UPDATE usuarios SET status = 'aprovado', cliente_id = ? WHERE id = ? AND comercio_id = ? AND nivel = 'cliente' AND status = 'pendente'");
+            $stmt->bind_param("iii", $id_cliente, $id_usuario, $loja);
             $stmt->execute();
             $stmt->close();
             definir_flash("Acesso aprovado com sucesso. O cliente já pode entrar.");
         }
     } elseif ($acao === 'recusar') {
-        $stmt = $conn->prepare("UPDATE usuarios SET status = 'recusado' WHERE id = ? AND nivel = 'cliente' AND status = 'pendente'");
-        $stmt->bind_param("i", $id_usuario);
+        $stmt = $conn->prepare("UPDATE usuarios SET status = 'recusado' WHERE id = ? AND comercio_id = ? AND nivel = 'cliente' AND status = 'pendente'");
+        $stmt->bind_param("ii", $id_usuario, $loja);
         $stmt->execute();
         $stmt->close();
         definir_flash("Solicitação recusada.");
@@ -33,9 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 $lista_clientes = [];
-$resultado_clientes = $conn->query("SELECT id, nome, telefone FROM clientes ORDER BY nome");
+$stmt = $conn->prepare("SELECT id, nome, telefone FROM clientes WHERE comercio_id = ? ORDER BY nome");
+$stmt->bind_param("i", $loja);
+$stmt->execute();
+$resultado_clientes = $stmt->get_result();
+$stmt->close();
 while ($linha_cliente = $resultado_clientes->fetch_assoc()) { $lista_clientes[] = $linha_cliente; }
-$resultado = $conn->query("SELECT id, nome, usuario, telefone_solicitado, criado_em FROM usuarios WHERE nivel = 'cliente' AND status = 'pendente' ORDER BY criado_em");
+$stmt = $conn->prepare("SELECT id, nome, usuario, telefone_solicitado, criado_em FROM usuarios WHERE comercio_id = ? AND nivel = 'cliente' AND status = 'pendente' ORDER BY criado_em");
+$stmt->bind_param("i", $loja);
+$stmt->execute();
+$resultado = $stmt->get_result();
+$stmt->close();
 $titulo_pagina = "Aprovar acessos";
 $menu_ativo = "aprovar";
 require "cabecalho.php";

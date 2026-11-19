@@ -1,6 +1,7 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 // aviso se o usuario ainda esta com a senha de exemplo
 $senha_de_exemplo = false;
 $stmt = $conn->prepare("SELECT senha FROM usuarios WHERE id = ?");
@@ -25,7 +26,11 @@ foreach ($lista_clientes as $linha_cliente) {
 }
 $total_pendentes = 0;
 if (eh_admin()) {
-    $total_pendentes = (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'cliente' AND status = 'pendente'")->fetch_row()[0];
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE comercio_id = ? AND nivel = 'cliente' AND status = 'pendente'");
+    $stmt->bind_param("i", $loja);
+    $stmt->execute();
+    $total_pendentes = (int)$stmt->get_result()->fetch_row()[0];
+    $stmt->close();
 }
 // quem mais precisa de atencao: inadimplentes primeiro, depois quem deve mais
 $precisam_atencao = array_values(array_filter($lista_clientes, function ($c) { return $c['saldo_devedor'] > 0; }));
@@ -37,11 +42,14 @@ usort($precisam_atencao, function ($a, $b) {
 });
 $precisam_atencao = array_slice($precisam_atencao, 0, 5);
 // ultimas compras e pagamentos registrados
-$ultimas = $conn->query("(SELECT 'compra' AS tipo, c.id AS cliente_id, c.nome, co.valor, co.data_compra AS quando, co.descricao FROM compras co JOIN clientes c ON c.id = co.cliente_id)
+$stmt = $conn->prepare("(SELECT 'compra' AS tipo, c.id AS cliente_id, c.nome, co.valor, co.data_compra AS quando, co.descricao FROM compras co JOIN clientes c ON c.id = co.cliente_id WHERE c.comercio_id = ?)
     UNION ALL
-    (SELECT 'pagamento', c.id, c.nome, p.valor, p.data_pagamento, '' FROM pagamentos p JOIN clientes c ON c.id = p.cliente_id)
+    (SELECT 'pagamento', c.id, c.nome, p.valor, p.data_pagamento, '' FROM pagamentos p JOIN clientes c ON c.id = p.cliente_id WHERE c.comercio_id = ?)
     ORDER BY quando DESC LIMIT 6");
-$movimentacoes = $ultimas ? $ultimas->fetch_all(MYSQLI_ASSOC) : [];
+$stmt->bind_param("ii", $loja, $loja);
+$stmt->execute();
+$movimentacoes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 $rotulos_situacao = ['em_dia' => 'Em dia', 'devendo' => 'Devendo', 'inadimplente' => 'Inadimplente'];
 $classes_situacao = ['em_dia' => 'selo-ok', 'devendo' => 'selo-aviso', 'inadimplente' => 'selo-alerta'];
 $titulo_pagina = "Início";

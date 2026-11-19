@@ -1,6 +1,7 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 $cliente_escolhido = isset($_GET['cliente_id']) ? (int)$_GET['cliente_id'] : 0;
 $descricao = "";
 $valor_digitado = "";
@@ -25,12 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensagem = $resposta[1];
     }
 }
-$clientes = $conn->query("
+$stmt_lista = $conn->prepare("
     SELECT c.id, c.nome, c.limite_credito,
            COALESCE((SELECT SUM(co.valor) FROM compras co WHERE co.cliente_id = c.id), 0)
            - COALESCE((SELECT SUM(p.valor) FROM pagamentos p WHERE p.cliente_id = c.id), 0) AS saldo_devedor
-    FROM clientes c ORDER BY c.nome
+    FROM clientes c WHERE c.comercio_id = ? ORDER BY c.nome
 ");
+$stmt_lista->bind_param("i", $loja);
+$stmt_lista->execute();
+$clientes = $stmt_lista->get_result();
+$stmt_lista->close();
 $titulo_pagina = "Registrar compra";
 $menu_ativo = "compra";
 $classe_container = "container-medio";

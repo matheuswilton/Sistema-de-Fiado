@@ -2,6 +2,7 @@
 // Resumo financeiro (somente administrador)
 require_once "verifica_admin.php";
 require_once "conexao.php";
+$loja = loja_id();
 $lista = buscar_clientes_situacao($conn);
 $total_clientes = count($lista);
 $quantidade_devendo = 0;
@@ -17,8 +18,16 @@ foreach ($lista as $linha) {
     if ($linha['situacao'] === 'inadimplente') { $quantidade_inadimplentes++; }
 }
 $media_por_devedor = $quantidade_devendo > 0 ? $total_a_receber / $quantidade_devendo : 0;
-$dados_compras = $conn->query("SELECT COUNT(*) AS quantidade, COALESCE(SUM(valor), 0) AS total, COALESCE(AVG(valor), 0) AS media FROM compras")->fetch_assoc();
-$dados_pagamentos = $conn->query("SELECT COALESCE(SUM(valor), 0) AS total FROM pagamentos")->fetch_assoc();
+$stmt = $conn->prepare("SELECT COUNT(*) AS quantidade, COALESCE(SUM(co.valor), 0) AS total, COALESCE(AVG(co.valor), 0) AS media FROM compras co JOIN clientes c ON c.id = co.cliente_id WHERE c.comercio_id = ?");
+$stmt->bind_param("i", $loja);
+$stmt->execute();
+$dados_compras = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+$stmt = $conn->prepare("SELECT COALESCE(SUM(p.valor), 0) AS total FROM pagamentos p JOIN clientes c ON c.id = p.cliente_id WHERE c.comercio_id = ?");
+$stmt->bind_param("i", $loja);
+$stmt->execute();
+$dados_pagamentos = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 $titulo_pagina = "Resumo financeiro";
 $menu_ativo = "resumo";
 require "cabecalho.php";

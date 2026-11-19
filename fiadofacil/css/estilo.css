@@ -612,3 +612,97 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
     .selo { background: none !important; padding: 0; }
     a { color: #111827; text-decoration: none; }
 }
+
+/* =====================================================================
+   VISUAL PROPRIO DE CADA LOJA (ativado por data-loja no <html>)
+   ===================================================================== */
+:root[data-loja="mercearia"] {
+    --fundo: #ecf3ee; --primaria: #15803d; --primaria-forte: #166534; --primaria-suave: #d6f2df; --primaria-texto: #14532d;
+    --link: #166534; --topo: #14532d; --topo-texto: #dcfce7; --faixa-login: #14532d;
+    --lateral-ativo: #d6f2df; --lateral-ativo-texto: #14532d; --lateral-hover: #e2ede5;
+}
+:root[data-loja="mercearia"][data-tema="escuro"] {
+    --fundo: #0a120d; --superficie: #111d16; --superficie-2: #16261c; --borda: #22382a;
+    --primaria: #16a34a; --primaria-forte: #15803d; --primaria-suave: #123020; --primaria-texto: #bbf7d0;
+    --link: #86efac; --topo: #0c1a11; --faixa-login: #0f2a19; --lateral: #0c1a11;
+    --lateral-ativo: #173524; --lateral-ativo-texto: #ecfdf3; --lateral-hover: #122a1b;
+}
+:root[data-loja="mercearia"] .marca-login { background: radial-gradient(700px 300px at 15% 0%, rgba(134, 239, 172, .35), transparent 70%), radial-gradient(600px 280px at 90% 100%, rgba(251, 146, 60, .18), transparent 70%), linear-gradient(160deg, #22c55e 0%, #15803d 50%, #0f3d22 100%); }
+:root[data-loja="mercearia"][data-tema="escuro"] .marca-login { background: radial-gradient(700px 300px at 15% 0%, rgba(134, 239, 172, .35), transparent 70%), linear-gradient(160deg, #166534 0%, #0f3d22 60%, #0a120d 100%); }
+:root[data-loja="mercearia"] .letreiro-fiado { color: #fffdfa; text-shadow: 0.004em 0.010em 0 #e8f7ee, 0.008em 0.020em 0 #d1efdc, 0.012em 0.030em 0 #b6e3c6, 0.016em 0.040em 0 #97d3ab, 0.020em 0.050em 0 #76c08f, 0.024em 0.060em 0 #56a873, 0.028em 0.070em 0 #3d8d5b, 0.032em 0.080em 0 #2a7347, 0.036em 0.090em 0 #1d5c37, .04em .11em .03em rgba(10, 10, 10, .5), .05em .18em .16em rgba(10, 10, 10, .32); }
+:root[data-loja="mercearia"] .letreiro-facil { color: #fdba74; text-shadow: 0.004em 0.010em 0 #f9ad63, 0.008em 0.020em 0 #f29c4c, 0.012em 0.030em 0 #e5893a, 0.016em 0.040em 0 #d4752c, 0.020em 0.050em 0 #bf6221, 0.024em 0.060em 0 #a65118, 0.028em 0.070em 0 #8d4211, 0.032em 0.080em 0 #73350c, 0.036em 0.090em 0 #5c2a09, .04em .11em .03em rgba(10, 10, 10, .5), .05em .18em .16em rgba(10, 10, 10, .32); }
+:root[data-loja="padaria"] {
+    --fundo: #f5efe6; --primaria: #b45309; --primaria-forte: #92400e; --primaria-suave: #fbe8c8; --primaria-texto: #78350f;
+    --link: #92400e; --topo: #78350f; --topo-texto: #fef3c7; --faixa-login: #78350f;
+    --lateral-ativo: #fbe8c8; --lateral-ativo-texto: #78350f; --lateral-hover: #efe5d6;
+}
+:root[data-loja="padaria"][data-tema="escuro"] {
+    --fundo: #140e08; --superficie: #1f160d; --superficie-2: #291d11; --borda: #3b2a19;
+    --primaria: #d97706; --primaria-forte: #b45309; --primaria-suave: #3a2510; --primaria-texto: #fde68a;
+    --link: #fcd34d; --topo: #1a1108; --faixa-login: #2b1a0a; --lateral: #1a1108;
+    --lateral-ativo: #3a2510; --lateral-ativo-texto: #fff7e6; --lateral-hover: #26190c;
+}
+:root[data-loja="padaria"] .marca-login { background: radial-gradient(700px 300px at 15% 0%, rgba(253, 230, 138, .35), transparent 70%), radial-gradient(600px 280px at 90% 100%, rgba(255, 255, 255, .12), transparent 70%), linear-gradient(160deg, #f59e0b 0%, #b45309 50%, #5b2a0c 100%); }
+:root[data-loja="padaria"][data-tema="escuro"] .marca-login { background: radial-gradient(700px 300px at 15% 0%, rgba(253, 230, 138, .35), transparent 70%), linear-gradient(160deg, #92400e 0%, #5b2a0c 60%, #140e08 100%); }
+:root[data-loja="padaria"] .letreiro-fiado { color: #fffdfa; text-shadow: 0.004em 0.010em 0 #fdf3e2, 0.008em 0.020em 0 #f8e4c4, 0.012em 0.030em 0 #efcf9f, 0.016em 0.040em 0 #e2b477, 0.020em 0.050em 0 #d19853, 0.024em 0.060em 0 #bb7c38, 0.028em 0.070em 0 #a26326, 0.032em 0.080em 0 #874e1a, 0.036em 0.090em 0 #6d3c12, .04em .11em .03em rgba(10, 10, 10, .5), .05em .18em .16em rgba(10, 10, 10, .32); }
+:root[data-loja="padaria"] .letreiro-facil { color: #fde68a; text-shadow: 0.004em 0.010em 0 #f7d97a, 0.008em 0.020em 0 #efc964, 0.012em 0.030em 0 #e3b64f, 0.016em 0.040em 0 #d5a03d, 0.020em 0.050em 0 #c48a2f, 0.024em 0.060em 0 #b07424, 0.028em 0.070em 0 #9a601b, 0.032em 0.080em 0 #824e14, 0.036em 0.090em 0 #6b3e0f, .04em .11em .03em rgba(10, 10, 10, .5), .05em .18em .16em rgba(10, 10, 10, .32); }
+:root[data-loja="acougue"] {
+    --fundo: #f4eced; --primaria: #be123c; --primaria-forte: #9f1239; --primaria-suave: #fbdde3; --primaria-texto: #881337;
+    --link: #9f1239; --topo: #4c0519; --topo-texto: #ffe4e6; --faixa-login: #4c0519;
+    --lateral-ativo: #fbdde3; --lateral-ativo-texto: #881337; --lateral-hover: #efe2e4;
+}
+:root[data-loja="acougue"][data-tema="escuro"] {
+    --fundo: #13080a; --superficie: #1f0e12; --superficie-2: #2a131a; --borda: #3d1d25;
+    --primaria: #e11d48; --primaria-forte: #be123c; --primaria-suave: #3b1019; --primaria-texto: #fecdd3;
+    --link: #fda4af; --topo: #1a080c; --faixa-login: #2c0a12; --lateral: #1a080c;
+    --lateral-ativo: #3b1019; --lateral-ativo-texto: #fff1f2; --lateral-hover: #260b12;
+}
+:root[data-loja="acougue"] .marca-login { background: radial-gradient(700px 300px at 15% 0%, rgba(253, 164, 175, .30), transparent 70%), radial-gradient(600px 280px at 90% 100%, rgba(255, 255, 255, .10), transparent 70%), linear-gradient(160deg, #e11d48 0%, #9f1239 50%, #3b0412 100%); }
+:root[data-loja="acougue"][data-tema="escuro"] .marca-login { background: radial-gradient(700px 300px at 15% 0%, rgba(253, 164, 175, .30), transparent 70%), linear-gradient(160deg, #881337 0%, #4c0519 60%, #13080a 100%); }
+:root[data-loja="acougue"] .letreiro-fiado { color: #fffdfa; text-shadow: 0.004em 0.010em 0 #fbe9ec, 0.008em 0.020em 0 #f5d3da, 0.012em 0.030em 0 #ebb5c0, 0.016em 0.040em 0 #de92a2, 0.020em 0.050em 0 #cc6f84, 0.024em 0.060em 0 #b44f68, 0.028em 0.070em 0 #993651, 0.032em 0.080em 0 #7d243e, 0.036em 0.090em 0 #62182e, .04em .11em .03em rgba(10, 10, 10, .5), .05em .18em .16em rgba(10, 10, 10, .32); }
+:root[data-loja="acougue"] .letreiro-facil { color: #fecdd3; text-shadow: 0.004em 0.010em 0 #f9b8c4, 0.008em 0.020em 0 #f1a2b1, 0.012em 0.030em 0 #e58a9c, 0.016em 0.040em 0 #d47086, 0.020em 0.050em 0 #bf5770, 0.024em 0.060em 0 #a7405b, 0.028em 0.070em 0 #8e2f49, 0.032em 0.080em 0 #742239, 0.036em 0.090em 0 #5c182c, .04em .11em .03em rgba(10, 10, 10, .5), .05em .18em .16em rgba(10, 10, 10, .32); }
+/* nome da loja no menu lateral */
+.loja-nome { display: flex; align-items: center; gap: 8px; margin: 0 4px 10px; padding: 8px 10px; border-radius: 10px; background: var(--primaria-suave); color: var(--primaria-texto); font-weight: 700; font-size: 14px; line-height: 1.25; }
+.loja-nome .icone { width: 18px; height: 18px; flex-shrink: 0; }
+.loja-nome span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-menu="recolhido"] .com-menu .loja-nome span { display: none; }
+:root[data-menu="recolhido"] .com-menu .loja-nome { justify-content: center; margin: 0 0 10px; }
+@media (max-width: 800px) { .loja-nome { order: 3; width: 100%; margin: 0 0 10px; background: rgba(255,255,255,.12); color: #fff; } }
+.loja-por { margin: 0; color: rgba(255,255,255,.85); font-size: 15px; }
+.loja-por strong { color: #fff; }
+/* aviso quando o dono da plataforma esta dentro de uma loja */
+.faixa-plataforma { background: #0f172a; color: #e2e8f0; text-align: center; font-size: 14.5px; padding: 9px 16px; }
+.faixa-plataforma a { color: #facc15; font-weight: 700; margin-left: 6px; }
+.com-menu .faixa-plataforma { position: sticky; top: 0; z-index: 9; }
+
+/* =====================================================================
+   PAINEL DA PLATAFORMA (painel.php)
+   ===================================================================== */
+.pagina-painel { background: var(--fundo); }
+.painel-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px max(20px, env(safe-area-inset-left, 0px)); background: #0f172a; color: #fff; position: sticky; top: 0; z-index: 10; }
+.painel-topo .marca { color: #fff; font-size: 21px; padding: 0; }
+.painel-topo .marca small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #facc15; line-height: 1; }
+.painel-topo .marca span { line-height: 1.1; }
+.painel-topo-botoes { display: flex; gap: 8px; align-items: center; }
+.painel-topo .tema-botao { display: inline-flex; }
+.painel-conteudo { max-width: 1240px; }
+.painel-login { max-width: 440px; margin: 40px auto; background: var(--superficie); border: 1px solid var(--borda); border-radius: 16px; padding: 26px; box-shadow: var(--sombra); }
+.grade-lojas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 18px; margin: 6px 0 26px; }
+.loja-cartao { background: var(--superficie); border: 1px solid var(--borda); border-radius: 16px; overflow: hidden; box-shadow: var(--sombra); display: flex; flex-direction: column; transition: transform .25s ease, box-shadow .25s ease; }
+.loja-cartao:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(15, 23, 42, .14); }
+.loja-faixa { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px; color: #fff; font-weight: 800; font-size: 19px; background: linear-gradient(135deg, #2563eb, #1e3a8a); }
+.loja-faixa .selo { background: rgba(255,255,255,.92); }
+.tema-mercearia .loja-faixa { background: linear-gradient(135deg, #22c55e, #14532d); }
+.tema-padaria .loja-faixa { background: linear-gradient(135deg, #f59e0b, #78350f); }
+.tema-acougue .loja-faixa { background: linear-gradient(135deg, #e11d48, #4c0519); }
+.loja-numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 16px 18px 6px; }
+.loja-numeros div { display: flex; flex-direction: column; min-width: 0; }
+.loja-numeros dt { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.loja-numeros dd { margin: 0; font-size: 13px; color: var(--texto-suave); }
+.loja-endereco { margin: 6px 18px 12px; font-size: 14.5px; color: var(--texto-suave); word-break: break-all; }
+.loja-cartao .acoes { padding: 0 18px 18px; margin-top: auto; }
+.nova-loja h2 { margin-top: 0; }
+@media (max-width: 640px) {
+    .loja-numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+    .painel-topo .marca { font-size: 18px; }
+}

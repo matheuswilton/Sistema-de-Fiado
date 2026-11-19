@@ -1,11 +1,12 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 $por_pagina = 10;
 $busca = isset($_GET['busca']) ? trim($_GET['busca']) : "";
 $like = "%" . $busca . "%";
-$stmt_total = $conn->prepare("SELECT COUNT(*) FROM clientes WHERE nome LIKE ? OR telefone LIKE ?");
-$stmt_total->bind_param("ss", $like, $like);
+$stmt_total = $conn->prepare("SELECT COUNT(*) FROM clientes WHERE comercio_id = ? AND (nome LIKE ? OR telefone LIKE ?)");
+$stmt_total->bind_param("iss", $loja, $like, $like);
 $stmt_total->execute();
 $stmt_total->bind_result($total);
 $stmt_total->fetch();
@@ -20,11 +21,11 @@ $stmt = $conn->prepare("
            COALESCE((SELECT SUM(co.valor) FROM compras co WHERE co.cliente_id = c.id), 0)
            - COALESCE((SELECT SUM(p.valor) FROM pagamentos p WHERE p.cliente_id = c.id), 0) AS saldo_devedor
     FROM clientes c
-    WHERE c.nome LIKE ? OR c.telefone LIKE ?
+    WHERE c.comercio_id = ? AND (c.nome LIKE ? OR c.telefone LIKE ?)
     ORDER BY c.nome
     LIMIT ? OFFSET ?
 ");
-$stmt->bind_param("ssii", $like, $like, $por_pagina, $offset);
+$stmt->bind_param("issii", $loja, $like, $like, $por_pagina, $offset);
 $stmt->execute();
 $resultado = $stmt->get_result();
 $titulo_pagina = "Clientes";

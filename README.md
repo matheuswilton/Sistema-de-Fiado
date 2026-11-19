@@ -58,6 +58,20 @@ PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout
 - Everyone can change their own password under "Minha senha".
 - **Customer access (read only):** the customer requests a login on the sign-in page, the administrator approves it and the customer can then see only their own debt.
 
+## Multi-store (each store has its own login)
+
+Each store has its own address, login, data and look, and no store can see another store's data:
+
+| Store | Address |
+|---|---|
+| Mercearia do Zé | `/loja/mercearia-do-ze` |
+| Padaria Pão Quente | `/loja/padaria-pao-quente` |
+| Açougue Bom Corte | `/loja/acougue-bom-corte` |
+
+- Every query is filtered by the logged-in store (`comercio_id` taken from the session, never from the form or URL), and every action by id checks that the record belongs to the store (protection against IDOR).
+- The platform owner uses `painel.php` to see all stores, create and block stores, and enter any store as administrator.
+- The database is upgraded automatically on the first visit after the update (`migracoes.php`): existing data becomes the "Loja principal" (`/loja/principal`).
+
 ## Business rules
 
 - **Customer status**: *em dia* (no debt), *devendo* (owing) or *inadimplente* (in default: the oldest unpaid purchase is more than 30 days old). Payments pay off the oldest purchases first.

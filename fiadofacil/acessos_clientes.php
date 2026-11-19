@@ -1,19 +1,20 @@
 <?php
 require_once "verifica_admin.php";
 require_once "conexao.php";
+$loja = loja_id();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
     $id_usuario = (int)($_POST['id_usuario'] ?? 0);
     $acao = $_POST['acao'] ?? '';
     if ($acao === 'bloquear') {
-        $stmt = $conn->prepare("UPDATE usuarios SET status = 'bloqueado' WHERE id = ? AND nivel = 'cliente' AND status = 'aprovado'");
-        $stmt->bind_param("i", $id_usuario);
+        $stmt = $conn->prepare("UPDATE usuarios SET status = 'bloqueado' WHERE id = ? AND comercio_id = ? AND nivel = 'cliente' AND status = 'aprovado'");
+        $stmt->bind_param("ii", $id_usuario, $loja);
         $stmt->execute();
         $stmt->close();
         definir_flash("Acesso bloqueado. O cliente não consegue mais entrar.");
     } elseif ($acao === 'desbloquear') {
-        $stmt = $conn->prepare("UPDATE usuarios SET status = 'aprovado' WHERE id = ? AND nivel = 'cliente' AND status = 'bloqueado'");
-        $stmt->bind_param("i", $id_usuario);
+        $stmt = $conn->prepare("UPDATE usuarios SET status = 'aprovado' WHERE id = ? AND comercio_id = ? AND nivel = 'cliente' AND status = 'bloqueado'");
+        $stmt->bind_param("ii", $id_usuario, $loja);
         $stmt->execute();
         $stmt->close();
         definir_flash("Acesso desbloqueado.");
@@ -23,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             definir_flash("A nova senha deve ter no mínimo 8 caracteres.", "erro");
         } else {
             $hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id = ? AND nivel = 'cliente'");
-            $stmt->bind_param("si", $hash, $id_usuario);
+            $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id = ? AND comercio_id = ? AND nivel = 'cliente'");
+            $stmt->bind_param("sii", $hash, $id_usuario, $loja);
             $stmt->execute();
             $stmt->close();
             definir_flash("Senha alterada com sucesso.");
@@ -33,7 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: acessos_clientes.php");
     exit();
 }
-$resultado = $conn->query("SELECT u.id, u.nome, u.usuario, u.status, c.nome AS nome_cliente FROM usuarios u LEFT JOIN clientes c ON c.id = u.cliente_id WHERE u.nivel = 'cliente' AND u.status IN ('aprovado','bloqueado') ORDER BY u.nome");
+$stmt = $conn->prepare("SELECT u.id, u.nome, u.usuario, u.status, c.nome AS nome_cliente FROM usuarios u LEFT JOIN clientes c ON c.id = u.cliente_id WHERE u.comercio_id = ? AND u.nivel = 'cliente' AND u.status IN ('aprovado','bloqueado') ORDER BY u.nome");
+$stmt->bind_param("i", $loja);
+$stmt->execute();
+$resultado = $stmt->get_result();
+$stmt->close();
 $titulo_pagina = "Acessos de clientes";
 $menu_ativo = "acessos";
 require "cabecalho.php";

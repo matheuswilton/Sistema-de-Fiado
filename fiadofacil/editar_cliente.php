@@ -1,13 +1,14 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
     header("Location: listar_clientes.php");
     exit();
 }
-$stmt = $conn->prepare("SELECT nome, telefone, endereco, limite_credito FROM clientes WHERE id = ?");
-$stmt->bind_param("i", $id);
+$stmt = $conn->prepare("SELECT nome, telefone, endereco, limite_credito FROM clientes WHERE id = ? AND comercio_id = ?");
+$stmt->bind_param("ii", $id, $loja);
 $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
 $stmt->close();
@@ -40,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensagem = "Já existe outro cliente cadastrado com este telefone.";
     } else {
         $telefone = formatar_telefone($telefone);
-        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, telefone = ?, endereco = ?, limite_credito = ? WHERE id = ?");
-        $stmt->bind_param("sssdi", $nome, $telefone, $endereco, $novo_limite, $id);
+        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, telefone = ?, endereco = ?, limite_credito = ? WHERE id = ? AND comercio_id = ?");
+        $stmt->bind_param("sssdii", $nome, $telefone, $endereco, $novo_limite, $id, $loja);
         if ($stmt->execute()) {
             $stmt->close();
             definir_flash("Dados do cliente atualizados com sucesso!");
