@@ -4,7 +4,7 @@
 // Pode rodar quantas vezes for preciso: cada passo confere antes de mudar.
 
 if (!isset($conn)) { http_response_code(404); exit(); }
-const VERSAO_BANCO = 2;
+const VERSAO_BANCO = 3;
 
 function migracao_coluna_existe($conn, $tabela, $coluna) {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?");
@@ -83,16 +83,16 @@ function semear_dados_exemplo($conn) {
     $existe = (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'plataforma'")->fetch_row()[0];
     if ($existe === 0) {
         $stmt = $conn->prepare("INSERT INTO usuarios (comercio_id, nome, usuario, senha, nivel, status) VALUES (NULL, 'Dono da plataforma', 'dono.plataforma', ?, 'plataforma', 'aprovado')");
-        $hash = '$2y$10$KSQ3cxt4n.AJ6Mn86hzvDOtBc.qbh82xjJSXLruon5jutgAPvDFSO';
+        $hash = '$2y$10$hUjLNgPZ5DYWDz9yHRC3aedBXA.TtGJ1qwK5tmxjKO6b66VCoFEfy';
         $stmt->bind_param("s", $hash);
         $stmt->execute();
         $stmt->close();
     }
-    $senha_cliente = '$2y$10$JCdvVtRqiu0lUrz.90md1Oln9Qx7CGYH4J5ic9fnsH6j.Sb.l/tQq';
+    $senha_cliente = '$2y$10$J5muAbnKOmo0Hf4hOyqR4ON.8wLLz5t6RRzqQu.44dwweo1GumjjC';
     $lojas = [
         [
             'nome' => 'Mercearia do Zé', 'slug' => 'mercearia-do-ze', 'tema' => 'mercearia',
-            'senha' => '$2y$10$vCx9NofjODziHFmByFw87uenFr5MlJg8lLr/yChCucVSX.Cm9eKdm',
+            'senha' => '$2y$10$YZGr70qUr/.zTgo1RJykVe.AVK/RySzU0ec2F53quZLC77OsBToe2',
             'admin' => ['Zé da Mercearia', 'ze'], 'comum' => ['Ana (caixa)', 'ana.caixa'], 'cliente_usuario' => 'joao',
             'clientes' => [
                 ['João Pereira', '(62) 98111-0001', 'Rua das Mangueiras, 12', 400, [['Arroz, feijão e óleo', 85.00, 12], ['Verduras e legumes', 23.50, 4]], [[40.00, 6]], true],
@@ -102,7 +102,7 @@ function semear_dados_exemplo($conn) {
         ],
         [
             'nome' => 'Padaria Pão Quente', 'slug' => 'padaria-pao-quente', 'tema' => 'padaria',
-            'senha' => '$2y$10$8e2uYniWbOfVOpFZy8JCUexhbhqtnk2LKq6y0KLCN83xK6whiwJ5q',
+            'senha' => '$2y$10$GGiJ38vN.m.TNtmF4dRTzebyBmmhC.9ofjxjHFDB7zqz64ZwSJIvy',
             'admin' => ['Rosa (dona)', 'rosa'], 'comum' => ['Pedro (balcão)', 'pedro.balcao'], 'cliente_usuario' => 'joao',
             'clientes' => [
                 ['João Pereira', '(62) 98222-0001', 'Rua das Mangueiras, 12', 200, [['Pão francês e leite', 18.90, 3], ['Bolo de fubá', 25.00, 1]], [], true],
@@ -112,7 +112,7 @@ function semear_dados_exemplo($conn) {
         ],
         [
             'nome' => 'Açougue Bom Corte', 'slug' => 'acougue-bom-corte', 'tema' => 'acougue',
-            'senha' => '$2y$10$Ogt9VdJS8C5RI/xMxAj9i.B80uAVYbBM047GVQXsiUjQNPChdnWIe',
+            'senha' => '$2y$10$nT26Btk8Ahn64ipdTJSzCeHx9MXqYVny9yR/wf//5FxRT9Li2S25y',
             'admin' => ['Carlos (dono)', 'carlos.dono'], 'comum' => ['Bia (caixa)', 'bia.caixa'], 'cliente_usuario' => 'maria',
             'clientes' => [
                 ['Maria Oliveira', '(62) 98333-0001', 'Rua das Palmeiras, 7', 600, [['Picanha 1,2 kg', 95.00, 9], ['Frango inteiro', 28.00, 2]], [[50.00, 5]], true],
@@ -173,12 +173,30 @@ function semear_dados_exemplo($conn) {
     }
 }
 
+// Versao 3: senhas simples das contas de exemplo (so troca se a senha ainda for a antiga, sem mexer em senha que o dono ja trocou)
+function atualizar_senhas_exemplo($conn) {
+    $trocas = [
+        ['$2y$10$KSQ3cxt4n.AJ6Mn86hzvDOtBc.qbh82xjJSXLruon5jutgAPvDFSO', '$2y$10$hUjLNgPZ5DYWDz9yHRC3aedBXA.TtGJ1qwK5tmxjKO6b66VCoFEfy'],
+        ['$2y$10$JCdvVtRqiu0lUrz.90md1Oln9Qx7CGYH4J5ic9fnsH6j.Sb.l/tQq', '$2y$10$J5muAbnKOmo0Hf4hOyqR4ON.8wLLz5t6RRzqQu.44dwweo1GumjjC'],
+        ['$2y$10$vCx9NofjODziHFmByFw87uenFr5MlJg8lLr/yChCucVSX.Cm9eKdm', '$2y$10$YZGr70qUr/.zTgo1RJykVe.AVK/RySzU0ec2F53quZLC77OsBToe2'],
+        ['$2y$10$8e2uYniWbOfVOpFZy8JCUexhbhqtnk2LKq6y0KLCN83xK6whiwJ5q', '$2y$10$GGiJ38vN.m.TNtmF4dRTzebyBmmhC.9ofjxjHFDB7zqz64ZwSJIvy'],
+        ['$2y$10$Ogt9VdJS8C5RI/xMxAj9i.B80uAVYbBM047GVQXsiUjQNPChdnWIe', '$2y$10$nT26Btk8Ahn64ipdTJSzCeHx9MXqYVny9yR/wf//5FxRT9Li2S25y'],
+    ];
+    $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE senha = ?");
+    foreach ($trocas as [$antiga, $nova]) {
+        $stmt->bind_param("ss", $nova, $antiga);
+        $stmt->execute();
+    }
+    $stmt->close();
+}
+
 // roda uma vez por sessao do navegador (depois que o banco esta atualizado, so faz uma consulta rapida)
 if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
     $atualizado = migracao_coluna_existe($conn, 'usuarios', 'comercio_id')
         && migracao_indice_existe($conn, 'usuarios', 'uq_usuario_por_loja')
         && (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'plataforma'")->fetch_row()[0] > 0;
     if ($atualizado || migrar_banco($conn)) {
+        atualizar_senhas_exemplo($conn);
         $_SESSION['versao_banco'] = VERSAO_BANCO;
     }
 }
