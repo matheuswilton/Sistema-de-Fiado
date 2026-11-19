@@ -1,6 +1,7 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 $mensagem = "";
 $nome = $telefone = $endereco = "";
 $limite_credito = 500.00;
@@ -23,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensagem = "Já existe um cliente cadastrado com este telefone.";
     } else {
         $telefone = formatar_telefone($telefone);
-        $stmt = $conn->prepare("INSERT INTO clientes (nome, telefone, endereco, limite_credito) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sssd", $nome, $telefone, $endereco, $limite_credito);
+        $stmt = $conn->prepare("INSERT INTO clientes (comercio_id, nome, telefone, endereco, limite_credito) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssd", $loja, $nome, $telefone, $endereco, $limite_credito);
         if ($stmt->execute()) {
             $novo_id = $conn->insert_id;
             $stmt->close();

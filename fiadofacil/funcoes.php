@@ -6,6 +6,61 @@ if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax', 'secure' => $conexao_segura]);
     session_start();
 }
+// Loja (comercio) do usuario logado. Vem SEMPRE da sessao, nunca de formulario ou endereco.
+function loja_id() {
+    return (int)($_SESSION['comercio_id'] ?? 0);
+}
+// true se quem esta logado e o dono da plataforma (pode estar "dentro" de uma loja pelo painel)
+function eh_plataforma() {
+    return !empty($_SESSION['plataforma']);
+}
+// Dados de uma loja (nome, slug, tema, status) pelo id ou pelo endereco (slug)
+function carregar_loja($conn, $id) {
+    $stmt = $conn->prepare("SELECT id, nome, slug, tema, status FROM comercios WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $loja = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $loja ?: null;
+}
+function carregar_loja_por_slug($conn, $slug) {
+    $slug = strtolower(trim((string)$slug));
+    if (!preg_match('/^[a-z0-9-]{2,60}$/', $slug)) {
+        return null;
+    }
+    $stmt = $conn->prepare("SELECT id, nome, slug, tema, status FROM comercios WHERE slug = ?");
+    $stmt->bind_param("s", $slug);
+    $stmt->execute();
+    $loja = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $loja ?: null;
+}
+// Confere se o cliente pertence a loja logada (evita ver ou mexer em cliente de outra loja trocando o id no endereco)
+function cliente_da_loja($conn, $cliente_id) {
+    $loja = loja_id();
+    $stmt = $conn->prepare("SELECT id FROM clientes WHERE id = ? AND comercio_id = ?");
+    $stmt->bind_param("ii", $cliente_id, $loja);
+    $stmt->execute();
+    $existe = (bool)$stmt->get_result()->fetch_row();
+    $stmt->close();
+    return $existe;
+}
+// Endereco da tela de login de uma loja (mantem a pessoa na loja dela)
+function endereco_login($slug = null, $motivo = "") {
+    $parametros = [];
+    if ($slug) { $parametros['loja'] = $slug; }
+    if ($motivo !== "") { $parametros['motivo'] = $motivo; }
+    return "login.php" . ($parametros ? "?" . http_build_query($parametros) : "");
+}
+// Sai do sistema e volta para o login da mesma loja (ou para o painel, se for o dono da plataforma)
+function encerrar_sessao($motivo) {
+    $slug = $_SESSION['loja_slug'] ?? null;
+    $era_plataforma = eh_plataforma();
+    session_unset();
+    session_destroy();
+    header("Location: " . ($era_plataforma ? "painel.php?motivo=" . urlencode($motivo) : endereco_login($slug, $motivo)));
+    exit();
+}
 // true se o usuario logado e administrador
 function eh_admin() {
     return isset($_SESSION['usuario_nivel']) && $_SESSION['usuario_nivel'] === 'admin';
@@ -193,8 +248,9 @@ function telefone_ja_cadastrado($conn, $telefone, $ignorar_id = 0) {
     if ($numeros === "") {
         return false;
     }
-    $stmt = $conn->prepare("SELECT id FROM clientes WHERE " . sql_telefone_numeros("telefone") . " = ? AND id <> ?");
-    $stmt->bind_param("si", $numeros, $ignorar_id);
+    $loja = loja_id();
+    $stmt = $conn->prepare("SELECT id FROM clientes WHERE comercio_id = ? AND " . sql_telefone_numeros("telefone") . " = ? AND id <> ?");
+    $stmt->bind_param("isi", $loja, $numeros, $ignorar_id);
     $stmt->execute();
     $stmt->store_result();
     $existe = $stmt->num_rows > 0;
@@ -250,9 +306,11 @@ function buscar_clientes_situacao($conn, $data_inicio = null, $data_fim = null, 
                        > COALESCE((SELECT SUM(p4.valor) FROM pagamentos p4 WHERE p4.cliente_id = c.id), 0)
                )), 0) AS dias_devendo
         FROM clientes c
+        WHERE c.comercio_id = ?
         ORDER BY c.nome
     ");
-    $stmt->bind_param("ssss", $inicio, $fim, $inicio, $fim);
+    $loja = loja_id();
+    $stmt->bind_param("ssssi", $inicio, $fim, $inicio, $fim, $loja);
     $stmt->execute();
     $resultado = $stmt->get_result();
     $lista = [];
@@ -301,8 +359,9 @@ function registrar_compra($conn, $cliente_id, $descricao, $valor) {
         $descricao = "Compra no fiado";
     }
     $conn->begin_transaction();
-    $stmt = $conn->prepare("SELECT limite_credito FROM clientes WHERE id = ? FOR UPDATE");
-    $stmt->bind_param("i", $cliente_id);
+    $loja = loja_id();
+    $stmt = $conn->prepare("SELECT limite_credito FROM clientes WHERE id = ? AND comercio_id = ? FOR UPDATE");
+    $stmt->bind_param("ii", $cliente_id, $loja);
     $stmt->execute();
     $cliente = $stmt->get_result()->fetch_assoc();
     $stmt->close();
@@ -334,8 +393,9 @@ function registrar_pagamento($conn, $cliente_id, $valor) {
         return [false, "O valor do pagamento deve ser maior que zero."];
     }
     $conn->begin_transaction();
-    $stmt = $conn->prepare("SELECT id FROM clientes WHERE id = ? FOR UPDATE");
-    $stmt->bind_param("i", $cliente_id);
+    $loja = loja_id();
+    $stmt = $conn->prepare("SELECT id FROM clientes WHERE id = ? AND comercio_id = ? FOR UPDATE");
+    $stmt->bind_param("ii", $cliente_id, $loja);
     $stmt->execute();
     $cliente = $stmt->get_result()->fetch_assoc();
     $stmt->close();

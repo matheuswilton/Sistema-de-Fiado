@@ -2,9 +2,10 @@
 // Extrato do cliente: dados, divida, compras e pagamentos
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$stmt = $conn->prepare("SELECT id, nome, telefone, endereco, limite_credito, criado_em FROM clientes WHERE id = ?");
-$stmt->bind_param("i", $id);
+$stmt = $conn->prepare("SELECT id, nome, telefone, endereco, limite_credito, criado_em FROM clientes WHERE id = ? AND comercio_id = ?");
+$stmt->bind_param("ii", $id, $loja);
 $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
 $stmt->close();

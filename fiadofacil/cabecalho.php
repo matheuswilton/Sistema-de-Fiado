@@ -7,8 +7,34 @@ $esta_logado = isset($_SESSION['usuario_id']);
 $nivel_logado = $esta_logado ? $_SESSION['usuario_nivel'] : "";
 $total_pendentes_menu = 0;
 if ($esta_logado && $nivel_logado === 'admin' && isset($conn)) {
-    $resultado_pendentes = $conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'cliente' AND status = 'pendente'");
-    if ($resultado_pendentes) { $total_pendentes_menu = (int)$resultado_pendentes->fetch_row()[0]; }
+    $stmt_pendentes = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE comercio_id = ? AND nivel = 'cliente' AND status = 'pendente'");
+    $id_loja_menu = loja_id();
+    $stmt_pendentes->bind_param("i", $id_loja_menu);
+    $stmt_pendentes->execute();
+    $total_pendentes_menu = (int)$stmt_pendentes->get_result()->fetch_row()[0];
+    $stmt_pendentes->close();
+}
+// Loja mostrada nesta tela: a do usuario logado ou a do endereco de login
+if (!isset($loja_atual) && $esta_logado && isset($conn) && loja_id() > 0) { $loja_atual = carregar_loja($conn, loja_id()); }
+$loja_tela = $loja_atual ?? ($loja_publica ?? null);
+$temas_lojas = ['mercearia' => '#14532d', 'padaria' => '#78350f', 'acougue' => '#4c0519'];
+$tema_loja = ($loja_tela && isset($temas_lojas[$loja_tela['tema']])) ? $loja_tela['tema'] : '';
+$loja_tem_nome_proprio = $loja_tela && $loja_tela['slug'] !== 'principal';
+// Letreiro da tela de login: o nome da loja (ou FiadoFacil), com a ultima palavra em destaque
+if ($loja_tem_nome_proprio) {
+    $palavras = preg_split('/\s+/u', trim($loja_tela['nome']));
+    $parte_destaque = array_pop($palavras);
+    $parte_inicio = $palavras ? implode(' ', $palavras) . ' ' : '';
+} else {
+    $parte_inicio = 'Fiado';
+    $parte_destaque = 'Fácil';
+}
+function letras_letreiro($texto, $inicio) {
+    $html = '';
+    foreach (preg_split('//u', $texto, -1, PREG_SPLIT_NO_EMPTY) as $i => $letra) {
+        $html .= '<span class="letra" style="--i:' . ($inicio + $i) . '">' . ($letra === ' ' ? '&nbsp;' : htmlspecialchars($letra)) . '</span>';
+    }
+    return $html;
 }
 function link_menu($arquivo, $texto, $chave, $menu_ativo, $extra = "") {
     $classe = ($chave === $menu_ativo) ? ' class="ativo"' : '';
@@ -21,7 +47,7 @@ function botao_tema($classe_extra = "") {
 $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'cliente' => 'Cliente'];
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR"<?php if ($tema_loja) echo ' data-loja="' . $tema_loja . '"'; ?>>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,7 +70,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
     try { if (localStorage.getItem('menu') === 'recolhido') { document.documentElement.setAttribute('data-menu', 'recolhido'); } } catch (e) {}
 })();
 </script>
-<meta name="theme-color" content="#1e3a8a">
+<meta name="theme-color" content="<?php echo $tema_loja ? $temas_lojas[$tema_loja] : '#1e3a8a'; ?>">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FiadoFácil">
@@ -55,7 +81,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=24">
+<link rel="stylesheet" href="css/estilo.css?v=26">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
@@ -65,6 +91,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
             <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(40, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
             <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('recolher'); ?></button>
         </div>
+        <?php if ($loja_tem_nome_proprio): ?><div class="loja-nome" title="<?php echo htmlspecialchars($loja_tela['nome']); ?>"><?php echo icone('inicio'); ?><span><?php echo htmlspecialchars($loja_tela['nome']); ?></span></div><?php endif; ?>
         <nav class="menu" aria-label="Menu principal">
             <?php if ($nivel_logado === 'cliente'): ?>
                 <?php link_menu("minha_divida.php", "Minha dívida", "divida", $menu_ativo); ?>
@@ -108,12 +135,16 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
     </div>
     <div class="marca-login-conteudo">
         <div class="letreiro-palco">
-            <div class="letreiro" role="img" aria-label="FiadoFácil">
-                <span class="letreiro-parte letreiro-fiado" aria-hidden="true"><?php foreach (preg_split('//u', 'Fiado', -1, PREG_SPLIT_NO_EMPTY) as $i => $letra): ?><span class="letra" style="--i:<?php echo $i; ?>"><?php echo $letra; ?></span><?php endforeach; ?></span><span class="letreiro-parte letreiro-facil" aria-hidden="true"><?php foreach (preg_split('//u', 'Fácil', -1, PREG_SPLIT_NO_EMPTY) as $i => $letra): ?><span class="letra" style="--i:<?php echo $i + 5; ?>"><?php echo $letra; ?></span><?php endforeach; ?></span>
+            <div class="letreiro" role="img" aria-label="<?php echo htmlspecialchars($parte_inicio . $parte_destaque); ?>">
+                <span class="letreiro-parte letreiro-fiado" aria-hidden="true"><?php echo letras_letreiro($parte_inicio, 0); ?></span><span class="letreiro-parte letreiro-facil" aria-hidden="true"><?php echo letras_letreiro($parte_destaque, mb_strlen($parte_inicio)); ?></span>
             </div>
         </div>
+        <?php if ($loja_tem_nome_proprio): ?><p class="loja-por">Fiado organizado com <strong>FiadoFácil</strong></p><?php endif; ?>
         <p class="marca-frase" aria-live="polite"><span class="frase-atual" data-frases="Controle do fiado sem caderninho.|Quem anota, recebe.|Adeus, caderninho. Olá, controle.|Cada real anotado é um real recebido.|Fiado organizado, cliente fiel.|Seu caderninho agora cabe no bolso.">Controle do fiado sem caderninho.</span></p>
     </div>
 </div>
+<?php endif; ?>
+<?php if ($esta_logado && eh_plataforma() && $loja_tela): ?>
+<div class="faixa-plataforma" role="status">Você está na loja <strong><?php echo htmlspecialchars($loja_tela['nome']); ?></strong> como dono da plataforma. <a href="painel.php?sair_da_loja=1">Voltar ao painel</a></div>
 <?php endif; ?>
 <main class="container <?php echo $classe_container; ?>">

@@ -5,6 +5,11 @@ if (isset($_SESSION['usuario_id'])) {
     exit();
 }
 require_once "conexao.php";
+// o pedido de acesso e sempre para a loja do endereco que o cliente abriu
+$loja_publica = carregar_loja_por_slug($conn, $_GET['loja'] ?? ($_SESSION['loja_publica_slug'] ?? 'principal'));
+if ($loja_publica) {
+    $_SESSION['loja_publica_slug'] = $loja_publica['slug'];
+}
 $mensagem = "";
 $tipo = "mensagem";
 $nome = $telefone = $usuario_digitado = "";
@@ -16,7 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario_digitado = trim($_POST['usuario'] ?? '');
     $senha = $_POST['senha'] ?? '';
     $confirmar_senha = $_POST['confirmar_senha'] ?? '';
-    if ($eh_robo) {
+    if (!$loja_publica || $loja_publica['status'] !== 'ativo') {
+        $mensagem = "Loja não encontrada ou com acesso suspenso. Confira o endereço com a loja.";
+        $tipo = "erro";
+    } elseif ($eh_robo) {
         $mensagem = "Não foi possível enviar. Confira os dados e envie de novo.";
         $tipo = "erro";
     } elseif ($nome === "" || $telefone === "" || $usuario_digitado === "") {
@@ -36,15 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tipo = "erro";
     } else {
         $telefone = formatar_telefone($telefone);
-        $stmt_duplicado = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ?");
-        $stmt_duplicado->bind_param("s", $usuario_digitado);
+        $id_loja = (int)$loja_publica['id'];
+        $stmt_duplicado = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ? AND comercio_id = ?");
+        $stmt_duplicado->bind_param("si", $usuario_digitado, $id_loja);
         $stmt_duplicado->execute();
         $stmt_duplicado->store_result();
         $usuario_existe = $stmt_duplicado->num_rows > 0;
         $stmt_duplicado->close();
         $numeros_telefone = so_numeros($telefone);
-        $stmt_pendente = $conn->prepare("SELECT id FROM usuarios WHERE nivel = 'cliente' AND status = 'pendente' AND " . sql_telefone_numeros("telefone_solicitado") . " = ?");
-        $stmt_pendente->bind_param("s", $numeros_telefone);
+        $stmt_pendente = $conn->prepare("SELECT id FROM usuarios WHERE comercio_id = ? AND nivel = 'cliente' AND status = 'pendente' AND " . sql_telefone_numeros("telefone_solicitado") . " = ?");
+        $stmt_pendente->bind_param("is", $id_loja, $numeros_telefone);
         $stmt_pendente->execute();
         $stmt_pendente->store_result();
         $ja_tem_pedido = $stmt_pendente->num_rows > 0;
@@ -57,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tipo = "erro";
         } else {
             $hash = password_hash($senha, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO usuarios (nome, usuario, senha, nivel, status, telefone_solicitado) VALUES (?, ?, ?, 'cliente', 'pendente', ?)");
-            $stmt->bind_param("ssss", $nome, $usuario_digitado, $hash, $telefone);
+            $stmt = $conn->prepare("INSERT INTO usuarios (comercio_id, nome, usuario, senha, nivel, status, telefone_solicitado) VALUES (?, ?, ?, ?, 'cliente', 'pendente', ?)");
+            $stmt->bind_param("issss", $id_loja, $nome, $usuario_digitado, $hash, $telefone);
             if ($stmt->execute()) {
                 $mensagem = "Solicitação enviada! Quando o administrador aprovar, você poderá entrar com o usuário e a senha que criou.";
                 $nome = $telefone = $usuario_digitado = "";
@@ -78,7 +87,7 @@ require "cabecalho.php";
 <h1>Solicitar acesso de cliente</h1>
 <p class="subtitulo">Com este acesso você só consegue ver a sua própria dívida.</p>
 <?php if ($mensagem): ?><div class="<?php echo $tipo; ?>" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
-<form method="POST" action="solicitar_acesso.php">
+<form method="POST" action="solicitar_acesso.php<?php echo $loja_publica ? "?loja=" . urlencode($loja_publica['slug']) : ""; ?>">
     <?php campo_csrf(); campo_antispam('solicitar_acesso'); ?>
     <label for="nome">Nome completo</label>
     <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" maxlength="100" required>
@@ -93,5 +102,5 @@ require "cabecalho.php";
     <p class="dica aviso-privacidade">Ao enviar, você concorda com o uso do seu nome e telefone para a loja liberar o seu acesso, conforme a <a href="privacidade.php" target="_blank">Política de Privacidade</a>.</p>
     <button type="submit" class="botao-total">Enviar solicitação</button>
 </form>
-<div class="barra-botoes"><a href="login.php" class="botao botao-secundario botao-total">Voltar ao login</a></div>
+<div class="barra-botoes"><a href="<?php echo htmlspecialchars(endereco_login($loja_publica['slug'] ?? null)); ?>" class="botao botao-secundario botao-total">Voltar ao login</a></div>
 <?php require "rodape.php"; ?>

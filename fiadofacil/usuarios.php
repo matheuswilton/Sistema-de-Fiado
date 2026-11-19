@@ -2,6 +2,7 @@
 // Gerenciamento de funcionarios - somente administrador
 require_once "verifica_admin.php";
 require_once "conexao.php";
+$loja = loja_id();
 $mensagem = "";
 $nome = $login = "";
 $nivel = "comum";
@@ -22,8 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (strlen($senha) < 8) {
             $mensagem = "A senha deve ter no mínimo 8 caracteres.";
         } else {
-            $stmt_duplicado = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ?");
-            $stmt_duplicado->bind_param("s", $login);
+            $stmt_duplicado = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ? AND comercio_id = ?");
+            $stmt_duplicado->bind_param("si", $login, $loja);
             $stmt_duplicado->execute();
             $stmt_duplicado->store_result();
             $duplicado = $stmt_duplicado->num_rows > 0;
@@ -32,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mensagem = "Este nome de usuário já está em uso.";
             } else {
                 $hash = password_hash($senha, PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO usuarios (nome, usuario, senha, nivel) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssss", $nome, $login, $hash, $nivel);
+                $stmt = $conn->prepare("INSERT INTO usuarios (comercio_id, nome, usuario, senha, nivel) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("issss", $loja, $nome, $login, $hash, $nivel);
                 if ($stmt->execute()) {
                     $stmt->close();
                     definir_flash("Usuário cadastrado com sucesso!");
@@ -49,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id_usuario === (int)$_SESSION['usuario_id'] && $acao !== 'trocar_senha') {
             definir_flash("Você não pode bloquear a sua própria conta.", "erro");
         } elseif ($acao === 'bloquear') {
-            $stmt = $conn->prepare("UPDATE usuarios SET status = 'bloqueado' WHERE id = ? AND nivel IN ('admin','comum')");
-            $stmt->bind_param("i", $id_usuario);
+            $stmt = $conn->prepare("UPDATE usuarios SET status = 'bloqueado' WHERE id = ? AND comercio_id = ? AND nivel IN ('admin','comum')");
+            $stmt->bind_param("ii", $id_usuario, $loja);
             $stmt->execute();
             $stmt->close();
             definir_flash("Usuário bloqueado. Ele não consegue mais entrar.");
         } elseif ($acao === 'desbloquear') {
-            $stmt = $conn->prepare("UPDATE usuarios SET status = 'aprovado' WHERE id = ? AND nivel IN ('admin','comum')");
-            $stmt->bind_param("i", $id_usuario);
+            $stmt = $conn->prepare("UPDATE usuarios SET status = 'aprovado' WHERE id = ? AND comercio_id = ? AND nivel IN ('admin','comum')");
+            $stmt->bind_param("ii", $id_usuario, $loja);
             $stmt->execute();
             $stmt->close();
             definir_flash("Usuário desbloqueado.");
@@ -66,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 definir_flash("A nova senha deve ter no mínimo 8 caracteres.", "erro");
             } else {
                 $hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id = ? AND nivel IN ('admin','comum')");
-                $stmt->bind_param("si", $hash, $id_usuario);
+                $stmt = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id = ? AND comercio_id = ? AND nivel IN ('admin','comum')");
+                $stmt->bind_param("sii", $hash, $id_usuario, $loja);
                 $stmt->execute();
                 $stmt->close();
                 definir_flash("Senha do usuário alterada com sucesso.");
@@ -78,14 +79,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 $por_pagina = 10;
-$total = (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel IN ('admin','comum')")->fetch_row()[0];
+$stmt = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE comercio_id = ? AND nivel IN ('admin','comum')");
+$stmt->bind_param("i", $loja);
+$stmt->execute();
+$total = (int)$stmt->get_result()->fetch_row()[0];
+$stmt->close();
 $total_paginas = max(1, (int)ceil($total / $por_pagina));
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina < 1) { $pagina = 1; }
 if ($pagina > $total_paginas) { $pagina = $total_paginas; }
 $offset = ($pagina - 1) * $por_pagina;
-$stmt = $conn->prepare("SELECT id, nome, usuario, nivel, status, criado_em FROM usuarios WHERE nivel IN ('admin','comum') ORDER BY nome LIMIT ? OFFSET ?");
-$stmt->bind_param("ii", $por_pagina, $offset);
+$stmt = $conn->prepare("SELECT id, nome, usuario, nivel, status, criado_em FROM usuarios WHERE comercio_id = ? AND nivel IN ('admin','comum') ORDER BY nome LIMIT ? OFFSET ?");
+$stmt->bind_param("iii", $loja, $por_pagina, $offset);
 $stmt->execute();
 $resultado = $stmt->get_result();
 $titulo_pagina = "Usuários";

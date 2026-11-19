@@ -28,3 +28,5 @@ if ($conn->connect_error) {
 unset($banco_host, $banco_usuario, $banco_senha, $banco_nome);
 $conn->set_charset("utf8mb4");
 $conn->query("SET time_zone = '-03:00'");
+// atualiza o banco para varias lojas, se ainda nao estiver atualizado
+require_once __DIR__ . "/migracoes.php";

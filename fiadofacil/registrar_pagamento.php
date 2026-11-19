@@ -1,6 +1,7 @@
 <?php
 require_once "verifica_login.php";
 require_once "conexao.php";
+$loja = loja_id();
 $cliente_escolhido = isset($_GET['cliente_id']) ? (int)$_GET['cliente_id'] : 0;
 $valor_digitado = "";
 $mensagem = "";
@@ -22,14 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 // so clientes que estao devendo aparecem na lista
-$clientes = $conn->query("
+$stmt_lista = $conn->prepare("
     SELECT id, nome, saldo_devedor FROM (
         SELECT c.id, c.nome,
                COALESCE((SELECT SUM(co.valor) FROM compras co WHERE co.cliente_id = c.id), 0)
                - COALESCE((SELECT SUM(p.valor) FROM pagamentos p WHERE p.cliente_id = c.id), 0) AS saldo_devedor
-        FROM clientes c
+        FROM clientes c WHERE c.comercio_id = ?
     ) t WHERE saldo_devedor > 0 ORDER BY nome
 ");
+$stmt_lista->bind_param("i", $loja);
+$stmt_lista->execute();
+$clientes = $stmt_lista->get_result();
+$stmt_lista->close();
 $titulo_pagina = "Registrar pagamento";
 $menu_ativo = "pagamento";
 $classe_container = "container-medio";

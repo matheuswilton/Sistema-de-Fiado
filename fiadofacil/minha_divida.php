@@ -1,8 +1,8 @@
 <?php
 // Tela do cliente (somente leitura): mostra apenas a divida dele
 require_once "funcoes.php";
-if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['usuario_id']) || loja_id() === 0) {
+    header("Location: " . endereco_login($_SESSION['loja_slug'] ?? null));
     exit();
 }
 if ($_SESSION['usuario_nivel'] !== 'cliente') {
@@ -11,28 +11,27 @@ if ($_SESSION['usuario_nivel'] !== 'cliente') {
 }
 require_once "conexao.php";
 $id_usuario = (int)$_SESSION['usuario_id'];
-$stmt = $conn->prepare("SELECT status, cliente_id FROM usuarios WHERE id = ? AND nivel = 'cliente'");
-$stmt->bind_param("i", $id_usuario);
+$loja = loja_id();
+$stmt = $conn->prepare("SELECT status, cliente_id FROM usuarios WHERE id = ? AND nivel = 'cliente' AND comercio_id = ?");
+$stmt->bind_param("ii", $id_usuario, $loja);
 $stmt->execute();
 $dados_usuario = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 if (!$dados_usuario || $dados_usuario['status'] !== 'aprovado' || !$dados_usuario['cliente_id']) {
-    session_unset();
-    session_destroy();
-    header("Location: login.php?motivo=bloqueado");
-    exit();
+    encerrar_sessao("bloqueado");
+}
+$loja_atual = carregar_loja($conn, $loja);
+if (!$loja_atual || $loja_atual['status'] !== 'ativo') {
+    encerrar_sessao("loja_bloqueada");
 }
 $id_cliente = (int)$dados_usuario['cliente_id'];
-$stmt = $conn->prepare("SELECT nome, limite_credito FROM clientes WHERE id = ?");
-$stmt->bind_param("i", $id_cliente);
+$stmt = $conn->prepare("SELECT nome, limite_credito FROM clientes WHERE id = ? AND comercio_id = ?");
+$stmt->bind_param("ii", $id_cliente, $loja);
 $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 if (!$cliente) {
-    session_unset();
-    session_destroy();
-    header("Location: login.php?motivo=bloqueado");
-    exit();
+    encerrar_sessao("bloqueado");
 }
 $total_compras = 0;
 $lista_compras = [];

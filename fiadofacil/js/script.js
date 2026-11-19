@@ -208,7 +208,7 @@ if (!semAnimacao) {
         if (!larguraTexto || !larguraPalco) { return; }
         // ocupa a largura toda, mas sem empurrar o formulario de login para fora da tela
         var limiteAltura = (window.innerHeight - 448) / 1.09;
-        var tamanho = Math.max(48, Math.min(440, limiteAltura, 100 * larguraPalco / larguraTexto));
+        var tamanho = Math.max(22, Math.min(440, limiteAltura, 100 * larguraPalco / larguraTexto));
         letreiro.style.fontSize = tamanho + 'px';
     }
     ajustar();
