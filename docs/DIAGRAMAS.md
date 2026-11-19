@@ -7,16 +7,27 @@ Para exportar como imagem (PNG/SVG) para slides: cole o bloco em https://mermaid
 
 ## 1. Diagrama do banco de dados (UML / DER)
 
-Modelo entidade-relacionamento das 4 tabelas do arquivo [`fiadofacil/sql/banco.sql`](../fiadofacil/sql/banco.sql).
+Modelo entidade-relacionamento das 5 tabelas. A tabela `comercios` separa as lojas: cada loja tem os próprios clientes e usuários (a estrutura é criada por [`fiadofacil/migracoes.php`](../fiadofacil/migracoes.php)).
 
 ```mermaid
 erDiagram
+    COMERCIOS ||--o{ CLIENTES : "tem"
+    COMERCIOS |o--o{ USUARIOS : "tem"
     CLIENTES ||--o{ COMPRAS : "faz"
     CLIENTES ||--o{ PAGAMENTOS : "realiza"
     CLIENTES |o--o{ USUARIOS : "tem acesso (perfil cliente)"
 
+    COMERCIOS {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR nome "(100) NOT NULL"
+        VARCHAR slug UK "(60) endereco /loja/slug"
+        VARCHAR tema "(30) visual da loja"
+        ENUM status "ativo | bloqueado"
+        DATETIME criado_em
+    }
     CLIENTES {
         INT id PK "AUTO_INCREMENT"
+        INT comercio_id FK "NOT NULL, ON DELETE CASCADE"
         VARCHAR nome "(100) NOT NULL"
         VARCHAR telefone "(20)"
         VARCHAR endereco "(200)"
@@ -25,10 +36,11 @@ erDiagram
     }
     USUARIOS {
         INT id PK "AUTO_INCREMENT"
+        INT comercio_id FK "NULL so para o dono da plataforma"
         VARCHAR nome "(100) NOT NULL"
-        VARCHAR usuario UK "(50) NOT NULL UNIQUE"
+        VARCHAR usuario UK "(50) unico por loja"
         VARCHAR senha "(255) hash bcrypt"
-        ENUM nivel "admin | comum | cliente"
+        ENUM nivel "admin | comum | cliente | plataforma"
         ENUM status "pendente | aprovado | recusado | bloqueado"
         INT cliente_id FK "NULL, ON DELETE CASCADE"
         VARCHAR telefone_solicitado "(20) NULL"
@@ -50,6 +62,8 @@ erDiagram
 ```
 
 **Cardinalidades**
+- Um **comércio** (loja) tem 0..N **clientes** e 0..N **usuários**. Toda consulta do sistema filtra pela loja de quem está logado, e o mesmo nome de usuário pode existir em lojas diferentes (`UNIQUE(comercio_id, usuario)`).
+- O **dono da plataforma** é o único usuário sem loja (`comercio_id` nulo) e acessa todas pelo painel.
 - Um **cliente** tem 0..N **compras** e 0..N **pagamentos**. Cada compra/pagamento pertence a exatamente 1 cliente.
 - Um **usuário** com `nivel = 'cliente'` aponta para 1 cliente (`cliente_id`). Funcionários (`admin`/`comum`) têm `cliente_id` nulo.
 - Ao excluir um cliente, as compras, os pagamentos e o acesso dele são apagados (`ON DELETE CASCADE`).
