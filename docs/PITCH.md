@@ -58,6 +58,13 @@ Ver o roteiro em [APRESENTACAO.md](APRESENTACAO.md). Mostre no **computador** e 
 - **A dívida é calculada** (compras − pagamentos) e nunca digitada à mão, por isso não fica errada.
 - **Segurança:** senhas com hash (bcrypt), proteção contra SQL Injection (prepared statements) e contra CSRF, sessão que cai na hora se o usuário for bloqueado, e transação com trava para duas compras simultâneas não estourarem o limite.
 
+## Slide 7b: Uma plataforma, várias lojas
+- Cada comércio tem **endereço, login e visual próprios** (ex.: `/loja/padaria-pao-quente`).
+- **Isolamento de dados:** uma loja nunca vê clientes, compras ou funcionários de outra. Toda consulta filtra pela loja da sessão, e cada ação confere se o registro é da loja (proteção contra IDOR).
+- **Painel do dono da plataforma:** cria lojas, bloqueia e entra em qualquer uma como administrador.
+
+*Fala:* "O mesmo sistema atende várias lojas ao mesmo tempo, cada uma com os seus dados separados, como um SaaS."
+
 ## Slide 8: Soluções existentes × FiadoFácil
 | | Caderninho | Planilha | ERP pago | **FiadoFácil** |
 |---|---|---|---|---|

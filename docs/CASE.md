@@ -58,5 +58,10 @@ Sem o sistema, a compra de Carlos, de 45 dias atrás, poderia ter sido esquecida
 - **Nenhum dado perdido**: tudo fica no banco de dados on-line, acessível de qualquer aparelho.
 - **Custo zero**: hospedagem gratuita e nenhuma instalação.
 
-## 7. Diagramas relacionados
+## 7. Várias lojas na mesma plataforma
+O FiadoFácil atende várias lojas ao mesmo tempo. Cada comércio tem o seu endereço (por exemplo `/loja/mercearia-do-ze`), o seu login, os seus dados e o seu visual, e nenhuma loja enxerga os dados das outras. O dono da plataforma acompanha todas pelo painel: cria lojas, bloqueia e entra em qualquer uma como administrador.
+
+Lojas de exemplo para a demonstração: Mercearia do Zé, Padaria Pão Quente e Açougue Bom Corte.
+
+## 8. Diagramas relacionados
 Veja [DIAGRAMAS.md](DIAGRAMAS.md): banco de dados (DER/UML), casos de uso, fluxo geral, fluxo da compra e do pagamento, estados do cliente e arquitetura.

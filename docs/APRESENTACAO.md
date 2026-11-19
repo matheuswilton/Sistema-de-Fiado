@@ -30,6 +30,14 @@ Site: **https://fiadofacil.free.je**
 **Fechamento**
 11. Voltar ao computador e atualizar o extrato: a compra feita no celular já aparece. *"Os dois aparelhos usam o mesmo banco, em tempo real."*
 
+## Demonstração das várias lojas (cerca de 1 minuto)
+1. Abra `fiadofacil.free.je/loja/mercearia-do-ze` e entre como administrador: tema verde, só os clientes da mercearia.
+2. Abra `fiadofacil.free.je/loja/padaria-pao-quente` em outra aba anônima: tema caramelo e outros clientes.
+3. Mostre que o usuário `joao` existe nas duas lojas e cada um vê só as próprias compras.
+4. Entre no `painel.php` como dono da plataforma: todas as lojas, bloquear uma e entrar em outra como administrador.
+
+> As senhas das lojas de exemplo e do painel não ficam neste arquivo público: estão guardadas com o Matheus.
+
 ## Contas de exemplo
 | Perfil | Usuário | Senha |
 |---|---|---|
