@@ -17,6 +17,7 @@ if (!$cliente) {
 $saldo = saldo_do_cliente($conn, $id);
 $limite = (float)$cliente['limite_credito'];
 $disponivel = max(0, $limite - $saldo);
+$link_cobranca = $saldo > 0 ? link_whatsapp($cliente['telefone'] ?? '', mensagem_cobranca($cliente['nome'], $loja_atual, $saldo)) : null;
 $lista_compras = [];
 $stmt = $conn->prepare("SELECT descricao, valor, data_compra FROM compras WHERE cliente_id = ? ORDER BY data_compra DESC, id DESC LIMIT 100");
 $stmt->bind_param("i", $id);
@@ -46,6 +47,7 @@ require "cabecalho.php";
     <div class="acoes nao-imprimir">
         <a href="registrar_compra.php?cliente_id=<?php echo $id; ?>" class="botao botao-compra">Registrar compra</a>
         <?php if ($saldo > 0): ?><a href="registrar_pagamento.php?cliente_id=<?php echo $id; ?>" class="botao botao-verde">Registrar pagamento</a><?php endif; ?>
+        <?php if ($link_cobranca): ?><a href="<?php echo htmlspecialchars($link_cobranca); ?>" class="botao botao-whatsapp" target="_blank" rel="noopener"><?php echo icone('whatsapp'); ?> Cobrar no WhatsApp</a><?php endif; ?>
         <a href="editar_cliente.php?id=<?php echo $id; ?>" class="botao botao-secundario">Editar</a>
     </div>
 </div>

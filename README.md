@@ -72,6 +72,19 @@ Each store has its own address, login, data and look, and no store can see anoth
 - The platform owner uses `painel.php` to see all stores, create and block stores, and enter any store as administrator.
 - The database is upgraded automatically on the first visit after the update (`migracoes.php`): existing data becomes the "Loja principal" (`/loja/principal`).
 
+## Integrations (APIs)
+
+Each store administrator manages them in **Minha loja** (`minha_loja.php`):
+
+| Integration | What it does | How |
+|---|---|---|
+| **Pix QR code** | The customer sees a Pix QR code and a "copy and paste" code with the debt amount on the "Minha dívida" page | Static BR Code (Central Bank EMV format with CRC16) built in PHP from the store's Pix key; QR drawn in the browser |
+| **WhatsApp** | "Cobrar no WhatsApp" button on the statement and on the home page opens a chat with a ready reminder (amount + Pix key) | `wa.me` click-to-chat link, no key needed |
+| **ViaCEP** | Typing a postcode fills in the customer's address | Public API called from the browser |
+| **FiadoFácil API** | Read-only REST API returning the store's data in JSON (`resumo`, `clientes`, `cliente&id=N`) | `api.php` with the store key in the `X-Api-Key` header; only the SHA-256 hash of the key is stored |
+
+Pix payments are confirmed by the store, which then records the payment. Automatic confirmation (webhook from a payment provider) and e-mail need paid hosting, because InfinityFree blocks outgoing server calls. Its anti-bot protection also blocks API calls made outside a browser, so the API is fully usable on XAMPP or paid hosting.
+
 ## Business rules
 
 - **Customer status**: *em dia* (no debt), *devendo* (owing) or *inadimplente* (in default: the oldest unpaid purchase is more than 30 days old). Payments pay off the oldest purchases first.
@@ -158,7 +171,10 @@ fiadofacil/
 ├── conexao.php                 connects to the database using config.local.php
 ├── config.local.example.php    config file template
 ├── css/estilo.css              styles (desktop and mobile)
-├── js/script.js                mobile menu, tables as cards on mobile, confirmations, phone mask
+├── api.php                     read-only REST API (JSON) for each store
+├── minha_loja.php              store integrations: Pix key, WhatsApp and API key
+├── js/script.js                mobile menu, tables as cards on mobile, confirmations, phone mask, Pix QR, postcode lookup
+├── js/qrcode.js                QR code generator (MIT, Kazuhiko Arase)
 ├── manifest.json               lets users add the site to the phone's home screen
 ├── img/                        app icons
 └── sql/banco.sql               table creation and sample data
@@ -166,9 +182,8 @@ fiadofacil/
 
 ## Next steps
 
-- Payment reminders on WhatsApp.
-- Pix payments with a QR code.
-- Installable mobile version (PWA).
+- Automatic Pix confirmation through a payment provider webhook (needs paid hosting).
+- E-mail for password recovery and overdue reminders.
 - Automated tests for the business rules (credit limit, status, score).
 - Export the report to CSV.
 - Screenshots in this README.

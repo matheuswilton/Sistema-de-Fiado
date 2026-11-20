@@ -4,7 +4,7 @@
 // Pode rodar quantas vezes for preciso: cada passo confere antes de mudar.
 
 if (!isset($conn)) { http_response_code(404); exit(); }
-const VERSAO_BANCO = 3;
+const VERSAO_BANCO = 4;
 
 function migracao_coluna_existe($conn, $tabela, $coluna) {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?");
@@ -190,6 +190,20 @@ function atualizar_senhas_exemplo($conn) {
     $stmt->close();
 }
 
+// Versao 4: integracoes (chave Pix da loja e chave de acesso da API, guardada so como hash)
+function migrar_integracoes($conn) {
+    $ok = true;
+    if (!migracao_coluna_existe($conn, 'comercios', 'chave_pix')) {
+        $ok = migracao_sql($conn, "ALTER TABLE comercios ADD chave_pix VARCHAR(77) NULL, ADD pix_cidade VARCHAR(15) NULL") && $ok;
+        // chaves Pix ficticias so para as lojas de exemplo mostrarem o QR Code (o dono troca em "Minha loja")
+        $ok = migracao_sql($conn, "UPDATE comercios SET chave_pix = CONCAT('pix@', slug, '.com.br'), pix_cidade = 'GOIANIA' WHERE slug IN ('mercearia-do-ze','padaria-pao-quente','acougue-bom-corte') AND chave_pix IS NULL") && $ok;
+    }
+    if (!migracao_coluna_existe($conn, 'comercios', 'api_token_hash')) {
+        $ok = migracao_sql($conn, "ALTER TABLE comercios ADD api_token_hash CHAR(64) NULL, ADD UNIQUE KEY uq_api_token (api_token_hash)") && $ok;
+    }
+    return $ok;
+}
+
 // roda uma vez por sessao do navegador (depois que o banco esta atualizado, so faz uma consulta rapida)
 if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
     $atualizado = migracao_coluna_existe($conn, 'usuarios', 'comercio_id')
@@ -197,6 +211,8 @@ if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
         && (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'plataforma'")->fetch_row()[0] > 0;
     if ($atualizado || migrar_banco($conn)) {
         atualizar_senhas_exemplo($conn);
-        $_SESSION['versao_banco'] = VERSAO_BANCO;
+        if (migrar_integracoes($conn)) {
+            $_SESSION['versao_banco'] = VERSAO_BANCO;
+        }
     }
 }

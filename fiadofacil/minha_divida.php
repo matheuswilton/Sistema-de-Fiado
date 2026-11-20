@@ -51,6 +51,10 @@ while ($linha = $resultado->fetch_assoc()) { $total_pagamentos += $linha['valor'
 $stmt->close();
 $saldo_devedor = round($total_compras - $total_pagamentos, 2);
 $limite_disponivel = max(0, $cliente['limite_credito'] - $saldo_devedor);
+// Pix com o valor da divida (so se a loja cadastrou a chave)
+$pix = ($saldo_devedor > 0 && !empty($loja_atual['chave_pix']))
+    ? pix_copia_e_cola($loja_atual['chave_pix'], $loja_atual['nome'], $loja_atual['pix_cidade'] ?? '', $saldo_devedor)
+    : null;
 $titulo_pagina = "Minha dívida";
 $menu_ativo = "divida";
 require "cabecalho.php";
@@ -64,6 +68,20 @@ require "cabecalho.php";
     <div class="card card-ok"><span class="card-titulo">Limite disponível</span><span class="card-valor"><?php echo dinheiro($limite_disponivel); ?></span></div>
 </div>
 <?php echo barra_limite($saldo_devedor, $cliente['limite_credito'], true); ?>
+<?php if ($pix): ?>
+<section class="painel pix-painel">
+    <h2><?php echo icone('pix'); ?> Pagar com Pix</h2>
+    <div class="pix-caixa">
+        <div class="pix-qr" data-qrcode="<?php echo htmlspecialchars($pix); ?>" role="img" aria-label="QR Code Pix de <?php echo dinheiro($saldo_devedor); ?>"></div>
+        <div class="pix-info">
+            <p>Abra o app do seu banco, escolha <strong>Pix → Ler QR Code</strong> e aponte para o código. O valor de <strong><?php echo dinheiro($saldo_devedor); ?></strong> já vem preenchido; se quiser pagar só uma parte, é só mudar o valor no app.</p>
+            <p class="dica">No celular? Use o "copia e cola":</p>
+            <div class="copiar-linha"><code id="pix-codigo" class="pix-codigo"><?php echo htmlspecialchars($pix); ?></code><button type="button" class="botao-pequeno" data-copiar="#pix-codigo"><?php echo icone('copiar'); ?> Copiar código</button></div>
+            <p class="dica">Recebedor: <?php echo htmlspecialchars($loja_atual['nome']); ?> · chave <?php echo htmlspecialchars($loja_atual['chave_pix']); ?>. O pagamento aparece aqui depois que a loja confirmar.</p>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 <div class="duas-colunas">
 <div>
     <h2>Minhas compras</h2>

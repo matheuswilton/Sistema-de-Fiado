@@ -57,6 +57,11 @@ require "cabecalho.php";
     <label for="telefone">Telefone</label>
     <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>">
     </div>
+    <div class="campo">
+    <label for="cep">CEP <span class="opcional">(preenche o endereço sozinho)</span></label>
+    <input type="text" id="cep" inputmode="numeric" maxlength="9" placeholder="74000-000" data-cep="#endereco" autocomplete="postal-code">
+    <div class="dica" id="cep-aviso" aria-live="polite"></div>
+    </div>
     <div class="campo campo-largo campo-fim">
     <label for="endereco">Endereço</label>
     <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($endereco); ?>" maxlength="200">

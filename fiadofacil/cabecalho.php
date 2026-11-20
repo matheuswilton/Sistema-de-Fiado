@@ -81,7 +81,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=26">
+<link rel="stylesheet" href="css/estilo.css?v=27">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
@@ -110,6 +110,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
                     <?php link_menu("usuarios.php", "Usuários", "usuarios", $menu_ativo); ?>
                     <?php link_menu("aprovar_acessos.php", "Aprovar acessos", "aprovar", $menu_ativo, $total_pendentes_menu > 0 ? ' <span class="contador">' . $total_pendentes_menu . '</span>' : ''); ?>
                     <?php link_menu("acessos_clientes.php", "Acessos de clientes", "acessos", $menu_ativo); ?>
+                    <?php link_menu("minha_loja.php", "Minha loja", "loja", $menu_ativo); ?>
                 <?php endif; ?>
                 <span class="menu-separador"></span>
                 <span class="menu-grupo">Conta</span>
