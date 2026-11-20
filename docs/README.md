@@ -3,6 +3,7 @@
 Sistema web para pequenos comércios controlarem as vendas no fiado: limite de crédito por cliente, compras, pagamentos, quem está devendo e quem está atrasado. Atende várias lojas na mesma plataforma, e o cliente acompanha as dívidas de todas as lojas numa conta só.
 
 - **Site no ar:** https://fiadofacil.free.je
+- **Site de teste (homologação):** https://fiadofacilteste.free.je, que recebe as mudanças da branch `teste` antes de irem para o site oficial
 - **Autor:** Matheus Wilton, responsável por todo o sistema (regras de negócio, desenvolvimento e banco de dados)
 - **Contexto:** Projeto Integrador do curso de Gestão da Tecnologia da Informação da FPM, Goiânia/GO
 

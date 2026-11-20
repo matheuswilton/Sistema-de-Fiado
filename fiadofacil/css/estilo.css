@@ -341,11 +341,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
 /* ===================== Barras de rolagem finas e discretas ===================== */
 :root { --barra-rolagem: #b8c2cf; --barra-rolagem-hover: #8e9aab; }
 :root[data-tema="escuro"] { --barra-rolagem: #334155; --barra-rolagem-hover: #475569; }
-* { scrollbar-width: thin; scrollbar-color: var(--barra-rolagem) transparent; }
-::-webkit-scrollbar { width: 8px; height: 8px; }
+/* Barra de rolagem: fina, arredondada, na cor da loja e sem as setinhas.
+   No Chrome/Edge usamos ::-webkit-scrollbar (se "scrollbar-color" estiver definido, o Chrome ignora o estilo e mostra as setas). */
+@supports not selector(::-webkit-scrollbar) { * { scrollbar-width: thin; scrollbar-color: var(--barra-rolagem) transparent; } }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--barra-rolagem); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background: var(--barra-rolagem-hover); background-clip: padding-box; border: 2px solid transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--primaria) 38%, transparent); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; transition: background-color .2s; }
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--primaria) 70%, transparent); background-clip: padding-box; border: 2px solid transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
 ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 
 
@@ -780,3 +783,75 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
     .conta-movimentos li { grid-template-columns: 80px 1fr; }
     .conta-movimentos li strong { grid-column: 2; }
 }
+
+/* ---------- Janela de confirmacao (compra, pagamento, excluir, bloquear...) ---------- */
+.confirmar-caixa { border: 0; border-radius: 16px; padding: 22px 22px 18px; width: min(420px, calc(100vw - 32px)); background: var(--superficie); color: var(--texto); box-shadow: 0 24px 60px rgba(15, 23, 42, .35); animation: confirmar-entra .22s cubic-bezier(.2, .9, .3, 1.2); }
+.confirmar-caixa::backdrop { background: rgba(15, 23, 42, .55); backdrop-filter: blur(2px); animation: fundo-entra .2s ease; }
+.confirmar-caixa.fechando { animation: confirmar-sai .15s ease forwards; }
+.confirmar-caixa h2 { margin: 0 0 6px; font-size: 21px; }
+.confirmar-texto { margin: 0 0 12px; color: var(--texto-suave); }
+.confirmar-resumo { border: 1px solid var(--borda); border-radius: 12px; overflow: hidden; margin: 10px 0 16px; }
+.confirmar-linha { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--borda); font-size: 15px; }
+.confirmar-linha:first-child { border-top: 0; }
+.confirmar-linha span { color: var(--texto-suave); }
+.confirmar-linha strong { text-align: right; font-variant-numeric: tabular-nums; }
+.confirmar-destaque { background: var(--superficie-2); }
+.confirmar-destaque strong { font-size: 20px; color: var(--primaria-texto, var(--texto)); }
+.confirmar-botoes { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.confirmar-botoes button { min-width: 110px; }
+@keyframes confirmar-entra { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes confirmar-sai { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+@keyframes fundo-entra { from { opacity: 0; } }
+@media (max-width: 480px) { .confirmar-botoes button { flex: 1 1 100%; } }
+
+/* ---------- Botao de tema sempre visivel no topo do menu ---------- */
+.tema-compacto { display: none; }
+@media (min-width: 801px) {
+    .com-menu .marca-linha .tema-compacto { display: inline-flex; width: 32px; height: 32px; padding: 0; justify-content: center; border-radius: 8px; background: transparent; color: var(--lateral-icone); border: 1px solid var(--borda); flex-shrink: 0; margin-left: auto; }
+    .com-menu .marca-linha .tema-compacto .tema-texto { display: none; }
+    .com-menu .marca-linha .tema-compacto:hover { background: var(--superficie-2); }
+    .com-menu .marca-linha .tema-compacto .icone { width: 17px; height: 17px; transition: transform .45s cubic-bezier(.3, 1.4, .5, 1); }
+    .com-menu .marca-linha .tema-compacto:hover .icone { transform: rotate(-25deg) scale(1.1); }
+    .com-menu .topo-botoes .tema-botao { display: none; }
+    :root[data-menu="recolhido"] .com-menu .marca-linha .tema-compacto { margin-left: 0; }
+}
+
+/* ---------- Cobrancas ---------- */
+.aviso-cobranca { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin: 0 0 16px; border-radius: 12px; background: var(--aviso-fundo); color: var(--texto); border: 1px solid color-mix(in srgb, var(--aviso) 35%, transparent); text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
+.aviso-cobranca:hover { transform: translateY(-2px); box-shadow: var(--sombra); }
+.aviso-cobranca > .icone { width: 24px; height: 24px; color: var(--aviso); flex-shrink: 0; animation: chamar 2.4s ease-in-out infinite; }
+.aviso-cobranca-ir { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--aviso); white-space: nowrap; }
+.aviso-cobranca-ir .icone { width: 16px; height: 16px; }
+@keyframes chamar { 0%, 70%, 100% { rotate: 0deg; } 78% { rotate: -12deg; } 86% { rotate: 10deg; } 94% { rotate: -5deg; } }
+.painel-cobranca h2 { display: flex; align-items: center; gap: 8px; font-size: 19px; margin: 0 0 4px; }
+.painel-cobranca h2 .icone { width: 20px; height: 20px; }
+.lista-cobrancas { list-style: none; margin: 10px 0 0; padding: 0; }
+.cobranca { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 8px 14px; padding: 12px 4px; border-top: 1px solid var(--borda); }
+.cobranca:first-child { border-top: 0; }
+.cobranca-cliente { display: flex; flex-direction: column; min-width: 0; }
+.cobranca-telefone { font-size: 13px; color: var(--texto-suave); margin-left: 42px; }
+.cobranca-valor { font-size: 18px; font-variant-numeric: tabular-nums; }
+.cobranca-acoes .botao-whatsapp { white-space: nowrap; }
+.cobranca-mensagem { grid-column: 1 / -1; }
+.cobranca-mensagem summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--texto-suave); }
+.cobranca-mensagem pre { white-space: pre-wrap; font-family: inherit; font-size: 14px; background: var(--superficie-2); border: 1px solid var(--borda); border-left: 4px solid #25d366; border-radius: 10px; padding: 12px 14px; margin: 8px 0; max-width: 520px; }
+.cobranca-mensagem button { display: inline-flex; align-items: center; gap: 6px; }
+.cobranca-mensagem button .icone { width: 15px; height: 15px; }
+@media (max-width: 700px) {
+    .cobranca { grid-template-columns: minmax(0, 1fr) auto; }
+    .cobranca-acoes { grid-column: 1 / -1; }
+    .cobranca-acoes .botao-whatsapp { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) { .aviso-cobranca > .icone, .confirmar-caixa, .confirmar-caixa::backdrop { animation: none; } }
+@media (min-width: 801px) {
+    .com-menu .marca-linha { gap: 6px; }
+    .com-menu .marca-linha .marca { min-width: 0; }
+    .com-menu .marca-linha .marca { gap: 8px; }
+    .com-menu .marca-linha .marca-texto { font-size: 19px; white-space: nowrap; }
+    .com-menu .marca-linha .marca-logo { width: 34px; height: 34px; }
+    .com-menu .marca-linha .tema-compacto, .com-menu .recolher-botao { width: 30px; height: 30px; }
+}
+
+/* Faixa do site de teste (homologacao) */
+.faixa-teste { position: sticky; top: 0; z-index: 60; background: repeating-linear-gradient(-45deg, #fde047 0 14px, #facc15 14px 28px); color: #422006; text-align: center; font-size: 14px; padding: 7px 12px; border-bottom: 2px solid #a16207; }
+.faixa-teste a { color: #422006; font-weight: 700; }

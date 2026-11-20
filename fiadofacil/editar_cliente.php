@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $endereco = trim($_POST['endereco'] ?? '');
     $cpf = so_numeros($_POST['cpf'] ?? '');
     // usuario comum nao altera o limite: continua o que esta no banco
-    $novo_limite = eh_admin() ? round(floatval($_POST['limite_credito'] ?? 0), 2) : (float)$cliente['limite_credito'];
+    $novo_limite = eh_admin() ? ler_valor($_POST['limite_credito'] ?? '0') : (float)$cliente['limite_credito'];
     if ($nome === "") {
         $mensagem = "O nome do cliente é obrigatório.";
     } elseif ($telefone !== "" && !telefone_valido($telefone)) {
@@ -104,7 +104,7 @@ require "cabecalho.php";
     <div class="campo">
     <label for="limite_credito">Limite de crédito (R$)</label>
     <?php if (eh_admin()): ?>
-        <input type="number" id="limite_credito" name="limite_credito" step="0.01" min="0" value="<?php echo $limite_credito; ?>">
+        <input type="text" id="limite_credito" name="limite_credito" data-mascara="dinheiro" inputmode="numeric" autocomplete="off" value="<?php echo htmlspecialchars(dinheiro($limite_credito)); ?>">">
     <?php else: ?>
         <input type="text" id="limite_credito" value="<?php echo dinheiro($limite_credito); ?> (somente o administrador altera)" disabled>
     <?php endif; ?>

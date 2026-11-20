@@ -73,16 +73,28 @@ require "cabecalho.php";
     <div class="card card-ok card-com-icone"><span class="card-icone"><?php echo icone('pagamento'); ?></span><div><span class="card-titulo">Total a receber</span><span class="card-valor"><?php echo dinheiro($total_a_receber); ?></span></div></div>
     <?php endif; ?>
 </div>
+<?php
+$vencem_logo = 0; $em_atraso = 0;
+foreach ($lista_clientes as $c_aviso) {
+    $faltam_aviso = dias_para_vencer($c_aviso['saldo_devedor'], $c_aviso['dias_devendo']);
+    if ($faltam_aviso === 0) { $em_atraso++; } elseif ($faltam_aviso !== null && $faltam_aviso <= DIAS_AVISO_ANTES) { $vencem_logo++; }
+}
+if ($vencem_logo + $em_atraso > 0): ?>
+<a class="aviso-cobranca" href="cobrancas.php"><?php echo icone('cobrancas'); ?>
+    <span><strong>Hora de cobrar:</strong>
+    <?php if ($vencem_logo): ?><?php echo $vencem_logo; ?> cliente(s) vence(m) nos próximos <?php echo DIAS_AVISO_ANTES; ?> dias<?php endif; ?><?php if ($vencem_logo && $em_atraso) echo ' · '; ?><?php if ($em_atraso): ?><?php echo $em_atraso; ?> em atraso<?php endif; ?></span>
+    <span class="aviso-cobranca-ir">Ver cobranças <?php echo icone('seta'); ?></span></a>
+<?php endif; ?>
 <div class="acoes-rapidas">
     <a class="botao botao-compra" href="registrar_compra.php"><?php echo icone('compra'); ?>Registrar compra</a>
     <a class="botao botao-verde" href="registrar_pagamento.php"><?php echo icone('pagamento'); ?>Registrar pagamento</a>
     <a class="botao botao-secundario" href="cadastro_cliente.php"><?php echo icone('mais'); ?>Cadastrar cliente</a>
 </div>
 <div class="paineis-inicio">
-    <section class="painel painel-lista">
+    <section class="painel painel-lista painel-atencao">
         <div class="painel-cabecalho"><h2>Precisam de atenção</h2><a href="relatorio.php">Ver relatório</a></div>
         <?php if (count($precisam_atencao) === 0): ?>
-            <p class="lista-vazia">Ninguém devendo agora. 🎉</p>
+            <?php echo tela_vazia("Ninguém devendo agora. 🎉"); ?>
         <?php else: ?>
         <ul class="lista-inicio">
             <?php foreach ($precisam_atencao as $c): ?>
@@ -91,7 +103,7 @@ require "cabecalho.php";
                 <span class="lista-detalhe"><?php echo $c['dias_devendo']; ?> dias</span>
                 <strong class="lista-valor"><?php echo dinheiro($c['saldo_devedor']); ?></strong>
                 <span class="selo <?php echo $classes_situacao[$c['situacao']]; ?>"><?php echo $rotulos_situacao[$c['situacao']]; ?></span>
-                <?php $link_cobranca = link_whatsapp($c['telefone'] ?? '', mensagem_cobranca($c['nome'], $loja_atual, $c['saldo_devedor'])); if ($link_cobranca): ?><a class="botao-icone-whatsapp" href="<?php echo htmlspecialchars($link_cobranca); ?>" target="_blank" rel="noopener" aria-label="Cobrar <?php echo htmlspecialchars($c['nome']); ?> no WhatsApp" data-dica="Cobrar no WhatsApp"><?php echo icone('whatsapp'); ?></a><?php endif; ?>
+                <?php $link_cobranca = link_whatsapp($c['telefone'] ?? '', mensagem_cobranca($c['nome'], $loja_atual, $c['saldo_devedor'], $c['dias_devendo'])); if ($link_cobranca): ?><a class="botao-icone-whatsapp" href="<?php echo htmlspecialchars($link_cobranca); ?>" target="_blank" rel="noopener" aria-label="Cobrar <?php echo htmlspecialchars($c['nome']); ?> no WhatsApp" data-dica="Cobrar no WhatsApp"><?php echo icone('whatsapp'); ?></a><?php endif; ?>
             </li>
             <?php endforeach; ?>
         </ul>

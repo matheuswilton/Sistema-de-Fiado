@@ -59,6 +59,8 @@ A plataforma atende **várias lojas** ao mesmo tempo. Cada loja tem endereço, l
 | RF15 | Abrir a cobrança pelo WhatsApp com a mensagem pronta. |
 | RF16 | Oferecer uma API REST somente leitura por loja. |
 | RF17 | Cada usuário troca a própria senha. |
+| RF18 | Listar quem fica inadimplente nos próximos 3 dias e quem está em atraso, com mensagem de cobrança pronta. |
+| RF19 | Pedir confirmação com resumo (valor, dívida antes e depois) antes de gravar compra e pagamento. |
 
 ### Não funcionais
 | Código | Requisito |
@@ -178,6 +180,7 @@ fiadofacil/
 ├── registrar_pagamento.php    pagamento (parcial ou total)
 ├── relatorio.php              relatório por período e situação (com impressão)
 ├── ranking.php                ranking de confiabilidade
+├── cobrancas.php              quem vence em até 3 dias e quem está em atraso, com a mensagem pronta para o WhatsApp
 ├── resumo.php                 resumo financeiro (administrador)
 ├── usuarios.php               funcionários (administrador)
 ├── aprovar_acessos.php        pedidos de acesso e contas por CPF (administrador)
@@ -198,12 +201,14 @@ fiadofacil/
 ├── verifica_admin.php         exige perfil administrador
 ├── conexao.php                conexão com o banco (usa config.local.php)
 ├── migracoes.php              atualização automática da estrutura do banco
+├── desenhos.php               desenhos em SVG de cada ramo (bife, pão, sacola, cenários do login, balança)
 ├── cabecalho.php / rodape.php layout das páginas internas e menu
 ├── layout_publico.php         layout das páginas públicas
 ├── config.local.example.php   modelo do arquivo de configuração
 ├── .htaccess                  HTTPS, endereço /loja/nome, página 404, bloqueio de arquivos
 ├── manifest.json              instalação na tela inicial do celular
 ├── css/estilo.css, inicio.css estilos (claro, noturno, temas das lojas, celular)
+├── css/lojas.css              animações de cada ramo (açougue, mercearia, padaria)
 ├── js/script.js               menu, tabelas em cartões, máscaras, CEP, QR Code, animações
 ├── js/qrcode.js               gerador de QR Code (licença MIT, Kazuhiko Arase)
 ├── img/                       emblema, ícones e foto
@@ -310,12 +315,13 @@ O arquivo `migracoes.php` roda na primeira visita de cada sessão e atualiza a e
 
 | Etapa | O que faz |
 |---|---|
+| Banco vazio | Se não existe nenhuma tabela, cria as 4 tabelas originais e os dados de exemplo (o mesmo conteúdo do `sql/banco.sql`), sem precisar importar nada. |
 | Várias lojas | Cria `comercios`, adiciona `comercio_id` em clientes e usuários, cria o perfil `plataforma` e troca o índice de usuário para "único por loja". Os dados antigos viram a "Loja principal". |
 | Senhas de exemplo | Troca as senhas das contas de exemplo por senhas simples, sem mexer em senha que o dono já trocou. |
 | Integrações | Adiciona a chave Pix e a chave da API às lojas. |
 | Conta do cliente | Adiciona o CPF aos clientes e cria `contas_clientes` e `contas_vinculos`. |
 
-Para instalar do zero basta importar `sql/banco.sql` (as 4 tabelas originais e dados de exemplo): na primeira visita, as migrações criam o resto.
+Para instalar do zero basta criar um banco **vazio** e preencher o `config.local.php`: na primeira visita, o sistema cria todas as tabelas e as lojas de exemplo. Importar o `sql/banco.sql` continua funcionando.
 
 ---
 
@@ -398,6 +404,14 @@ O acesso antigo do cliente (usuário e senha numa loja, `solicitar_acesso.php` e
 - **Acessibilidade:** contraste conferido, cor sempre acompanhada de texto e animações desligadas para quem ativa "reduzir movimento".
 - **Instalável** na tela inicial do celular (`manifest.json`).
 - **Prévia ao compartilhar** o link (metatags Open Graph).
+- **Animações de cada ramo** (`css/lojas.css` e `desenhos.php`), todas em SVG e CSS, sem imagens:
+
+| Loja | Animações |
+|---|---|
+| Açougue | Carnes penduradas balançando no login, lousa de preços no "Precisam de atenção", números como painel de senha, balança de ponteiro no uso do limite, bife "chiando" no menu, cutelo que corta o botão de compra, bancada de mármore. |
+| Mercearia | Toldo listrado ondulando, prateleiras com frutas pulando no login, cartões como etiquetas de preço penduradas, ripas de caixote nos painéis, extrato abrindo como página de caderno, sacola com frutas. |
+| Padaria | Vapor saindo dos pães no login, letreiro com brilho de forno, cartões crescendo como massa, barra do limite como termômetro que esquenta, farinha polvilhada no fundo, sino de balcão nos pedidos. |
+| Todas | Tela vazia ilustrada, mensagem de sucesso com o desenho da loja e, ao quitar uma dívida, chuva de bifes, pães ou frutas. |
 
 ---
 
@@ -432,32 +446,46 @@ Esse arquivo **nunca** vai para o GitHub (está no `.gitignore`) nem é enviado 
 
 ## 14. Publicação automática
 
+### Fluxo de trabalho (padrão de empresa)
+```
+branch "teste"  ──►  testes automáticos  ──►  Pull Request para a main  ──►  testes de novo  ──►  site no ar
+```
+1. Toda mudança vai primeiro para a branch **`teste`**; os testes rodam sozinhos.
+2. Com os testes verdes, abre-se um **Pull Request** da `teste` para a `main`; o GitHub roda os testes de novo e mostra o resultado no pedido.
+3. Ao clicar em **Merge**, a `main` é atualizada e a publicação começa, mas **só publica se os testes passarem**.
+
+### Publicação
 O workflow `.github/workflows/deploy.yml` roda a cada atualização da `main` que mexe na pasta `fiadofacil`:
+1. Roda os testes automáticos (`.github/workflows/testes.yml`); se algum falhar, para aqui.
 1. Baixa o código.
 2. Envia por FTP para a pasta `htdocs` da InfinityFree, sem o `config.local.php` e sem a pasta `sql`.
 3. Testa se o site responde.
 
-Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`). Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
+Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`).
+
+### Site de teste (homologação)
+Cada envio para a branch `teste` que passa nos testes é publicado automaticamente num **site de teste** separado (https://fiadofacilteste.free.je), com banco próprio. A publicação cria o `config.local.php` a partir dos segredos `FTP_TESTE_SERVIDOR`, `FTP_TESTE_USUARIO`, `FTP_TESTE_SENHA`, `BANCO_TESTE_SERVIDOR` e `BANCO_TESTE_NOME` (o usuário e a senha do banco são os do FTP, a menos que existam `BANCO_TESTE_USUARIO` e `BANCO_TESTE_SENHA`). O site de teste mostra uma faixa amarela de aviso e pede aos buscadores para não indexar (`X-Robots-Tag: noindex`). Enquanto os segredos não existem, a publicação de teste é pulada. Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
 
 ---
 
 ## 15. Testes
 
-Os testes foram feitos com o sistema rodando localmente (PHP + MariaDB) e um navegador automatizado.
+Os testes ficam na pasta [`testes/`](../testes/README.md) e rodam **sozinhos no GitHub Actions** a cada envio para a branch `teste`, em todo Pull Request e antes de cada publicação. Cada execução cria um banco MariaDB novo, importa o `banco.sql`, roda as migrações, liga o site com o PHP e usa um navegador automatizado (Playwright). As contas de teste recebem uma senha própria, então nenhuma senha real fica no código.
 
 | Conjunto | O que confere | Resultado |
 |---|---|---|
 | Isolamento entre lojas (34 casos) | Uma loja não vê, edita, exclui nem lança compra ou pagamento em cliente de outra, pela URL ou pelo formulário; mesmo usuário em lojas diferentes; bloqueio de loja derruba a sessão; painel cria, bloqueia e entra nas lojas; uma loja não confirma conta de cliente de outra. | Todos passaram |
 | Conta do cliente por CPF (23 casos) | Entrar, senha errada, CPF inválido e repetido, conta só com telefone que confere, pendente até a loja confirmar, outra loja não vê o pedido, CPF trocado desliga a conta, celular sem rolagem lateral, sair. | Todos passaram |
 | Integrações | Pix com CRC conferido, QR Code gerado, link do WhatsApp, CEP preenchendo o endereço, API com códigos 200, 401, 404 e 405 e sem acesso a clientes de outra loja. | Todos passaram |
-| Regras de negócio | Compra acima do limite recusada, pagamento maior que a dívida recusado, situação e score. | Conferidos manualmente |
+| Funções (`unidade.php`) | CPF, telefone, dinheiro, Pix (BR Code e CRC16), chave Pix e link do WhatsApp. | Todos passaram |
+| Regras de negócio (`regras.js`) | Limite de crédito, valor zero, pagamento maior que a dívida, cliente sem dívida, exclusão bloqueada com dívida, filtro de inadimplentes, permissões do atendente, escolha da loja, endereço com maiúsculas e página 404. | Todos passaram |
 
 ---
 
 ## 16. Limitações e próximos passos
 
 **Limitações conhecidas**
-- Sem testes automatizados de unidade (PHPUnit) rodando na publicação.
+- Os testes de unidade são um script próprio; o próximo passo seria usar o PHPUnit.
 - PHP e HTML misturados nas páginas; o ideal seria organizar em camadas (MVC).
 - A situação e os dias em aberto usam subconsultas por cliente; com milhares de clientes ficaria lento.
 - O limite de tentativas de login vale por sessão; um robô pode abrir sessões novas.
@@ -465,7 +493,7 @@ Os testes foram feitos com o sistema rodando localmente (PHP + MariaDB) e um nav
 - Na hospedagem gratuita: sem Pix com confirmação automática, sem e-mail e sem API para programas de fora.
 
 **Próximos passos**
-- Testes automatizados das regras e do isolamento rodando antes de publicar.
+- Um site de teste separado, publicado a partir da branch `teste`.
 - Pix com confirmação automática por webhook de um provedor de pagamento.
 - Recuperação de senha e avisos por e-mail.
 - Exportar relatório em CSV e gráficos de evolução.

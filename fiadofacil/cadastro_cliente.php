@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $endereco = trim($_POST['endereco'] ?? '');
     $cpf = so_numeros($_POST['cpf'] ?? '');
     // so o administrador define o limite; usuario comum usa o padrao de R$ 500
-    $limite_credito = eh_admin() ? round(floatval($_POST['limite_credito'] ?? 500), 2) : 500.00;
+    $limite_credito = eh_admin() ? ler_valor($_POST['limite_credito'] ?? '500') : 500.00;
     if ($nome === "") {
         $mensagem = "O nome do cliente é obrigatório.";
     } elseif ($telefone !== "" && !telefone_valido($telefone)) {
@@ -79,7 +79,7 @@ require "cabecalho.php";
     <div class="campo">
     <label for="limite_credito">Limite de crédito (R$)</label>
     <?php if (eh_admin()): ?>
-        <input type="number" id="limite_credito" name="limite_credito" step="0.01" min="0" value="<?php echo $limite_credito; ?>">
+        <input type="text" id="limite_credito" name="limite_credito" data-mascara="dinheiro" inputmode="numeric" autocomplete="off" value="<?php echo htmlspecialchars(dinheiro($limite_credito)); ?>">">
         <div class="dica">Quanto o cliente pode dever ao mesmo tempo.</div>
     <?php else: ?>
         <input type="text" id="limite_credito" value="R$ 500,00 (limite padrão — somente o administrador altera)" disabled>

@@ -5,13 +5,118 @@ if (botaoMenu) {
         document.body.classList.toggle('menu-aberto');
     });
 }
+// Dinheiro: "R$ 1.234,56" a partir de um numero
+function formatarReal(valor) {
+    return 'R$ ' + Number(valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function lerReal(texto) {
+    var t = String(texto || '').replace(/[^\d,.-]/g, '');
+    if (t.indexOf(',') >= 0) { t = t.replace(/\./g, '').replace(',', '.'); }
+    return parseFloat(t) || 0;
+}
+// Mascara de dinheiro: a pessoa digita so numeros e o campo mostra "R$ 200,00" (como no app do banco)
+document.querySelectorAll('input[data-mascara="dinheiro"]').forEach(function (campo) {
+    function aplicar() {
+        var numeros = campo.value.replace(/\D/g, '').replace(/^0+/, '').slice(0, 11);
+        campo.value = numeros ? formatarReal(parseInt(numeros, 10) / 100) : '';
+    }
+    if (campo.value && !/R\$/.test(campo.value)) { campo.value = formatarReal(lerReal(campo.value)); }
+    campo.addEventListener('input', aplicar);
+    campo.addEventListener('focus', function () { var fim = campo.value.length; setTimeout(function () { campo.setSelectionRange(fim, fim); }, 0); });
+});
+
+// Janela de confirmacao bonita (no lugar da caixinha padrao do navegador).
+// Mostra um titulo, linhas de resumo (rotulo e valor) e os botoes Voltar / Confirmar.
+function confirmarBonito(opcoes) {
+    return new Promise(function (resolver) {
+        if (typeof HTMLDialogElement === 'undefined') { resolver(window.confirm(opcoes.titulo + (opcoes.texto ? '\n' + opcoes.texto : ''))); return; }
+        var caixa = document.createElement('dialog');
+        caixa.className = 'confirmar-caixa' + (opcoes.perigo ? ' confirmar-perigo' : '');
+        var linhas = (opcoes.linhas || []).map(function (l) {
+            return '<div class="confirmar-linha' + (l.destaque ? ' confirmar-destaque' : '') + '"><span></span><strong></strong></div>';
+        }).join('');
+        caixa.innerHTML = '<h2></h2><p class="confirmar-texto"></p><div class="confirmar-resumo">' + linhas + '</div>'
+            + '<div class="confirmar-botoes"><button type="button" class="botao-secundario" value="nao">Voltar</button><button type="button" value="sim"></button></div>';
+        caixa.querySelector('h2').textContent = opcoes.titulo;
+        var texto = caixa.querySelector('.confirmar-texto');
+        if (opcoes.texto) { texto.textContent = opcoes.texto; } else { texto.remove(); }
+        (opcoes.linhas || []).forEach(function (l, i) {
+            var linha = caixa.querySelectorAll('.confirmar-linha')[i];
+            linha.querySelector('span').textContent = l.rotulo;
+            linha.querySelector('strong').textContent = l.valor;
+        });
+        if (!(opcoes.linhas || []).length) { caixa.querySelector('.confirmar-resumo').remove(); }
+        var sim = caixa.querySelector('[value=sim]');
+        sim.textContent = opcoes.botao || 'Confirmar';
+        if (opcoes.perigo) { sim.classList.add('botao-perigo'); }
+        document.body.appendChild(caixa);
+        function fechar(resposta) { caixa.classList.add('fechando'); setTimeout(function () { caixa.close(); caixa.remove(); }, 150); resolver(resposta); }
+        sim.addEventListener('click', function () { fechar(true); });
+        caixa.querySelector('[value=nao]').addEventListener('click', function () { fechar(false); });
+        caixa.addEventListener('cancel', function (e) { e.preventDefault(); fechar(false); });
+        caixa.addEventListener('click', function (e) { if (e.target === caixa) { fechar(false); } });
+        caixa.showModal();
+        sim.focus();
+    });
+}
 // Confirmacao: qualquer formulario, botao ou link com data-confirmar pergunta antes
 document.querySelectorAll('[data-confirmar]').forEach(function (elemento) {
     var evento = elemento.tagName === 'FORM' ? 'submit' : 'click';
     elemento.addEventListener(evento, function (e) {
-        if (!confirm(elemento.getAttribute('data-confirmar'))) {
-            e.preventDefault();
+        if (elemento.dataset.confirmado === '1') { elemento.dataset.confirmado = ''; return; }
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        // guarda o botao que enviou o formulario (ex.: "bloquear"), para reenviar com o mesmo botao
+        var quemEnviou = e.submitter || null;
+        var perigo = /excluir|bloquear|recusar|desligar|sair/i.test(elemento.getAttribute('data-confirmar'));
+        confirmarBonito({ titulo: elemento.getAttribute('data-confirmar'), botao: perigo ? 'Sim, continuar' : 'Confirmar', perigo: perigo }).then(function (ok) {
+            if (!ok) { return; }
+            elemento.dataset.confirmado = '1';
+            if (elemento.tagName === 'FORM') {
+                if (elemento.requestSubmit) { elemento.requestSubmit(quemEnviou && quemEnviou.form === elemento ? quemEnviou : undefined); }
+                else { elemento.submit(); }
+            }
+            else if (elemento.tagName === 'A') { window.location.href = elemento.href; }
+            else { elemento.click(); }
+        });
+    }, true);
+});
+// Compra e pagamento: antes de gravar, mostra o resumo (cliente, valor, divida antes e depois)
+document.querySelectorAll('form[data-resumo]').forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+        if (form.dataset.confirmado === '1') { form.dataset.confirmado = ''; return; }
+        var selecao = form.querySelector('select[name=cliente_id]');
+        var opcao = selecao && selecao.options[selecao.selectedIndex];
+        var valor = lerReal(form.querySelector('[name=valor]').value);
+        if (!opcao || !opcao.value || valor <= 0) { return; }
+        e.preventDefault();
+        var saldo = parseFloat(opcao.getAttribute('data-saldo')) || 0;
+        var nome = opcao.getAttribute('data-nome') || opcao.textContent.trim();
+        var pagamento = form.getAttribute('data-resumo') === 'pagamento';
+        var depois = pagamento ? saldo - valor : saldo + valor;
+        var linhas = [
+            { rotulo: 'Cliente', valor: nome },
+            { rotulo: pagamento ? 'Valor pago' : 'Valor da compra', valor: formatarReal(valor), destaque: true },
+            { rotulo: 'Dívida atual', valor: formatarReal(saldo) },
+            { rotulo: 'Dívida depois', valor: formatarReal(Math.max(0, depois)) }
+        ];
+        var texto = '';
+        if (pagamento && valor > saldo + 0.001) { texto = 'Atenção: o valor é maior que a dívida e será recusado.'; }
+        if (pagamento && Math.abs(valor - saldo) < 0.005) { texto = 'Este pagamento quita a dívida inteira. 🎉'; }
+        if (!pagamento) {
+            var disponivel = parseFloat(opcao.getAttribute('data-disponivel')) || 0;
+            if (valor > disponivel + 0.001) { texto = 'Atenção: passa do limite disponível (' + formatarReal(disponivel) + ') e será recusada.'; }
         }
+        confirmarBonito({
+            titulo: pagamento ? 'Confirmar pagamento?' : 'Confirmar compra no fiado?',
+            texto: texto,
+            linhas: linhas,
+            botao: pagamento ? 'Sim, registrar pagamento' : 'Sim, registrar compra'
+        }).then(function (ok) {
+            if (!ok) { return; }
+            form.dataset.confirmado = '1';
+            form.requestSubmit ? form.requestSubmit() : form.submit();
+        });
     });
 });
 // Mascara de CPF: 000.000.000-00
@@ -47,7 +152,7 @@ if (selecaoCliente && botaoQuitar && campoValor) {
     botaoQuitar.addEventListener('click', function () {
         var opcao = selecaoCliente.options[selecaoCliente.selectedIndex];
         if (opcao && opcao.getAttribute('data-saldo')) {
-            campoValor.value = opcao.getAttribute('data-saldo');
+            campoValor.value = formatarReal(parseFloat(opcao.getAttribute('data-saldo')));
         }
     });
 }
@@ -190,6 +295,23 @@ if (!semAnimacao) {
         if (!/quitada/i.test(caixa.textContent)) { return; }
         caixa.classList.add('comemora');
         if (reduzir) { return; }
+        // loja com tema: chovem bifes, paes ou frutas em vez de papeizinhos
+        var modelo = document.getElementById('desenho-da-loja');
+        if (modelo) {
+            for (var k = 0; k < 28; k++) {
+                var peca = document.createElement('span');
+                peca.className = 'confete-loja';
+                peca.innerHTML = modelo.innerHTML;
+                peca.style.left = (Math.random() * 96) + 'vw';
+                peca.style.setProperty('--desvio', (Math.random() * 160 - 80) + 'px');
+                peca.style.setProperty('--giro', (Math.random() * 360 - 180) + 'deg');
+                peca.style.setProperty('--duracao', (Math.random() * 1.4 + 2.2) + 's');
+                peca.style.animationDelay = (Math.random() * 0.6) + 's';
+                document.body.appendChild(peca);
+                setTimeout(function (c) { return function () { c.remove(); }; }(peca), 4800);
+            }
+            return;
+        }
         var cores = ['#16a34a', '#2563eb', '#f59e0b', '#ea580c', '#a855f7', '#06b6d4'];
         for (var i = 0; i < 70; i++) {
             var confete = document.createElement('span');
@@ -355,5 +477,41 @@ if (!semAnimacao) {
                 })
                 .catch(function () { avisar('Não deu para consultar o CEP agora. Digite o endereço.'); });
         });
+    });
+})();
+
+// Animacoes das lojas com tema (acougue, mercearia, padaria)
+(function () {
+    var modelo = document.getElementById('desenho-da-loja');
+    if (!modelo) { return; }
+    var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // mensagem de sucesso com o desenho da loja (sacola enchendo, bife, pao)
+    document.querySelectorAll('.mensagem').forEach(function (caixa) {
+        var desenho = modelo.content.firstElementChild.cloneNode(true);
+        desenho.classList.add('desenho-sucesso');
+        caixa.insertBefore(desenho, caixa.firstChild);
+    });
+    // acougue: o cutelo desce e "corta" o botao de registrar compra
+    if (document.documentElement.getAttribute('data-loja') !== 'acougue' || reduzir) { return; }
+    var cutelo = '<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="6" width="24" height="18" rx="2" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/><circle cx="10" cy="11" r="2" fill="#64748b"/><rect x="26" y="12" width="12" height="5" rx="2" fill="#7c2d12"/></svg>';
+    function cortar(botao) {
+        if (getComputedStyle(botao).position === 'static') { botao.style.position = 'relative'; }
+        var lamina = document.createElement('span');
+        lamina.className = 'cutelo';
+        lamina.innerHTML = cutelo;
+        botao.appendChild(lamina);
+        botao.classList.add('botao-cortado');
+        setTimeout(function () { lamina.remove(); botao.classList.remove('botao-cortado'); }, 600);
+    }
+    document.querySelectorAll('a.botao-compra').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            if (e.ctrlKey || e.metaKey || e.shiftKey) { return; }
+            e.preventDefault();
+            cortar(link);
+            setTimeout(function () { window.location.href = link.href; }, 420);
+        });
+    });
+    document.querySelectorAll('form[action="registrar_compra.php"] button[type=submit]').forEach(function (botao) {
+        botao.addEventListener('click', function () { cortar(botao); });
     });
 })();
