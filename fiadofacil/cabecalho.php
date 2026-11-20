@@ -84,6 +84,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if ($tema_loja === 'acougue') echo '&family=Caveat:wght@600;700'; ?>&display=swap">
+<?php if (defined('AMBIENTE_TESTE') && AMBIENTE_TESTE): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
 <link rel="stylesheet" href="css/estilo.css?v=29">
 <?php if ($tema_loja): ?><link rel="stylesheet" href="css/lojas.css?v=1"><?php endif; ?>
 </head>
@@ -156,5 +157,6 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php if ($esta_logado && eh_plataforma() && $loja_tela): ?>
 <div class="faixa-plataforma" role="status">Você está na loja <strong><?php echo htmlspecialchars($loja_tela['nome']); ?></strong> como dono da plataforma. <a href="painel.php?sair_da_loja=1">Voltar ao painel</a></div>
 <?php endif; ?>
+<?php if (defined('AMBIENTE_TESTE') && AMBIENTE_TESTE): ?><div class="faixa-teste" role="note">🧪 <strong>Site de teste</strong>: os dados aqui são de exemplo e podem ser apagados. <a href="https://fiadofacil.free.je">Ir para o site oficial</a></div><?php endif; ?>
 <?php if ($tema_loja): ?><template id="desenho-da-loja"><?php echo desenho_loja($tema_loja); ?></template><?php endif; ?>
 <main class="container <?php echo $classe_container; ?>">
