@@ -16,13 +16,20 @@ The problem is big: in 2026 Serasa recorded more than 84 million Brazilians in d
 
 ## Capstone documentation (in Portuguese)
 
+**Start here: [full documentation index](docs/README.md).**
+
 | Document | Contents |
 |---|---|
+| [Technical documentation](docs/DOCUMENTACAO_TECNICA.md) | Requirements, roles, business rules, architecture, data dictionary, multi-store, customer account, security, integrations, setup, deploy, tests |
+| [User manual](docs/MANUAL_DO_USUARIO.md) | Step by step for each screen and role, with screenshots |
+| [API reference](docs/API.md) | Authentication, endpoints, responses and error codes |
 | [Diagrams](docs/DIAGRAMAS.md) | Database (ERD and UML class diagram), use cases, system flow, purchase and payment flows, customer states, sequence and architecture |
 | [Case study](docs/CASE.md) | Problem, requirements, solution and results |
 | [Pitch](docs/PITCH.md) | Presentation script, data behind the project, comparison with other solutions and sources |
 | [Live demo](docs/APRESENTACAO.md) | Script to show the system on a computer and on a phone |
-| [Images](docs/img/) | Diagrams as PNG files for the slides |
+| [Images](docs/img/) | Diagrams as PNG files for the slides, and [screenshots](docs/img/telas/) |
+
+![Store home page](docs/img/telas/03-inicio.jpg)
 
 ![Database diagram](docs/img/banco-der.png)
 
@@ -32,7 +39,7 @@ PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout
 
 ## Technical highlights
 
-- **Relational database with 4 tables** (`clientes`, `usuarios`, `compras`, `pagamentos`) and reports built with SQL queries (filters by period and status, top debtors, financial summary).
+- **Relational database with 7 tables** (`comercios`, `clientes`, `usuarios`, `compras`, `pagamentos`, `contas_clientes`, `contas_vinculos`) and reports built with SQL queries (filters by period and status, top debtors, financial summary).
 - **Locked transactions** (`SELECT ... FOR UPDATE`): two purchases made at the same time can't push a customer over their credit limit.
 - **Security**:
   - prepared statements, against SQL injection;
@@ -193,4 +200,3 @@ fiadofacil/
 - E-mail for password recovery and overdue reminders.
 - Automated tests for the business rules (credit limit, status, score).
 - Export the report to CSV.
-- Screenshots in this README.
