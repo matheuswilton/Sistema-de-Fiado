@@ -1,0 +1,11 @@
+{
+  "name": "fiadofacil-testes",
+  "private": true,
+  "description": "Testes automaticos do FiadoFacil (navegador automatizado)",
+  "scripts": {
+    "test": "bash rodar.sh"
+  },
+  "devDependencies": {
+    "playwright": "1.49.1"
+  }
+}
