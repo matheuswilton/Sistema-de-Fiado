@@ -26,7 +26,34 @@ jobs:
       - name: Baixar o codigo
         uses: actions/checkout@v4
 
-      - name: Enviar por FTP
+      # Se existir o segredo BANCO_NOME, a configuracao do banco do site oficial e gerada pelos segredos
+      # (servidor, usuario e senha do banco sao os mesmos da conta; muda so o nome do banco).
+      # Sem esse segredo, o config.local.php que esta no servidor fica como esta.
+      - name: Criar a configuracao do banco do site oficial (a partir dos segredos)
+        id: config
+        env:
+          B_SERVIDOR: ${{ secrets.BANCO_SERVIDOR || secrets.BANCO_TESTE_SERVIDOR }}
+          B_USUARIO: ${{ secrets.BANCO_USUARIO || secrets.FTP_USERNAME }}
+          B_SENHA: ${{ secrets.BANCO_SENHA || secrets.FTP_PASSWORD }}
+          B_NOME: ${{ secrets.BANCO_NOME }}
+        run: |
+          if [ -z "$B_NOME" ] || [ -z "$B_SERVIDOR" ]; then
+            echo "gerou=nao" >> "$GITHUB_OUTPUT"
+            echo "Sem o segredo BANCO_NOME: o config.local.php do servidor nao sera mexido."
+            exit 0
+          fi
+          php -r '
+            $c = "<?php\n// Gerado pela publicacao automatica do site oficial. Nao vai para o GitHub.\n";
+            foreach (["banco_host" => "B_SERVIDOR", "banco_usuario" => "B_USUARIO", "banco_senha" => "B_SENHA", "banco_nome" => "B_NOME"] as $variavel => $origem) {
+                $c .= "\$" . $variavel . " = " . var_export((string)getenv($origem), true) . ";\n";
+            }
+            file_put_contents("fiadofacil/config.local.php", $c);
+          '
+          php -l fiadofacil/config.local.php
+          echo "gerou=sim" >> "$GITHUB_OUTPUT"
+
+      - name: Enviar por FTP (mantendo o config.local.php do servidor)
+        if: steps.config.outputs.gerou != 'sim'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -38,6 +65,20 @@ jobs:
             **/.git*
             **/.git*/**
             config.local.php
+            sql/**
+
+      - name: Enviar por FTP (com a configuracao gerada pelos segredos)
+        if: steps.config.outputs.gerou == 'sim'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./fiadofacil/
+          server-dir: /htdocs/
+          exclude: |
+            **/.git*
+            **/.git*/**
             sql/**
 
       - name: Verificar se o site responde
