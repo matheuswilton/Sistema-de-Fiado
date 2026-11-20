@@ -44,7 +44,8 @@
 
 /* ---------- Cenario do login (faixa ilustrada atras do letreiro) ---------- */
 .cena-loja { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 120px; pointer-events: none; opacity: .55; z-index: 0; }
-.marca-login > .login-topo, .marca-login > .marca-login-conteudo { position: relative; z-index: 1; }
+.marca-login > .marca-login-conteudo { position: relative; z-index: 1; }
+.marca-login > .login-topo { z-index: 3; }
 /* acougue: pecas penduradas no gancho balancando */
 .cena-acougue .balanco { animation: pendurado 3.4s ease-in-out infinite; animation-delay: var(--atraso, 0s); transform-origin: 0 0; }
 @keyframes pendurado { 0%, 100% { rotate: -4deg; } 50% { rotate: 4deg; } }
