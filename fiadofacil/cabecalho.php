@@ -85,21 +85,21 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if ($tema_loja === 'acougue') echo '&family=Caveat:wght@600;700'; ?>&display=swap">
 <?php if (defined('AMBIENTE_TESTE') && AMBIENTE_TESTE): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
-<link rel="stylesheet" href="css/estilo.css?v=29">
-<?php if ($tema_loja): ?><link rel="stylesheet" href="css/lojas.css?v=1"><?php endif; ?>
+<link rel="stylesheet" href="css/estilo.css?v=31">
+<?php if ($tema_loja): ?><link rel="stylesheet" href="css/lojas.css?v=2"><?php endif; ?>
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
 <header class="topo">
+    <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('seta-esquerda'); ?></button>
     <?php if ($tema_loja === 'mercearia'): ?><div class="toldo toldo-menu" aria-hidden="true"></div><?php endif; ?>
     <div class="topo-conteudo">
         <div class="marca-linha">
             <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(40, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
-            <?php botao_tema("tema-compacto"); ?>
-            <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('recolher'); ?></button>
         </div>
         <?php if ($loja_tem_nome_proprio): ?><div class="loja-nome" title="<?php echo htmlspecialchars($loja_tela['nome']); ?>"><?php echo desenho_loja($tema_loja) ?: icone('inicio'); ?><span><?php echo htmlspecialchars($loja_tela['nome']); ?></span></div><?php endif; ?>
         <nav class="menu" aria-label="Menu principal">
+            <div class="menu-lista">
             <?php if ($nivel_logado === 'cliente'): ?>
                 <?php link_menu("minha_divida.php", "Minha dívida", "divida", $menu_ativo); ?>
                 <?php link_menu("minha_senha.php", "Minha senha", "senha", $menu_ativo); ?>
@@ -124,11 +124,19 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
                 <span class="menu-grupo">Conta</span>
                 <?php link_menu("minha_senha.php", "Minha senha", "senha", $menu_ativo); ?>
             <?php endif; ?>
-            <div class="menu-usuario">
-                <strong><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></strong>
-                <span><?php echo $nomes_perfil[$nivel_logado] ?? ''; ?></span>
             </div>
-            <a href="logout.php" class="menu-sair" data-dica="Sair" data-confirmar="Deseja sair do sistema?"><?php echo icone('sair'); ?><span class="menu-texto">Sair<span class="menu-sair-nome"> (<?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>)</span></span></a>
+            <!-- rodape fixo do menu: quem esta logado, modo noturno e sair (sempre visiveis) -->
+            <div class="menu-rodape">
+                <div class="menu-usuario">
+                    <span class="menu-avatar" aria-hidden="true"><?php echo htmlspecialchars(mb_strtoupper(mb_substr(trim($_SESSION['usuario_nome']), 0, 2))); ?></span>
+                    <span class="menu-usuario-texto"><strong><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></strong>
+                    <span><?php echo $nomes_perfil[$nivel_logado] ?? ''; ?></span></span>
+                </div>
+                <div class="menu-rodape-linha">
+                    <button type="button" class="tema-botao tema-interruptor" role="switch" aria-label="Modo noturno" title="Modo noturno"><span class="interruptor-icone interruptor-sol"><?php echo icone('sol'); ?></span><span class="interruptor-icone interruptor-lua"><?php echo icone('lua'); ?></span><span class="interruptor-bola" aria-hidden="true"><?php echo icone('sol', 'bola-sol') . icone('lua', 'bola-lua'); ?></span></button>
+                    <a href="logout.php" class="menu-sair" data-dica="Sair" data-confirmar="Deseja sair do sistema?"><?php echo icone('sair'); ?><span class="menu-texto">Sair<span class="menu-sair-nome"> (<?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>)</span></span></a>
+                </div>
+            </div>
         </nav>
         <div class="topo-botoes">
             <?php botao_tema(); ?>

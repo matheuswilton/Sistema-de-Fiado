@@ -33,9 +33,10 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=29">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=31">
 <link rel="stylesheet" href="css/inicio.css?v=21">
+<link rel="stylesheet" href="css/cinema.css?v=1">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -90,6 +91,39 @@ if (isset($_SESSION['usuario_id'])) {
     <div class="faixa-frases" role="marquee" aria-label="Quem anota, recebe. Adeus, caderninho. Fiado organizado, cliente fiel. Cada real anotado é um real recebido. Seu caderninho agora cabe no bolso. Vender a prazo sem perder o sono. Confiança se constrói. Controle também.">
         <div class="faixa-frases-trilho" aria-hidden="true"><div class="faixa-frases-grupo"><span>Quem anota, recebe</span><i aria-hidden="true">✓</i><span>Adeus, caderninho</span><i aria-hidden="true">✓</i><span>Fiado organizado, cliente fiel</span><i aria-hidden="true">✓</i><span>Cada real anotado é um real recebido</span><i aria-hidden="true">✓</i><span>Seu caderninho agora cabe no bolso</span><i aria-hidden="true">✓</i><span>Vender a prazo sem perder o sono</span><i aria-hidden="true">✓</i><span>Confiança se constrói. Controle também</span><i aria-hidden="true">✓</i></div><div class="faixa-frases-grupo"><span>Quem anota, recebe</span><i aria-hidden="true">✓</i><span>Adeus, caderninho</span><i aria-hidden="true">✓</i><span>Fiado organizado, cliente fiel</span><i aria-hidden="true">✓</i><span>Cada real anotado é um real recebido</span><i aria-hidden="true">✓</i><span>Seu caderninho agora cabe no bolso</span><i aria-hidden="true">✓</i><span>Vender a prazo sem perder o sono</span><i aria-hidden="true">✓</i><span>Confiança se constrói. Controle também</span><i aria-hidden="true">✓</i></div></div>
     </div>
+
+
+    <!-- Cena de cinema: o caderninho vira o FiadoFacil conforme a pessoa rola a pagina -->
+    <section class="cinema" aria-label="Do caderninho ao celular">
+        <div class="cinema-palco">
+            <div class="cinema-legendas">
+                <p class="legenda" data-cena="1"><small>01</small>Todo fiado começava assim.</p>
+                <p class="legenda" data-cena="2"><small>02</small>Até a página acabar, a conta não fechar e alguém esquecer de pagar.</p>
+                <p class="legenda" data-cena="3"><small>03</small>Então o caderninho virou sistema.</p>
+                <p class="legenda" data-cena="4"><small>04</small>Cada compra respeita o limite. Cada atraso aparece sozinho.</p>
+            </div>
+            <div class="cinema-cena" aria-hidden="true">
+                <div class="caderno">
+                    <div class="caderno-espiral"></div>
+                    <div class="caderno-titulo">Fiado — Novembro</div>
+                    <div class="caderno-linha"><span class="cl-nome">João Silva</span><span class="cl-item">Arroz, feijão</span><span class="cl-valor">45,00</span><svg class="rasura" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c40-9 70 8 110-2s80 9 120-1 50 6 66-3"/></svg></div><div class="caderno-linha"><span class="cl-nome">Maria Souza</span><span class="cl-item">Pão e leite</span><span class="cl-valor">20,00</span><svg class="rasura" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c40-9 70 8 110-2s80 9 120-1 50 6 66-3"/></svg></div><div class="caderno-linha"><span class="cl-nome">Carlos P.</span><span class="cl-item">Compra do mês</span><span class="cl-valor">180,00</span><svg class="rasura" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c40-9 70 8 110-2s80 9 120-1 50 6 66-3"/></svg></div><div class="caderno-linha"><span class="cl-nome">Ana Lima</span><span class="cl-item">Frios</span><span class="cl-valor">60,00</span><svg class="rasura" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c40-9 70 8 110-2s80 9 120-1 50 6 66-3"/></svg></div><div class="caderno-linha"><span class="cl-nome">Seu Zé</span><span class="cl-item">Refrigerante</span><span class="cl-valor">15,00</span><svg class="rasura" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c40-9 70 8 110-2s80 9 120-1 50 6 66-3"/></svg></div><div class="caderno-linha"><span class="cl-nome">Dona Cida</span><span class="cl-item">???</span><span class="cl-valor">—</span><svg class="rasura" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 12c40-9 70 8 110-2s80 9 120-1 50 6 66-3"/></svg></div>
+                    <span class="mancha-cafe"></span>
+                    <span class="interrogacao i1">?</span><span class="interrogacao i2">?!</span>
+                    <div class="caderno-soma">Total: <s>R$ 320</s> <s>R$ 302</s> R$ ???</div>
+                </div>
+                <div class="celular">
+                    <div class="celular-tela">
+                        <div class="app-topo">🧺 Mercearia do Zé</div>
+                        <div class="app-total"><small>Total a receber</small><strong data-total="1240">R$ 0,00</strong></div>
+                        <div class="app-limite"><small>Uso do limite · Carlos</small><span class="app-limite-trilho"><span class="app-limite-barra"></span></span></div>
+                        <div class="app-item"><span class="avatar avatar-cor-0">JS</span><span class="app-nome">João Silva</span><b>R$ 45,00</b><i class="selo selo-aviso">Devendo</i></div><div class="app-item"><span class="avatar avatar-cor-1">MS</span><span class="app-nome">Maria Souza</span><b>R$ 20,00</b><i class="selo selo-aviso">Devendo</i></div><div class="app-item"><span class="avatar avatar-cor-2">CP</span><span class="app-nome">Carlos Pereira</span><b>R$ 180,00</b><i class="selo selo-alerta">Inadimplente</i></div><div class="app-item"><span class="avatar avatar-cor-3">AL</span><span class="app-nome">Ana Lima</span><b>R$ 0,00</b><i class="selo selo-ok">Em dia</i></div>
+                        <div class="app-aviso">⛔ Compra bloqueada: passou do limite</div>
+                        <div class="app-recebido">✓ Pagamento de R$ 60,00 registrado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- O problema -->
     <section id="problema" class="inicio-secao">
@@ -211,7 +245,10 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
-<script src="js/script.js?v=23"></script>
+<script src="js/script.js?v=24"></script>
+<script src="js/vendor/gsap.min.js?v=3.12.5"></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>
+<script src="js/cinema.js?v=1"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
