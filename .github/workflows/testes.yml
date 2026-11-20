@@ -86,11 +86,12 @@ jobs:
       group: deploy-site-teste
       cancel-in-progress: false
     env:
-      TEM_SITE_TESTE: ${{ secrets.FTP_TESTE_SERVIDOR != '' && secrets.BANCO_TESTE_SERVIDOR != '' }}
+      # o servidor do FTP pode estar salvo como FTP_TESTE_SERVIDOR ou FTP_TESTE_SERVER (os dois funcionam)
+      TEM_SITE_TESTE: ${{ (secrets.FTP_TESTE_SERVIDOR != '' || secrets.FTP_TESTE_SERVER != '') && secrets.BANCO_TESTE_SERVIDOR != '' }}
     steps:
       - name: Conferir os segredos do site de teste (mostra so os NOMES que faltam, nunca os valores)
         env:
-          S_FTP_SERVIDOR: ${{ secrets.FTP_TESTE_SERVIDOR != '' }}
+          S_FTP_SERVIDOR: ${{ secrets.FTP_TESTE_SERVIDOR != '' || secrets.FTP_TESTE_SERVER != '' }}
           S_FTP_USUARIO: ${{ secrets.FTP_TESTE_USUARIO != '' }}
           S_FTP_SENHA: ${{ secrets.FTP_TESTE_SENHA != '' }}
           S_BANCO_SERVIDOR: ${{ secrets.BANCO_TESTE_SERVIDOR != '' }}
@@ -135,7 +136,7 @@ jobs:
         if: env.TEM_SITE_TESTE == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_TESTE_SERVIDOR }}
+          server: ${{ secrets.FTP_TESTE_SERVIDOR || secrets.FTP_TESTE_SERVER }}
           username: ${{ secrets.FTP_TESTE_USUARIO }}
           password: ${{ secrets.FTP_TESTE_SENHA }}
           local-dir: ./fiadofacil/
