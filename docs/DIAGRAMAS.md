@@ -25,6 +25,9 @@ erDiagram
         VARCHAR slug UK "(60) endereco /loja/slug"
         VARCHAR tema "(30) visual da loja"
         ENUM status "ativo | bloqueado"
+        VARCHAR chave_pix "(77) NULL"
+        VARCHAR pix_cidade "(15) NULL"
+        CHAR api_token_hash UK "(64) SHA-256 da chave da API"
         DATETIME criado_em
     }
     CLIENTES {
