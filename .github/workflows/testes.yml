@@ -80,7 +80,9 @@ jobs:
   publicar-teste:
     name: Publicar no site de teste
     needs: testes
-    if: github.event_name == 'push' && github.ref == 'refs/heads/teste'
+    # DESLIGADO por seguranca: os segredos FTP_TESTE_* apontaram para a pasta do site oficial.
+    # Religar (trocar false por true) so depois de conferir a pasta do site de teste.
+    if: false && github.event_name == 'push' && github.ref == 'refs/heads/teste'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-site-teste
