@@ -62,8 +62,7 @@ const joaoPadariaId = idUsuario('padaria-pao-quente', 'joao');
  await pl.goto(B+'listar_clientes.php'); t=await pl.textContent('main'); ok(t.includes('Maria Oliveira') && !t.includes('Lúcia'),'Dentro do Açougue vê só os clientes do Açougue');
  await pl.goto(B+'painel.php?sair_da_loja=1'); ok(pl.url().endsWith('painel.php'),'Volta ao painel');
  // bloqueia a Padaria
- pl.on('dialog', d=>d.accept());
- const cp=pl.locator('.loja-cartao',{hasText:'Padaria Pão Quente'}); await Promise.all([pl.waitForNavigation(), cp.locator('button[value=bloquear]').click()]);
+ const cp=pl.locator('.loja-cartao',{hasText:'Padaria Pão Quente'}); await cp.locator('button[value=bloquear]').click(); await Promise.all([pl.waitForNavigation(), pl.click('.confirmar-caixa button[value=sim]')]);
  const rosa2=await entrar(b,'padaria-pao-quente','rosa',SENHA); ok(rosa2.url().includes('login.php') && (await rosa2.textContent('body')).includes('suspenso'),'Loja bloqueada: Rosa não entra');
  await rosa.goto(B+'dashboard.php'); ok(rosa.url().includes('login.php'),'Loja bloqueada: sessão aberta da Rosa cai na hora');
  await pl.goto(B+'painel.php'); const cp2=pl.locator('.loja-cartao',{hasText:'Padaria Pão Quente'}); await Promise.all([pl.waitForNavigation(), cp2.locator('button[value=desbloquear]').click()]);

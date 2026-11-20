@@ -60,7 +60,7 @@ Mostra a dívida atual, o limite, o limite disponível, a barra de uso do limite
 **Cobrar no WhatsApp:** abre a conversa com a mensagem pronta, com o valor e a chave Pix da loja. Nada é enviado sem você apertar "enviar".
 
 ### Registrar compra
-Escolha o cliente (a lista mostra quanto cada um ainda tem disponível), descreva a compra (opcional) e digite o valor. Se a compra passar do limite, o sistema **recusa** e mostra o limite, a dívida e o disponível.
+Escolha o cliente (a lista mostra quanto cada um ainda tem disponível), descreva a compra (opcional) e digite o valor: digite só os números e o campo mostra sozinho "R$ 0,00". Antes de gravar, aparece uma janela com o resumo (cliente, valor, dívida antes e depois) para confirmar. Quem abriu a compra pelo extrato do cliente volta para o extrato depois de salvar ou cancelar. Se a compra passar do limite, o sistema **recusa** e mostra o limite, a dívida e o disponível.
 
 ![Compra recusada pelo limite](img/telas/06-compra-bloqueada.jpg)
 
@@ -68,6 +68,13 @@ Escolha o cliente (a lista mostra quanto cada um ainda tem disponível), descrev
 Escolha o cliente (só aparecem os que devem) e digite o valor, ou clique em **"Quitar dívida inteira"**. Não é possível pagar mais do que a dívida. O pagamento abate as compras mais antigas primeiro.
 
 ![Pagamento](img/telas/07-pagamento.jpg)
+
+### Cobranças
+No menu **Cobranças** (com um número quando há alguém para cobrar), aparecem duas listas:
+- **Vencem nos próximos 3 dias:** quem ainda está em dia, mas vira inadimplente em breve. Um lembrete gentil antes do atraso.
+- **Em atraso:** quem passou de 30 dias.
+
+Em cada cliente: **Enviar no WhatsApp** (abre a conversa com a mensagem pronta e organizada: valor, prazo e chave Pix) e **Ver mensagem**, com o botão para copiar. Na tela inicial, o aviso **"Hora de cobrar"** leva direto para cá.
 
 ### Relatório de dívidas
 Filtre por **período** (de/até) e **situação** (todas, devendo, inadimplente ou em dia). Mostra compras e pagamentos no período, saldo devedor, dias em aberto e situação. Use **Imprimir** para uma versão limpa em papel ou PDF.

@@ -45,5 +45,18 @@ confere(link_whatsapp('123', 'x') === null, 'Sem link para telefone inválido');
 $msg = mensagem_cobranca('Lúcia Santos', ['nome' => 'Mercearia do Zé', 'chave_pix' => 'pix@x.com'], 46);
 confere(strpos($msg, 'Lúcia!') !== false && strpos($msg, 'R$ 46,00') !== false && strpos($msg, 'pix@x.com') !== false, 'Mensagem de cobrança com nome, valor e Pix');
 
+// Valor digitado
+confere(ler_valor('R$ 1.234,56') === 1234.56, 'Lê "R$ 1.234,56"');
+confere(ler_valor('10,5') === 10.5 && ler_valor('1234.5') === 1234.5, 'Lê valor com vírgula ou ponto');
+confere(ler_valor('') === 0.0 && ler_valor('abc') === 0.0, 'Valor vazio vira zero');
+
+// Mensagens de cobranca
+$loja = ['nome' => 'Mercearia do Zé', 'chave_pix' => 'pix@x.com'];
+confere(dias_para_vencer(50, 28) === 3 && dias_para_vencer(50, 31) === 0 && dias_para_vencer(0, 40) === null, 'Calcula em quantos dias o cliente fica inadimplente');
+confere(strpos(mensagem_cobranca('Ana Lima', $loja, 50, 29), 'vence em *2 dias*') !== false, 'Mensagem "vence em 2 dias"');
+confere(strpos(mensagem_cobranca('Ana Lima', $loja, 50, 41), 'em aberto há *41 dias*') !== false, 'Mensagem de atraso com os dias');
+confere(strpos(mensagem_cobranca('Ana Lima', $loja, 50, 5), 'Passando para lembrar da sua conta') !== false, 'Mensagem de lembrete comum');
+confere(substr_count(mensagem_cobranca('Ana Lima', $loja, 50), "\n") >= 8, 'Mensagem organizada em linhas');
+
 echo $falhas ? "Funções: $falhas FALHA(S)\n" : "Funções: todos os testes passaram\n";
 exit($falhas ? 1 : 0);
