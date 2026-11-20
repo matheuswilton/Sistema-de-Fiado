@@ -6,3 +6,7 @@ Thumbs.db
 desktop.ini
 # Senhas do banco (nunca versionar)
 config.local.php
+
+# Testes
+testes/node_modules/
+servidor.log

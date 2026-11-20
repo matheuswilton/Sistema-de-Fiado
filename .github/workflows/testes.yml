@@ -1,0 +1,77 @@
+# Testes automaticos do FiadoFacil.
+# Rodam a cada envio para a branch "teste", em todo Pull Request para a main
+# e antes de cada publicacao (o deploy chama este arquivo). Se algum teste falhar, nada e publicado.
+name: Testes
+
+on:
+  push:
+    branches: [teste]
+  pull_request:
+    branches: [main]
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    name: Testes do sistema
+    runs-on: ubuntu-latest
+    services:
+      banco:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: sistema_fiado
+          MARIADB_USER: fiado
+          MARIADB_PASSWORD: fiado
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      SENHA_TESTE: teste-ci-2026
+      MYSQL_CMD: mysql -h127.0.0.1 -ufiado -pfiado sistema_fiado
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar o PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mysqli, iconv
+
+      - name: Instalar o Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Conferir a sintaxe de todos os arquivos PHP
+        run: for arquivo in fiadofacil/*.php testes/*.php; do php -l "$arquivo" > /dev/null || exit 1; done
+
+      - name: Testes das funcoes (Pix, CPF, WhatsApp)
+        run: php testes/unidade.php
+
+      - name: Instalar o navegador de testes
+        working-directory: testes
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Preparar o banco de testes
+        run: |
+          mysql --default-character-set=utf8mb4 -h127.0.0.1 -ufiado -pfiado sistema_fiado < fiadofacil/sql/banco.sql
+          printf '<?php\n$banco_host = "127.0.0.1";\n$banco_usuario = "fiado";\n$banco_senha = "fiado";\n$banco_nome = "sistema_fiado";\n' > fiadofacil/config.local.php
+          php testes/preparar.php
+
+      - name: Ligar o site de testes
+        run: |
+          php -S 127.0.0.1:8080 -t fiadofacil testes/servidor.php > servidor.log 2>&1 &
+          sleep 2
+
+      - name: Testes no navegador (regras, conta por CPF, API e isolamento entre lojas)
+        run: bash testes/rodar.sh
+
+      - name: Mostrar o log do servidor (so se algo falhou)
+        if: failure()
+        run: cat servidor.log

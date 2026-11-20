@@ -1,4 +1,4 @@
-# Publica o site na InfinityFree sempre que a main e atualizada.
+# Publica o site na InfinityFree sempre que a main e atualizada, DEPOIS que os testes automaticos passam.
 # Precisa dos secrets FTP_SERVER, FTP_USERNAME e FTP_PASSWORD (Settings > Secrets and variables > Actions).
 name: Publicar na InfinityFree
 
@@ -15,7 +15,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  testes:
+    uses: ./.github/workflows/testes.yml
+
   deploy:
+    # so publica se todos os testes passarem
+    needs: testes
     runs-on: ubuntu-latest
     steps:
       - name: Baixar o codigo
