@@ -30,8 +30,8 @@ const { chromium, B, ok, sql, entrar, SENHA, terminar } = require('./comum');
     ok(r.status === 400, 'Recurso desconhecido responde 400');
 
     await ze.goto(B + 'minha_loja.php');
-    ze.on('dialog', d => d.accept());
-    await Promise.all([ze.waitForNavigation(), ze.click('form:has(input[value=revogar_api]) button')]);
+    await ze.click('form:has(input[value=revogar_api]) button');
+    await Promise.all([ze.waitForNavigation(), ze.click('.confirmar-caixa button[value=sim]')]);
     r = await chamar('resumo');
     ok(r.status === 401, 'Depois de desligar a API, a chave antiga para de funcionar');
     await terminar(b, 'API da loja');

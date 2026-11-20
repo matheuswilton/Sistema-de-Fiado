@@ -6,6 +6,14 @@ if (!isset($classe_container)) { $classe_container = ""; }
 $esta_logado = isset($_SESSION['usuario_id']);
 $nivel_logado = $esta_logado ? $_SESSION['usuario_nivel'] : "";
 $total_pendentes_menu = 0;
+$total_cobrancas_menu = 0;
+// clientes para cobrar hoje: vencem em ate 3 dias ou ja estao em atraso
+if ($esta_logado && in_array($nivel_logado, ['admin', 'comum'], true) && isset($conn) && loja_id() > 0) {
+    foreach (buscar_clientes_situacao($conn) as $c_menu) {
+        $faltam_menu = dias_para_vencer($c_menu['saldo_devedor'], $c_menu['dias_devendo']);
+        if ($faltam_menu !== null && $faltam_menu <= DIAS_AVISO_ANTES) { $total_cobrancas_menu++; }
+    }
+}
 if ($esta_logado && $nivel_logado === 'admin' && isset($conn)) {
     $total_pendentes_menu = total_pedidos_pendentes($conn, loja_id());
 }
@@ -76,7 +84,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if ($tema_loja === 'acougue') echo '&family=Caveat:wght@600;700'; ?>&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=28">
+<link rel="stylesheet" href="css/estilo.css?v=29">
 <?php if ($tema_loja): ?><link rel="stylesheet" href="css/lojas.css?v=1"><?php endif; ?>
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
@@ -86,6 +94,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
     <div class="topo-conteudo">
         <div class="marca-linha">
             <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(40, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
+            <?php botao_tema("tema-compacto"); ?>
             <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('recolher'); ?></button>
         </div>
         <?php if ($loja_tem_nome_proprio): ?><div class="loja-nome" title="<?php echo htmlspecialchars($loja_tela['nome']); ?>"><?php echo desenho_loja($tema_loja) ?: icone('inicio'); ?><span><?php echo htmlspecialchars($loja_tela['nome']); ?></span></div><?php endif; ?>
@@ -100,6 +109,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
                 <?php link_menu("registrar_pagamento.php", "Pagamento", "pagamento", $menu_ativo); ?>
                 <?php link_menu("relatorio.php", "Relatório", "relatorio", $menu_ativo); ?>
                 <?php link_menu("ranking.php", "Ranking", "ranking", $menu_ativo); ?>
+                <?php link_menu("cobrancas.php", "Cobranças", "cobrancas", $menu_ativo, $total_cobrancas_menu > 0 ? ' <span class="contador">' . $total_cobrancas_menu . '</span>' : ''); ?>
                 <?php if ($nivel_logado === 'admin'): ?>
                     <span class="menu-separador"></span>
                     <span class="menu-grupo">Administração</span>

@@ -17,7 +17,12 @@ if (!$cliente) {
 $saldo = saldo_do_cliente($conn, $id);
 $limite = (float)$cliente['limite_credito'];
 $disponivel = max(0, $limite - $saldo);
-$link_cobranca = $saldo > 0 ? link_whatsapp($cliente['telefone'] ?? '', mensagem_cobranca($cliente['nome'], $loja_atual, $saldo)) : null;
+// dias em aberto (para a mensagem dizer "vence em X dias" ou "em atraso")
+$dias_devendo = 0;
+foreach (buscar_clientes_situacao($conn) as $linha_situacao) {
+    if ((int)$linha_situacao['id'] === $id) { $dias_devendo = $linha_situacao['dias_devendo']; break; }
+}
+$link_cobranca = $saldo > 0 ? link_whatsapp($cliente['telefone'] ?? '', mensagem_cobranca($cliente['nome'], $loja_atual, $saldo, $dias_devendo)) : null;
 $lista_compras = [];
 $stmt = $conn->prepare("SELECT descricao, valor, data_compra FROM compras WHERE cliente_id = ? ORDER BY data_compra DESC, id DESC LIMIT 100");
 $stmt->bind_param("i", $id);
@@ -45,8 +50,8 @@ require "cabecalho.php";
         </div>
     </div>
     <div class="acoes nao-imprimir">
-        <a href="registrar_compra.php?cliente_id=<?php echo $id; ?>" class="botao botao-compra">Registrar compra</a>
-        <?php if ($saldo > 0): ?><a href="registrar_pagamento.php?cliente_id=<?php echo $id; ?>" class="botao botao-verde">Registrar pagamento</a><?php endif; ?>
+        <a href="registrar_compra.php?cliente_id=<?php echo $id; ?>&amp;voltar=1" class="botao botao-compra">Registrar compra</a>
+        <?php if ($saldo > 0): ?><a href="registrar_pagamento.php?cliente_id=<?php echo $id; ?>&amp;voltar=1" class="botao botao-verde">Registrar pagamento</a><?php endif; ?>
         <?php if ($link_cobranca): ?><a href="<?php echo htmlspecialchars($link_cobranca); ?>" class="botao botao-whatsapp" target="_blank" rel="noopener"><?php echo icone('whatsapp'); ?> Cobrar no WhatsApp</a><?php endif; ?>
         <a href="editar_cliente.php?id=<?php echo $id; ?>" class="botao botao-secundario">Editar</a>
     </div>

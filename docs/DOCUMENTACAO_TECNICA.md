@@ -59,6 +59,8 @@ A plataforma atende **várias lojas** ao mesmo tempo. Cada loja tem endereço, l
 | RF15 | Abrir a cobrança pelo WhatsApp com a mensagem pronta. |
 | RF16 | Oferecer uma API REST somente leitura por loja. |
 | RF17 | Cada usuário troca a própria senha. |
+| RF18 | Listar quem fica inadimplente nos próximos 3 dias e quem está em atraso, com mensagem de cobrança pronta. |
+| RF19 | Pedir confirmação com resumo (valor, dívida antes e depois) antes de gravar compra e pagamento. |
 
 ### Não funcionais
 | Código | Requisito |
@@ -178,6 +180,7 @@ fiadofacil/
 ├── registrar_pagamento.php    pagamento (parcial ou total)
 ├── relatorio.php              relatório por período e situação (com impressão)
 ├── ranking.php                ranking de confiabilidade
+├── cobrancas.php              quem vence em até 3 dias e quem está em atraso, com a mensagem pronta para o WhatsApp
 ├── resumo.php                 resumo financeiro (administrador)
 ├── usuarios.php               funcionários (administrador)
 ├── aprovar_acessos.php        pedidos de acesso e contas por CPF (administrador)

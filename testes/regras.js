@@ -29,6 +29,33 @@ const { chromium, B, SENHA, ok, sql, entrar, postar, terminar } = require('./com
     t = await postar(ze, 'excluir_cliente.php', { id: joao });
     ok(t.includes('Não é possível excluir') && id('João Pereira') !== '', 'Cliente com dívida não pode ser excluído');
 
+    // pela tela: mascara de dinheiro, janela de confirmacao e volta para o extrato do cliente
+    await ze.goto(B + 'registrar_pagamento.php?cliente_id=' + joao + '&voltar=1');
+    await ze.type('#campo-valor', '1050');
+    ok(await ze.inputValue('#campo-valor') === 'R$ 10,50', 'Campo de dinheiro formata sozinho (R$ 10,50)');
+    await ze.click('form[data-resumo] button[type=submit]');
+    const resumo = await ze.textContent('.confirmar-caixa');
+    ok(resumo.includes('Confirmar pagamento?') && resumo.includes('R$ 10,50') && resumo.includes('Dívida depois'), 'Pagamento pede confirmação com o resumo');
+    await Promise.all([ze.waitForNavigation(), ze.click('.confirmar-caixa button[value=sim]')]);
+    ok(ze.url().includes('cliente.php?id=' + joao) && (await ze.textContent('body')).includes('registrado'), 'Depois do pagamento volta para o extrato do cliente');
+    await ze.goto(B + 'registrar_compra.php?cliente_id=' + joao + '&voltar=1');
+    await ze.type('#valor', '1050');
+    await ze.click('form[data-resumo] button[type=submit]');
+    await ze.click('.confirmar-caixa button[value=nao]');
+    ok(ze.url().includes('registrar_compra.php'), 'Voltar na confirmação não grava a compra');
+    await ze.click('form[data-resumo] button[type=submit]');
+    await Promise.all([ze.waitForNavigation(), ze.click('.confirmar-caixa button[value=sim]')]);
+    ok(ze.url().includes('cliente.php?id=' + joao) && (await ze.textContent('body')).includes('registrada'), 'Depois da compra volta para o extrato do cliente');
+    await ze.goto(B + 'registrar_compra.php?cliente_id=' + joao + '&voltar=1');
+    ok((await ze.getAttribute('a.botao-secundario:has-text("Cancelar")', 'href')) === 'cliente.php?id=' + joao, 'Cancelar volta para o extrato do cliente');
+
+    // cobrancas
+    await ze.goto(B + 'cobrancas.php');
+    t = await ze.textContent('main');
+    ok(t.includes('Em atraso') && t.includes('Lúcia Santos') && t.includes('Atrasado há'), 'Cobranças lista quem está em atraso');
+    ok((await ze.locator('.cobranca a.botao-whatsapp').count()) > 0, 'Cobranças tem o botão de enviar no WhatsApp');
+    ok((await ze.locator('.menu a[href="cobrancas.php"] .contador').count()) === 1, 'Menu mostra quantos clientes cobrar');
+
     // situacao e ranking
     await ze.goto(B + 'relatorio.php?situacao=inadimplente');
     t = await ze.textContent('main');
