@@ -464,7 +464,7 @@ O workflow `.github/workflows/deploy.yml` roda a cada atualização da `main` qu
 Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`).
 
 ### Site de teste (homologação)
-Cada envio para a branch `teste` que passa nos testes é publicado automaticamente num **site de teste** separado, com banco próprio. A publicação cria o `config.local.php` a partir dos segredos `FTP_TESTE_SERVIDOR`, `FTP_TESTE_USUARIO`, `FTP_TESTE_SENHA`, `BANCO_TESTE_SERVIDOR` e `BANCO_TESTE_NOME` (o usuário e a senha do banco são os do FTP, a menos que existam `BANCO_TESTE_USUARIO` e `BANCO_TESTE_SENHA`). O site de teste mostra uma faixa amarela de aviso e pede aos buscadores para não indexar (`X-Robots-Tag: noindex`). Enquanto os segredos não existem, a publicação de teste é pulada. Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
+Cada envio para a branch `teste` que passa nos testes é publicado automaticamente num **site de teste** separado (https://fiadofacilteste.free.je), com banco próprio. A publicação cria o `config.local.php` a partir dos segredos `FTP_TESTE_SERVIDOR`, `FTP_TESTE_USUARIO`, `FTP_TESTE_SENHA`, `BANCO_TESTE_SERVIDOR` e `BANCO_TESTE_NOME` (o usuário e a senha do banco são os do FTP, a menos que existam `BANCO_TESTE_USUARIO` e `BANCO_TESTE_SENHA`). O site de teste mostra uma faixa amarela de aviso e pede aos buscadores para não indexar (`X-Robots-Tag: noindex`). Enquanto os segredos não existem, a publicação de teste é pulada. Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
 
 ---
 
