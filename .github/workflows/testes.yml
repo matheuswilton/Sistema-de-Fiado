@@ -88,9 +88,25 @@ jobs:
     env:
       TEM_SITE_TESTE: ${{ secrets.FTP_TESTE_SERVIDOR != '' && secrets.BANCO_TESTE_SERVIDOR != '' }}
     steps:
-      - name: Avisar se o site de teste ainda nao foi configurado
-        if: env.TEM_SITE_TESTE != 'true'
-        run: echo "Site de teste ainda nao configurado (faltam os segredos FTP_TESTE_* e BANCO_TESTE_*). Nada a publicar."
+      - name: Conferir os segredos do site de teste (mostra so os NOMES que faltam, nunca os valores)
+        env:
+          S_FTP_SERVIDOR: ${{ secrets.FTP_TESTE_SERVIDOR != '' }}
+          S_FTP_USUARIO: ${{ secrets.FTP_TESTE_USUARIO != '' }}
+          S_FTP_SENHA: ${{ secrets.FTP_TESTE_SENHA != '' }}
+          S_BANCO_SERVIDOR: ${{ secrets.BANCO_TESTE_SERVIDOR != '' }}
+          S_BANCO_NOME: ${{ secrets.BANCO_TESTE_NOME != '' }}
+        run: |
+          faltam=""
+          [ "$S_FTP_SERVIDOR" = "true" ] || faltam="$faltam FTP_TESTE_SERVIDOR"
+          [ "$S_FTP_USUARIO" = "true" ] || faltam="$faltam FTP_TESTE_USUARIO"
+          [ "$S_FTP_SENHA" = "true" ] || faltam="$faltam FTP_TESTE_SENHA"
+          [ "$S_BANCO_SERVIDOR" = "true" ] || faltam="$faltam BANCO_TESTE_SERVIDOR"
+          [ "$S_BANCO_NOME" = "true" ] || faltam="$faltam BANCO_TESTE_NOME"
+          if [ -n "$faltam" ]; then
+            echo "::warning title=Site de teste nao publicado::Faltam os segredos:$faltam (Configuracoes > Segredos e variaveis > Acoes)"
+          else
+            echo "Todos os segredos do site de teste estao configurados."
+          fi
 
       - name: Baixar o codigo
         if: env.TEM_SITE_TESTE == 'true'
