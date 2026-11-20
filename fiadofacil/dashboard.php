@@ -91,6 +91,7 @@ require "cabecalho.php";
                 <span class="lista-detalhe"><?php echo $c['dias_devendo']; ?> dias</span>
                 <strong class="lista-valor"><?php echo dinheiro($c['saldo_devedor']); ?></strong>
                 <span class="selo <?php echo $classes_situacao[$c['situacao']]; ?>"><?php echo $rotulos_situacao[$c['situacao']]; ?></span>
+                <?php $link_cobranca = link_whatsapp($c['telefone'] ?? '', mensagem_cobranca($c['nome'], $loja_atual, $c['saldo_devedor'])); if ($link_cobranca): ?><a class="botao-icone-whatsapp" href="<?php echo htmlspecialchars($link_cobranca); ?>" target="_blank" rel="noopener" aria-label="Cobrar <?php echo htmlspecialchars($c['nome']); ?> no WhatsApp" data-dica="Cobrar no WhatsApp"><?php echo icone('whatsapp'); ?></a><?php endif; ?>
             </li>
             <?php endforeach; ?>
         </ul>

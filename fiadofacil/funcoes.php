@@ -1,13 +1,16 @@
 <?php
 // Funcoes usadas em varias paginas. Todas as paginas carregam este arquivo (direto ou pelo verifica_login.php).
 date_default_timezone_set('America/Sao_Paulo');
-if (session_status() === PHP_SESSION_NONE) {
+// a API (api.php) nao usa sessao nem cookie: ela se identifica pela chave de acesso
+if (session_status() === PHP_SESSION_NONE && !defined('SEM_SESSAO')) {
     $conexao_segura = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
     session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax', 'secure' => $conexao_segura]);
     session_start();
 }
 // Loja (comercio) do usuario logado. Vem SEMPRE da sessao, nunca de formulario ou endereco.
 function loja_id() {
+    // na API a loja vem da chave de acesso conferida em api.php (constante definida so depois da conferencia)
+    if (defined('LOJA_DA_API')) { return LOJA_DA_API; }
     return (int)($_SESSION['comercio_id'] ?? 0);
 }
 // true se quem esta logado e o dono da plataforma (pode estar "dentro" de uma loja pelo painel)
@@ -16,7 +19,7 @@ function eh_plataforma() {
 }
 // Dados de uma loja (nome, slug, tema, status) pelo id ou pelo endereco (slug)
 function carregar_loja($conn, $id) {
-    $stmt = $conn->prepare("SELECT id, nome, slug, tema, status FROM comercios WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, nome, slug, tema, status, chave_pix, pix_cidade FROM comercios WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $loja = $stmt->get_result()->fetch_assoc();
@@ -114,6 +117,10 @@ function icone($nome, $classe = "") {
         'celular'    => '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
         'seta'       => '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
         'caderno'    => '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h8M8 11h6"/>',
+        'whatsapp'   => '<path d="M3 21l1.6-4.7A8.5 8.5 0 1 1 7.9 19.6Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.6-2-1-1 .8a4 4 0 0 1-1.7-1.7l.8-1-1-2Z"/>',
+        'pix'        => '<path d="m12 2.5 4 4-4 4-4-4Z"/><path d="m12 13.5 4 4-4 4-4-4Z"/><path d="m2.5 12 4-4 4 4-4 4Z"/><path d="m13.5 12 4-4 4 4-4 4Z"/>',
+        'loja'       => '<path d="M3 9.5 4.5 4h15L21 9.5"/><path d="M3 9.5a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v9h14v-9"/><path d="M10 21v-5h4v5"/>',
+        'copiar'     => '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
         'lixeira'    => '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/>',
     ];
     return '<svg class="icone ' . $classe . '" viewBox="0 0 24 24" aria-hidden="true">' . ($desenhos[$nome] ?? '') . '</svg>';
@@ -427,3 +434,69 @@ function registrar_pagamento($conn, $cliente_id, $valor) {
     }
     return [true, "Pagamento de " . dinheiro($valor) . " registrado. Ainda resta " . dinheiro($nova_divida) . "."];
 }
+
+// ---------- Integracoes ----------
+
+// Link "clique para conversar" do WhatsApp (wa.me): abre a conversa com a mensagem pronta.
+// Nao precisa de chave nem de servidor: quem abre o link e o celular ou o computador de quem clicou.
+function link_whatsapp($telefone, $mensagem) {
+    $numero = so_numeros($telefone);
+    if (strlen($numero) < 10 || strlen($numero) > 11) {
+        return null;
+    }
+    return "https://wa.me/55" . $numero . "?text=" . rawurlencode($mensagem);
+}
+function mensagem_cobranca($nome_cliente, $loja, $saldo) {
+    $primeiro_nome = explode(' ', trim($nome_cliente))[0];
+    $texto = "Olá, " . $primeiro_nome . "! Aqui é da " . $loja['nome'] . ". "
+        . "Passando para lembrar que a sua conta no fiado está em " . dinheiro($saldo) . ".";
+    if (!empty($loja['chave_pix'])) {
+        $texto .= " Se preferir, pode pagar pelo Pix: " . $loja['chave_pix'] . ".";
+    }
+    return $texto . " Obrigado pela confiança!";
+}
+
+// Pix "copia e cola" (BR Code do Banco Central): texto no padrao EMV, com codigo de conferencia CRC16 no fim.
+// O mesmo texto vira o QR Code. E um Pix estatico: o valor ja vai preenchido e o dinheiro cai direto na chave da loja.
+function pix_campo($id, $valor) {
+    return $id . str_pad((string)strlen($valor), 2, '0', STR_PAD_LEFT) . $valor;
+}
+function pix_texto_limpo($texto, $tamanho) {
+    $sem_acento = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', (string)$texto);
+    $limpo = strtoupper(preg_replace('/[^A-Za-z0-9 ]/', '', (string)$sem_acento));
+    return substr(trim($limpo), 0, $tamanho);
+}
+function pix_crc16($texto) {
+    $crc = 0xFFFF;
+    for ($i = 0, $n = strlen($texto); $i < $n; $i++) {
+        $crc ^= ord($texto[$i]) << 8;
+        for ($bit = 0; $bit < 8; $bit++) {
+            $crc = ($crc & 0x8000) ? (($crc << 1) ^ 0x1021) : ($crc << 1);
+            $crc &= 0xFFFF;
+        }
+    }
+    return strtoupper(str_pad(dechex($crc), 4, '0', STR_PAD_LEFT));
+}
+function pix_copia_e_cola($chave, $nome_recebedor, $cidade, $valor, $identificador = '***') {
+    $conta = pix_campo('00', 'br.gov.bcb.pix') . pix_campo('01', trim($chave));
+    $texto = pix_campo('00', '01')
+        . pix_campo('26', $conta)
+        . pix_campo('52', '0000')
+        . pix_campo('53', '986')
+        . pix_campo('54', number_format($valor, 2, '.', ''))
+        . pix_campo('58', 'BR')
+        . pix_campo('59', pix_texto_limpo($nome_recebedor, 25) ?: 'LOJA')
+        . pix_campo('60', pix_texto_limpo($cidade, 15) ?: 'BRASIL')
+        . pix_campo('62', pix_campo('05', $identificador))
+        . '6304';
+    return $texto . pix_crc16($texto);
+}
+// Confere se a chave Pix tem um formato aceito: e-mail, telefone (+55...), CPF/CNPJ (so numeros) ou chave aleatoria
+function chave_pix_valida($chave) {
+    $chave = trim($chave);
+    return (bool)(filter_var($chave, FILTER_VALIDATE_EMAIL) && strlen($chave) <= 77)
+        || preg_match('/^\+55\d{10,11}$/', $chave)
+        || preg_match('/^\d{11}$|^\d{14}$/', $chave)
+        || preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $chave);
+}
+

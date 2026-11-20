@@ -706,3 +706,29 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
     .loja-numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
     .painel-topo .marca { font-size: 18px; }
 }
+
+/* ---------- Integracoes: WhatsApp, Pix, API ---------- */
+.botao-whatsapp { background: #128c4a; color: #fff; display: inline-flex; align-items: center; gap: 8px; }
+.botao-whatsapp:hover { background: #0d6f3a; color: #fff; }
+.botao-whatsapp .icone, .integracao h2 .icone, .pix-painel h2 .icone { width: 20px; height: 20px; }
+.botao-icone-whatsapp { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; color: #128c4a; background: var(--ok-fundo); transition: transform .15s ease, background-color .15s ease; }
+.botao-icone-whatsapp:hover { transform: scale(1.12); background: #128c4a; color: #fff; }
+.botao-icone-whatsapp .icone { width: 18px; height: 18px; }
+.integracao h2, .pix-painel h2 { display: flex; align-items: center; gap: 10px; }
+.integracao + .integracao { margin-top: 18px; }
+.pix-painel { margin: 18px 0; }
+.pix-caixa { display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; }
+.pix-qr { width: 220px; max-width: 100%; aspect-ratio: 1; background: #fff; border-radius: 12px; border: 1px solid var(--borda); padding: 6px; flex-shrink: 0; }
+.pix-qr svg { width: 100%; height: 100%; display: block; }
+.pix-info { flex: 1 1 260px; min-width: 0; }
+.pix-codigo { display: block; font-size: 12px; word-break: break-all; background: var(--superficie-2); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; flex: 1; min-width: 0; }
+.copiar-linha { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; margin: 8px 0; }
+.copiar-linha code { flex: 1 1 220px; min-width: 0; word-break: break-all; background: var(--superficie-2); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; }
+.copiar-linha .botao-pequeno { display: inline-flex; align-items: center; gap: 6px; }
+.copiar-linha .icone { width: 16px; height: 16px; }
+.detalhe-tecnico { margin-top: 14px; }
+.detalhe-tecnico summary { cursor: pointer; font-weight: 600; color: var(--texto-suave); }
+.detalhe-tecnico[open] summary { margin-bottom: 10px; }
+.detalhe-tecnico .codigo { white-space: pre-wrap; word-break: break-all; background: var(--superficie-2); border: 1px solid var(--borda); border-radius: 8px; padding: 10px; font-size: 13px; }
+.opcional { font-weight: 400; color: var(--texto-suave); font-size: .9em; }
+@media (max-width: 600px) { .pix-qr { width: 100%; max-width: 260px; margin: 0 auto; } .pix-caixa { justify-content: center; } }

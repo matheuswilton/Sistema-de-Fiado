@@ -282,3 +282,68 @@ if (!semAnimacao) {
     });
 
 })();
+
+// ---------- Integracoes: QR Code do Pix, botao copiar e CEP automatico (ViaCEP) ----------
+(function () {
+    // QR Code: a biblioteca (js/qrcode.js) so e carregada nas paginas que tem um Pix
+    var areas = document.querySelectorAll('[data-qrcode]');
+    function desenhar() {
+        areas.forEach(function (area) {
+            var qr = qrcode(0, 'M');
+            qr.addData(area.getAttribute('data-qrcode'));
+            qr.make();
+            area.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 3, scalable: true });
+        });
+    }
+    if (areas.length) {
+        var s = document.createElement('script');
+        s.src = 'js/qrcode.js?v=1';
+        s.onload = desenhar;
+        document.body.appendChild(s);
+    }
+
+    // Copiar um texto (codigo Pix, chave da API)
+    document.querySelectorAll('[data-copiar]').forEach(function (botao) {
+        botao.addEventListener('click', function () {
+            var alvo = document.querySelector(botao.getAttribute('data-copiar'));
+            if (!alvo) { return; }
+            var texto = alvo.textContent.trim(), original = botao.innerHTML;
+            function pronto() { botao.textContent = 'Copiado!'; setTimeout(function () { botao.innerHTML = original; }, 1800); }
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(texto).then(pronto, function () { selecionar(alvo); });
+            } else { selecionar(alvo); pronto(); }
+        });
+    });
+    function selecionar(el) {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        try { document.execCommand('copy'); } catch (e) {}
+    }
+
+    // CEP: ao digitar 8 numeros, consulta o ViaCEP (API publica e gratuita) pelo navegador e preenche o endereco
+    document.querySelectorAll('[data-cep]').forEach(function (campo) {
+        var destino = document.querySelector(campo.getAttribute('data-cep'));
+        var aviso = document.getElementById('cep-aviso');
+        var ultimo = '';
+        function avisar(t) { if (aviso) { aviso.textContent = t; } }
+        campo.addEventListener('input', function () {
+            var n = campo.value.replace(/\D/g, '').slice(0, 8);
+            campo.value = n.length > 5 ? n.slice(0, 5) + '-' + n.slice(5) : n;
+            if (n.length !== 8 || n === ultimo || !destino) { return; }
+            ultimo = n;
+            avisar('Buscando o CEP...');
+            fetch('https://viacep.com.br/ws/' + n + '/json/')
+                .then(function (r) { if (!r.ok) { throw new Error(); } return r.json(); })
+                .then(function (d) {
+                    if (d.erro) { avisar('CEP não encontrado. Digite o endereço.'); return; }
+                    var partes = [d.logradouro, d.bairro, d.localidade && d.uf ? d.localidade + '/' + d.uf : d.localidade].filter(Boolean);
+                    destino.value = (d.logradouro ? d.logradouro + ', nº  - ' : '') + partes.slice(d.logradouro ? 1 : 0).join(' - ');
+                    avisar('Endereço preenchido. Complete o número.');
+                    destino.focus();
+                    var pos = destino.value.indexOf('nº ');
+                    if (pos >= 0) { destino.setSelectionRange(pos + 3, pos + 3); }
+                })
+                .catch(function () { avisar('Não deu para consultar o CEP agora. Digite o endereço.'); });
+        });
+    });
+})();
