@@ -7,7 +7,7 @@ Para exportar como imagem (PNG/SVG) para slides: cole o bloco em https://mermaid
 
 ## 1. Diagrama do banco de dados (UML / DER)
 
-Modelo entidade-relacionamento das 5 tabelas. A tabela `comercios` separa as lojas: cada loja tem os próprios clientes e usuários (a estrutura é criada por [`fiadofacil/migracoes.php`](../fiadofacil/migracoes.php)).
+Modelo entidade-relacionamento das 7 tabelas. A tabela `comercios` separa as lojas: cada loja tem os próprios clientes e usuários (a estrutura é criada por [`fiadofacil/migracoes.php`](../fiadofacil/migracoes.php)).
 
 ```mermaid
 erDiagram
@@ -16,6 +16,8 @@ erDiagram
     CLIENTES ||--o{ COMPRAS : "faz"
     CLIENTES ||--o{ PAGAMENTOS : "realiza"
     CLIENTES |o--o{ USUARIOS : "tem acesso (perfil cliente)"
+    CONTAS_CLIENTES ||--o{ CONTAS_VINCULOS : "liga-se a"
+    CLIENTES ||--o{ CONTAS_VINCULOS : "confirmado pela loja"
 
     COMERCIOS {
         INT id PK "AUTO_INCREMENT"
@@ -30,6 +32,7 @@ erDiagram
         INT comercio_id FK "NOT NULL, ON DELETE CASCADE"
         VARCHAR nome "(100) NOT NULL"
         VARCHAR telefone "(20)"
+        CHAR cpf "(11) NULL, unico por loja"
         VARCHAR endereco "(200)"
         DECIMAL limite_credito "(10,2) DEFAULT 500.00"
         DATETIME criado_em "DEFAULT CURRENT_TIMESTAMP"
@@ -59,6 +62,22 @@ erDiagram
         DECIMAL valor "(10,2) NOT NULL"
         DATETIME data_pagamento "DEFAULT CURRENT_TIMESTAMP"
     }
+    CONTAS_CLIENTES {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR nome "(100) NOT NULL"
+        CHAR cpf UK "(11) conta unica do cliente"
+        VARCHAR telefone "(20) confere com o cadastro"
+        VARCHAR senha "(255) hash bcrypt"
+        DATETIME criado_em
+    }
+    CONTAS_VINCULOS {
+        INT id PK "AUTO_INCREMENT"
+        INT conta_id FK "ON DELETE CASCADE"
+        INT cliente_id FK "ON DELETE CASCADE"
+        INT comercio_id FK "loja que confirma"
+        ENUM status "pendente | aprovado | recusado"
+        DATETIME criado_em
+    }
 ```
 
 **Cardinalidades**
@@ -67,6 +86,7 @@ erDiagram
 - Um **cliente** tem 0..N **compras** e 0..N **pagamentos**. Cada compra/pagamento pertence a exatamente 1 cliente.
 - Um **usuário** com `nivel = 'cliente'` aponta para 1 cliente (`cliente_id`). Funcionários (`admin`/`comum`) têm `cliente_id` nulo.
 - Ao excluir um cliente, as compras, os pagamentos e o acesso dele são apagados (`ON DELETE CASCADE`).
+- Uma **conta de cliente** (CPF + senha) liga-se a 0..N cadastros de cliente, um em cada loja que tem o mesmo CPF. Cada ligação só vale depois que **a loja confirma** (`contas_vinculos.status = 'aprovado'`). Assim o cliente vê o fiado de todas as lojas numa tela, e cada loja continua vendo só os próprios dados.
 
 **Por que não existe coluna "dívida"?** A dívida é sempre **calculada**: `SUM(compras.valor) − SUM(pagamentos.valor)`. Assim ela nunca fica desatualizada ou inconsistente.
 

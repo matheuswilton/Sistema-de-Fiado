@@ -500,3 +500,62 @@ function chave_pix_valida($chave) {
         || preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $chave);
 }
 
+// ---------- CPF e conta unica do cliente ----------
+
+// Confere os dois digitos verificadores do CPF (e recusa 000.000.000-00, 111.111.111-11...)
+function cpf_valido($cpf) {
+    $cpf = so_numeros($cpf);
+    if (strlen($cpf) !== 11 || preg_match('/^(\d)\1{10}$/', $cpf)) {
+        return false;
+    }
+    for ($t = 9; $t < 11; $t++) {
+        $soma = 0;
+        for ($i = 0; $i < $t; $i++) {
+            $soma += (int)$cpf[$i] * (($t + 1) - $i);
+        }
+        $digito = ((10 * $soma) % 11) % 10;
+        if ((int)$cpf[$t] !== $digito) {
+            return false;
+        }
+    }
+    return true;
+}
+function formatar_cpf($cpf) {
+    $n = so_numeros($cpf);
+    return strlen($n) === 11 ? substr($n, 0, 3) . "." . substr($n, 3, 3) . "." . substr($n, 6, 3) . "-" . substr($n, 9, 2) : $cpf;
+}
+// mostra so o miolo do CPF (LGPD: a tela nao precisa do numero inteiro)
+function mascarar_cpf($cpf) {
+    $n = so_numeros($cpf);
+    return strlen($n) === 11 ? "***." . substr($n, 3, 3) . "." . substr($n, 6, 3) . "-**" : "";
+}
+// Ja existe outro cliente com este CPF nesta loja?
+function cpf_ja_cadastrado($conn, $cpf, $ignorar_id = 0) {
+    $loja = loja_id();
+    $stmt = $conn->prepare("SELECT id FROM clientes WHERE comercio_id = ? AND cpf = ? AND id <> ?");
+    $stmt->bind_param("isi", $loja, $cpf, $ignorar_id);
+    $stmt->execute();
+    $existe = (bool)$stmt->get_result()->fetch_row();
+    $stmt->close();
+    return $existe;
+}
+// Cria os pedidos de ligacao (pendentes) com as lojas que tem este CPF no cadastro e ainda nao foram ligadas
+function sincronizar_vinculos($conn, $conta_id, $cpf) {
+    $stmt = $conn->prepare("INSERT IGNORE INTO contas_vinculos (conta_id, cliente_id, comercio_id, status)
+        SELECT ?, c.id, c.comercio_id, 'pendente' FROM clientes c JOIN comercios m ON m.id = c.comercio_id
+        WHERE c.cpf = ? AND m.status = 'ativo'");
+    $stmt->bind_param("is", $conta_id, $cpf);
+    $stmt->execute();
+    $stmt->close();
+}
+// Pedidos pendentes desta loja (acessos antigos por usuario + contas por CPF), para o contador do menu
+function total_pedidos_pendentes($conn, $loja) {
+    $stmt = $conn->prepare("SELECT (SELECT COUNT(*) FROM usuarios WHERE comercio_id = ? AND nivel = 'cliente' AND status = 'pendente')
+        + (SELECT COUNT(*) FROM contas_vinculos WHERE comercio_id = ? AND status = 'pendente')");
+    $stmt->bind_param("ii", $loja, $loja);
+    $stmt->execute();
+    $total = (int)$stmt->get_result()->fetch_row()[0];
+    $stmt->close();
+    return $total;
+}
+

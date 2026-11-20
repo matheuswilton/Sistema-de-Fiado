@@ -7,7 +7,7 @@ if ($id <= 0) {
     header("Location: listar_clientes.php");
     exit();
 }
-$stmt = $conn->prepare("SELECT nome, telefone, endereco, limite_credito FROM clientes WHERE id = ? AND comercio_id = ?");
+$stmt = $conn->prepare("SELECT nome, telefone, cpf, endereco, limite_credito FROM clientes WHERE id = ? AND comercio_id = ?");
 $stmt->bind_param("ii", $id, $loja);
 $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
@@ -21,18 +21,24 @@ $mensagem = "";
 $nome = $cliente['nome'];
 $telefone = $cliente['telefone'] ?? '';
 $endereco = $cliente['endereco'] ?? '';
+$cpf = $cliente['cpf'] ?? '';
 $limite_credito = (float)$cliente['limite_credito'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
     $nome = trim($_POST['nome'] ?? '');
     $telefone = trim($_POST['telefone'] ?? '');
     $endereco = trim($_POST['endereco'] ?? '');
+    $cpf = so_numeros($_POST['cpf'] ?? '');
     // usuario comum nao altera o limite: continua o que esta no banco
     $novo_limite = eh_admin() ? round(floatval($_POST['limite_credito'] ?? 0), 2) : (float)$cliente['limite_credito'];
     if ($nome === "") {
         $mensagem = "O nome do cliente é obrigatório.";
     } elseif ($telefone !== "" && !telefone_valido($telefone)) {
         $mensagem = "Telefone inválido. Informe o DDD e o número, ex.: (62) 99999-9999.";
+    } elseif ($cpf !== "" && !cpf_valido($cpf)) {
+        $mensagem = "CPF inválido. Confira os números (ou deixe em branco).";
+    } elseif ($cpf !== "" && cpf_ja_cadastrado($conn, $cpf, $id)) {
+        $mensagem = "Já existe outro cliente com este CPF nesta loja.";
     } elseif ($novo_limite < 0) {
         $mensagem = "O limite de crédito não pode ser negativo.";
     } elseif ($novo_limite > 99999999.99) {
@@ -41,10 +47,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensagem = "Já existe outro cliente cadastrado com este telefone.";
     } else {
         $telefone = formatar_telefone($telefone);
-        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, telefone = ?, endereco = ?, limite_credito = ? WHERE id = ? AND comercio_id = ?");
-        $stmt->bind_param("sssdii", $nome, $telefone, $endereco, $novo_limite, $id, $loja);
+        $cpf_banco = $cpf !== "" ? $cpf : null;
+        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, telefone = ?, cpf = ?, endereco = ?, limite_credito = ? WHERE id = ? AND comercio_id = ?");
+        $stmt->bind_param("ssssdii", $nome, $telefone, $cpf_banco, $endereco, $novo_limite, $id, $loja);
         if ($stmt->execute()) {
             $stmt->close();
+            // CPF trocado: a conta ligada ao CPF antigo deixa de ver este cadastro
+            if ($cpf !== (string)($cliente['cpf'] ?? '')) {
+                $stmt = $conn->prepare("DELETE FROM contas_vinculos WHERE cliente_id = ? AND comercio_id = ?");
+                $stmt->bind_param("ii", $id, $loja);
+                $stmt->execute();
+                $stmt->close();
+            }
             definir_flash("Dados do cliente atualizados com sucesso!");
             header("Location: cliente.php?id=" . $id);
             exit();
@@ -73,6 +87,10 @@ require "cabecalho.php";
     <div class="campo">
     <label for="telefone">Telefone</label>
     <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>">
+    </div>
+    <div class="campo">
+    <label for="cpf">CPF <span class="opcional">(para o cliente ver o fiado pela conta dele)</span></label>
+    <input type="text" id="cpf" name="cpf" data-mascara="cpf" inputmode="numeric" placeholder="000.000.000-00" value="<?php echo htmlspecialchars(formatar_cpf($cpf)); ?>">
     </div>
     <div class="campo">
     <label for="cep">CEP <span class="opcional">(preenche o endereço sozinho)</span></label>

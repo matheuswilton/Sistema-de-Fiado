@@ -34,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=26">
+<link rel="stylesheet" href="css/estilo.css?v=28">
 <link rel="stylesheet" href="css/inicio.css?v=21">
 </head>
 <body class="pagina-inicio">
@@ -67,7 +67,7 @@ if (isset($_SESSION['usuario_id'])) {
                 <p class="inicio-lead">Anote cada compra a prazo, trave o limite de cada cliente e saiba na hora quem está devendo. No computador e no celular, de graça.</p>
                 <div class="inicio-botoes">
                     <a href="login.php" class="botao botao-grande">Entrar no sistema <?php echo icone('seta'); ?></a>
-                    <a href="solicitar_acesso.php" class="botao botao-secundario botao-grande">Sou cliente e quero ver minha dívida</a>
+                    <a href="conta_entrar.php" class="botao botao-secundario botao-grande">Sou cliente e quero ver minhas dívidas</a>
                 </div>
             </div>
             <!-- "Tela" ilustrativa feita so com HTML e CSS -->
@@ -199,7 +199,7 @@ if (isset($_SESSION['usuario_id'])) {
             <p>Adeus, caderninho. Entre com seu usuário ou peça acesso como cliente.</p>
             <div class="inicio-botoes">
                 <a href="login.php" class="botao botao-grande botao-claro">Entrar no sistema <?php echo icone('seta'); ?></a>
-                <a href="solicitar_acesso.php" class="botao botao-grande botao-contorno">Sou cliente</a>
+                <a href="conta_entrar.php" class="botao botao-grande botao-contorno">Sou cliente</a>
             </div>
         </div>
     </section>
@@ -211,7 +211,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
-<script src="js/script.js?v=20"></script>
+<script src="js/script.js?v=21"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {

@@ -7,10 +7,37 @@ if (isset($_SESSION['usuario_id'])) {
 $erro = "";
 $usuario_digitado = "";
 require_once "conexao.php";
-// Qual loja? Pelo endereco (login.php?loja=mercearia-do-ze ou /loja/mercearia-do-ze); sem endereco, a loja principal
-$loja_publica = carregar_loja_por_slug($conn, $_GET['loja'] ?? ($_SESSION['loja_publica_slug'] ?? 'principal'));
+// Qual loja? Pelo endereco (login.php?loja=mercearia-do-ze ou /loja/mercearia-do-ze), pela ultima usada,
+// ou a pessoa digita o nome da loja (passo "Qual e a sua loja?")
+$aviso_loja = "";
+$lojas_encontradas = [];
+if (isset($_GET['trocar'])) {
+    unset($_SESSION['loja_publica_slug']);
+}
+$procura = trim((string)($_GET['procurar'] ?? ''));
+if ($procura !== '') {
+    $procura = mb_substr($procura, 0, 60);
+    $slug_procurado = strtolower(trim(preg_replace('/[^A-Za-z0-9]+/', '-', (string)iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $procura)), '-'));
+    $parecido = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $procura) . '%';
+    $stmt = $conn->prepare("SELECT slug, nome FROM comercios WHERE status = 'ativo' AND (slug = ? OR nome LIKE ?) ORDER BY nome LIMIT 10");
+    $stmt->bind_param("ss", $slug_procurado, $parecido);
+    $stmt->execute();
+    $lojas_encontradas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+    if (count($lojas_encontradas) === 1) {
+        header("Location: " . endereco_login($lojas_encontradas[0]['slug']));
+        exit();
+    }
+    if (!$lojas_encontradas) {
+        $aviso_loja = "Não encontramos nenhuma loja com \"" . $procura . "\". Confira o nome com a loja.";
+    }
+}
+$slug_pedido = isset($_GET['trocar']) ? null : ($_GET['loja'] ?? ($_SESSION['loja_publica_slug'] ?? null));
+$loja_publica = $slug_pedido !== null ? carregar_loja_por_slug($conn, $slug_pedido) : null;
 if ($loja_publica) {
     $_SESSION['loja_publica_slug'] = $loja_publica['slug'];
+} elseif ($slug_pedido !== null && isset($_GET['loja'])) {
+    $aviso_loja = "Não encontramos a loja desse endereço. Digite o nome da loja.";
 }
 if (isset($_GET['motivo']) && $_GET['motivo'] === 'bloqueado') { definir_flash("Sua sessão foi encerrada. Entre novamente.", "erro"); }
 if (isset($_GET['motivo']) && $_GET['motivo'] === 'loja_bloqueada') { definir_flash("O acesso a esta loja está suspenso. Fale com o responsável pela loja.", "erro"); }
@@ -43,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = "Seu acesso foi bloqueado pelo administrador.";
         } else {
             session_regenerate_id(true);
-            unset($_SESSION['login_falhas'], $_SESSION['login_bloqueado_ate'], $_SESSION['plataforma']);
+            unset($_SESSION['login_falhas'], $_SESSION['login_bloqueado_ate'], $_SESSION['plataforma'], $_SESSION['conta_cliente_id'], $_SESSION['conta_cliente_nome']);
             $_SESSION['comercio_id'] = $id_loja;
             $_SESSION['loja_slug'] = $loja_publica['slug'];
             $_SESSION['usuario_id'] = $linha_usuario['id'];
@@ -65,13 +92,31 @@ $descricao_pagina = "Entre no FiadoFácil para anotar compras no fiado, registra
 $classe_container = "container-pequeno";
 require "cabecalho.php";
 ?>
+<?php if (!$loja_publica): ?>
+<h1>Entrar</h1>
+<p class="subtitulo">Primeiro, qual é a sua loja?</p>
+<?php mostrar_flash(); ?>
+<?php if ($aviso_loja): ?><div class="erro" role="alert"><?php echo htmlspecialchars($aviso_loja); ?></div><?php endif; ?>
+<form method="GET" action="login.php" class="form-loja">
+    <label for="procurar">Nome da loja</label>
+    <input type="text" id="procurar" name="procurar" value="<?php echo htmlspecialchars($procura); ?>" placeholder="Ex.: Mercearia do Zé" maxlength="60" autocomplete="organization" autofocus required>
+    <button type="submit" class="botao-total">Continuar</button>
+</form>
+<?php if (count($lojas_encontradas) > 1): ?>
+<div class="lista-lojas" role="list" aria-label="Lojas encontradas">
+    <p class="dica">Encontramos estas lojas. Escolha a sua:</p>
+    <?php foreach ($lojas_encontradas as $encontrada): ?>
+    <a role="listitem" class="loja-opcao" href="<?php echo htmlspecialchars(endereco_login($encontrada['slug'])); ?>"><?php echo icone('loja'); ?><span><?php echo htmlspecialchars($encontrada['nome']); ?></span><?php echo icone('seta'); ?></a>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
+<div class="separador-ou"><span>ou</span></div>
+<a href="conta_entrar.php" class="botao botao-secundario botao-total">Sou cliente: ver minhas dívidas em todas as lojas</a>
+<?php else: ?>
 <h1>Entrar</h1>
 <p class="subtitulo">Acesse com seu usuário e senha.</p>
 <?php mostrar_flash(); ?>
 <?php if ($erro): ?><div class="erro" role="alert"><?php echo htmlspecialchars($erro); ?></div><?php endif; ?>
-<?php if (!$loja_publica): ?>
-<div class="erro" role="alert">Loja não encontrada. Confira o endereço que a loja passou para você.</div>
-<?php else: ?>
 <form method="POST" action="<?php echo htmlspecialchars(endereco_login($loja_publica['slug'])); ?>">
     <?php campo_csrf(); ?>
     <label for="usuario">Usuário</label>
@@ -80,6 +125,7 @@ require "cabecalho.php";
     <input type="password" id="senha" name="senha" autocomplete="current-password" required>
     <button type="submit" class="botao-total">Entrar</button>
 </form>
-<div class="barra-botoes"><a href="solicitar_acesso.php?loja=<?php echo urlencode($loja_publica['slug']); ?>" class="botao botao-secundario botao-total">Sou cliente e quero ver minha dívida</a></div>
+<div class="barra-botoes"><a href="conta_entrar.php" class="botao botao-secundario botao-total">Sou cliente: ver minhas dívidas</a></div>
+<p class="trocar-loja">Não é a <?php echo htmlspecialchars($loja_publica['nome']); ?>? <a href="login.php?trocar=1">Trocar de loja</a></p>
 <?php endif; ?>
 <?php require "rodape.php"; ?>

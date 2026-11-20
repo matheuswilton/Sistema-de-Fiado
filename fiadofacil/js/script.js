@@ -14,6 +14,16 @@ document.querySelectorAll('[data-confirmar]').forEach(function (elemento) {
         }
     });
 });
+// Mascara de CPF: 000.000.000-00
+document.querySelectorAll('input[data-mascara="cpf"]').forEach(function (campo) {
+    campo.addEventListener('input', function () {
+        var n = campo.value.replace(/\D/g, '').slice(0, 11), t = n;
+        if (n.length > 9) { t = n.slice(0, 3) + '.' + n.slice(3, 6) + '.' + n.slice(6, 9) + '-' + n.slice(9); }
+        else if (n.length > 6) { t = n.slice(0, 3) + '.' + n.slice(3, 6) + '.' + n.slice(6); }
+        else if (n.length > 3) { t = n.slice(0, 3) + '.' + n.slice(3); }
+        campo.value = t;
+    });
+});
 // Mascara de telefone: (62) 99999-9999
 document.querySelectorAll('input[data-mascara="telefone"]').forEach(function (campo) {
     campo.addEventListener('input', function () {

@@ -38,6 +38,11 @@ Site: **https://fiadofacil.free.je**
 
 > As senhas das lojas de exemplo e do painel não ficam neste arquivo público: estão guardadas com o Matheus.
 
+## Conta única do cliente (cerca de 1 minuto)
+1. Abra `fiadofacil.free.je/login.php`: o sistema pergunta **"Qual é a sua loja?"**. Digite "padaria" e mostre que ele acha a loja sozinho.
+2. Volte e clique em **"Sou cliente"**: entre com o CPF do cliente de exemplo e mostre a tela **"Minhas dívidas"**, com a Mercearia e a Padaria juntas, o total e o Pix de cada loja.
+3. Explique a segurança: só cria a conta quem tem o CPF **e o telefone** no cadastro de uma loja, e cada loja **confirma** em "Aprovar acessos".
+
 ## Contas de exemplo
 | Perfil | Usuário | Senha |
 |---|---|---|

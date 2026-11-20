@@ -3,19 +3,24 @@ require_once "verifica_login.php";
 require_once "conexao.php";
 $loja = loja_id();
 $mensagem = "";
-$nome = $telefone = $endereco = "";
+$nome = $telefone = $endereco = $cpf = "";
 $limite_credito = 500.00;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
     $nome = trim($_POST['nome'] ?? '');
     $telefone = trim($_POST['telefone'] ?? '');
     $endereco = trim($_POST['endereco'] ?? '');
+    $cpf = so_numeros($_POST['cpf'] ?? '');
     // so o administrador define o limite; usuario comum usa o padrao de R$ 500
     $limite_credito = eh_admin() ? round(floatval($_POST['limite_credito'] ?? 500), 2) : 500.00;
     if ($nome === "") {
         $mensagem = "O nome do cliente é obrigatório.";
     } elseif ($telefone !== "" && !telefone_valido($telefone)) {
         $mensagem = "Telefone inválido. Informe o DDD e o número, ex.: (62) 99999-9999.";
+    } elseif ($cpf !== "" && !cpf_valido($cpf)) {
+        $mensagem = "CPF inválido. Confira os números (ou deixe em branco).";
+    } elseif ($cpf !== "" && cpf_ja_cadastrado($conn, $cpf)) {
+        $mensagem = "Já existe um cliente com este CPF nesta loja.";
     } elseif ($limite_credito < 0) {
         $mensagem = "O limite de crédito não pode ser negativo.";
     } elseif ($limite_credito > 99999999.99) {
@@ -24,8 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensagem = "Já existe um cliente cadastrado com este telefone.";
     } else {
         $telefone = formatar_telefone($telefone);
-        $stmt = $conn->prepare("INSERT INTO clientes (comercio_id, nome, telefone, endereco, limite_credito) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssd", $loja, $nome, $telefone, $endereco, $limite_credito);
+        $cpf_banco = $cpf !== "" ? $cpf : null;
+        $stmt = $conn->prepare("INSERT INTO clientes (comercio_id, nome, telefone, cpf, endereco, limite_credito) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssd", $loja, $nome, $telefone, $cpf_banco, $endereco, $limite_credito);
         if ($stmt->execute()) {
             $novo_id = $conn->insert_id;
             $stmt->close();
@@ -56,6 +62,10 @@ require "cabecalho.php";
     <div class="campo">
     <label for="telefone">Telefone</label>
     <input type="text" id="telefone" name="telefone" data-mascara="telefone" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>">
+    </div>
+    <div class="campo">
+    <label for="cpf">CPF <span class="opcional">(para o cliente ver o fiado pela conta dele)</span></label>
+    <input type="text" id="cpf" name="cpf" data-mascara="cpf" inputmode="numeric" placeholder="000.000.000-00" value="<?php echo htmlspecialchars(formatar_cpf($cpf)); ?>">
     </div>
     <div class="campo">
     <label for="cep">CEP <span class="opcional">(preenche o endereço sozinho)</span></label>
