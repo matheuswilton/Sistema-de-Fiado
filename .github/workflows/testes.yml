@@ -80,15 +80,16 @@ jobs:
   publicar-teste:
     name: Publicar no site de teste
     needs: testes
-    # DESLIGADO por seguranca: os segredos FTP_TESTE_* apontaram para a pasta do site oficial.
-    # Religar (trocar false por true) so depois de conferir a pasta do site de teste.
-    if: false && github.event_name == 'push' && github.ref == 'refs/heads/teste'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/teste'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-site-teste
       cancel-in-progress: false
     env:
       # o servidor do FTP pode estar salvo como FTP_TESTE_SERVIDOR ou FTP_TESTE_SERVER (os dois funcionam)
+      # O site de teste e um dominio a mais na MESMA conta da InfinityFree: ele tem uma pasta propria.
+      # Nunca pode ser a pasta /htdocs/, que e a do site oficial (a trava abaixo impede).
+      PASTA_SITE_TESTE: ${{ vars.PASTA_SITE_TESTE || '/fiadofacilteste.free.je/htdocs/' }}
       TEM_SITE_TESTE: ${{ (secrets.FTP_TESTE_SERVIDOR != '' || secrets.FTP_TESTE_SERVER != '') && secrets.BANCO_TESTE_SERVIDOR != '' }}
     steps:
       - name: Conferir os segredos do site de teste (mostra so os NOMES que faltam, nunca os valores)
@@ -110,6 +111,17 @@ jobs:
           else
             echo "Todos os segredos do site de teste estao configurados."
           fi
+
+      - name: Trava de seguranca (nunca publicar o teste na pasta do site oficial)
+        if: env.TEM_SITE_TESTE == 'true'
+        run: |
+          pasta="$(echo "$PASTA_SITE_TESTE" | tr -s '/')"
+          case "$pasta" in
+            ""|"/"|"/htdocs"|"/htdocs/"|"htdocs"|"htdocs/")
+              echo "::error title=Publicacao bloqueada::A pasta do site de teste ($pasta) e a pasta do site oficial. Nada foi enviado."
+              exit 1 ;;
+          esac
+          echo "Pasta do site de teste: $pasta"
 
       - name: Baixar o codigo
         if: env.TEM_SITE_TESTE == 'true'
@@ -142,7 +154,7 @@ jobs:
           username: ${{ secrets.FTP_TESTE_USUARIO }}
           password: ${{ secrets.FTP_TESTE_SENHA }}
           local-dir: ./fiadofacil/
-          server-dir: /htdocs/
+          server-dir: ${{ env.PASTA_SITE_TESTE }}
           exclude: |
             **/.git*
             **/.git*/**

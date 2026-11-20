@@ -5,7 +5,7 @@ RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Endereco proprio de cada loja: /loja/mercearia-do-ze abre o login daquela loja
-RewriteRule ^loja/([A-Za-z0-9-]+)/?$ login.php?loja=$1 [NC,L,R=302,QSA]
+RewriteRule ^loja/([A-Za-z0-9-]+)/?$ /login.php?loja=$1 [NC,L,R=302,QSA]
 
 # Pagina propria para enderecos que nao existem
 ErrorDocument 404 /404.php
