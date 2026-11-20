@@ -92,7 +92,7 @@ topo_publico("Minhas dívidas", "Suas compras no fiado em todas as lojas.", true
     <?php foreach ($lojas as $i => $loja): ?>
     <article class="painel conta-loja" data-tema-loja="<?php echo htmlspecialchars($loja['tema']); ?>">
         <header class="conta-loja-topo">
-            <h2><?php echo icone('loja'); ?> <?php echo htmlspecialchars($loja['loja_nome']); ?></h2>
+            <h2><?php echo desenho_loja($loja['tema']) ?: icone('loja'); ?> <?php echo htmlspecialchars($loja['loja_nome']); ?></h2>
             <?php if ($loja['saldo'] > 0): ?><span class="selo selo-aviso">Em aberto</span><?php else: ?><span class="selo selo-ok">Em dia</span><?php endif; ?>
         </header>
         <div class="conta-numeros">
@@ -100,7 +100,7 @@ topo_publico("Minhas dívidas", "Suas compras no fiado em todas as lojas.", true
             <div><span>Limite</span><strong><?php echo dinheiro($loja['limite_credito']); ?></strong></div>
             <div><span>Disponível</span><strong><?php echo dinheiro(max(0, $loja['limite_credito'] - $loja['saldo'])); ?></strong></div>
         </div>
-        <?php echo barra_limite($loja['saldo'], $loja['limite_credito'], true); ?>
+        <?php echo barra_limite($loja['saldo'], $loja['limite_credito'], true, $loja['tema']); ?>
         <?php if ($loja['pix']): ?>
         <details class="detalhe-tecnico">
             <summary><?php echo icone('pix'); ?> Pagar com Pix</summary>

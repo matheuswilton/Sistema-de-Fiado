@@ -146,17 +146,19 @@ function logo($tamanho = 32, $classe = "") {
         . '</svg>';
 }
 // Barra que mostra quanto do limite de credito ja foi usado (verde ate 50%, amarelo ate 80%, vermelho acima)
-function barra_limite($divida, $limite, $tela_do_cliente = false) {
+function barra_limite($divida, $limite, $tela_do_cliente = false, $tema = null) {
+    $tema = $tema ?? ($GLOBALS['tema_loja'] ?? '');
     $divida = max(0, (float)$divida);
     $limite = (float)$limite;
     $porcentagem = $limite > 0 ? min(100, round($divida / $limite * 100)) : ($divida > 0 ? 100 : 0);
     $nivel = $porcentagem >= 80 ? 'alto' : ($porcentagem >= 50 ? 'medio' : 'baixo');
     // na tela do proprio cliente nao usamos vermelho, para nao parecer cobranca
     if ($tela_do_cliente && $nivel === 'alto') { $nivel = 'medio'; }
-    $html = '<div class="uso-limite uso-' . $nivel . '">';
+    $html = '<div class="uso-limite uso-' . $nivel . ($tema ? ' uso-tema-' . $tema : '') . '">';
+    if ($tema === 'acougue') { $html .= balanca_limite($porcentagem); }
     $html .= '<div class="uso-limite-texto"><span>Uso do limite de crédito</span><strong>' . $porcentagem . '%</strong></div>';
     $html .= '<div class="uso-limite-trilho" role="progressbar" aria-valuenow="' . $porcentagem . '" aria-valuemin="0" aria-valuemax="100" aria-label="Uso do limite de crédito">';
-    $html .= '<div class="uso-limite-barra" style="--uso:' . $porcentagem . '%"></div></div>';
+    $html .= '<div class="uso-limite-barra" style="--uso:' . $porcentagem . '%;--pct:' . $porcentagem . '"></div></div>';
     $html .= '<div class="uso-limite-legenda">' . dinheiro($divida) . ' de ' . dinheiro($limite) . '</div></div>';
     return $html;
 }
@@ -559,3 +561,5 @@ function total_pedidos_pendentes($conn, $loja) {
     return $total;
 }
 
+// Desenhos das lojas (animacoes de cada ramo)
+require_once __DIR__ . "/desenhos.php";

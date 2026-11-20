@@ -11,7 +11,7 @@ RewriteRule ^loja/([A-Za-z0-9-]+)/?$ login.php?loja=$1 [NC,L,R=302,QSA]
 ErrorDocument 404 /404.php
 
 # Bloqueia o download direto de arquivos sensiveis (so tem efeito em servidores Apache)
-<FilesMatch "\.(sql|md|txt)$|^config\.local\.example\.php$|^layout_publico\.php$|^migracoes\.php$">
+<FilesMatch "\.(sql|md|txt)$|^config\.local\.example\.php$|^layout_publico\.php$|^migracoes\.php$|^desenhos\.php$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

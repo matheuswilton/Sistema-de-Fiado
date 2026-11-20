@@ -79,10 +79,10 @@ require "cabecalho.php";
     <a class="botao botao-secundario" href="cadastro_cliente.php"><?php echo icone('mais'); ?>Cadastrar cliente</a>
 </div>
 <div class="paineis-inicio">
-    <section class="painel painel-lista">
+    <section class="painel painel-lista painel-atencao">
         <div class="painel-cabecalho"><h2>Precisam de atenção</h2><a href="relatorio.php">Ver relatório</a></div>
         <?php if (count($precisam_atencao) === 0): ?>
-            <p class="lista-vazia">Ninguém devendo agora. 🎉</p>
+            <?php echo tela_vazia("Ninguém devendo agora. 🎉"); ?>
         <?php else: ?>
         <ul class="lista-inicio">
             <?php foreach ($precisam_atencao as $c): ?>
