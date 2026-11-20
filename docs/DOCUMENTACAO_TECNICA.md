@@ -211,6 +211,8 @@ fiadofacil/
 ├── css/lojas.css              animações de cada ramo (açougue, mercearia, padaria)
 ├── js/script.js               menu, tabelas em cartões, máscaras, CEP, QR Code, animações
 ├── js/qrcode.js               gerador de QR Code (licença MIT, Kazuhiko Arase)
+├── js/cinema.js, css/cinema.css  cena da página de apresentação (do caderninho ao celular, animada pela rolagem)
+├── js/vendor/                 GSAP e ScrollTrigger (licença gratuita "standard no-charge" da GreenSock)
 ├── img/                       emblema, ícones e foto
 └── sql/banco.sql              estrutura inicial e dados de exemplo
 ```
