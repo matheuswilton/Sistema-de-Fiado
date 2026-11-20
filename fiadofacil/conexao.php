@@ -5,6 +5,10 @@ if (!file_exists(__DIR__ . "/config.local.php")) {
     die("Falta o arquivo config.local.php. Copie o config.local.example.php, renomeie para config.local.php e preencha com os dados do banco.");
 }
 require __DIR__ . "/config.local.php";
+// site de teste (homologacao): o config gerado pela publicacao define AMBIENTE_TESTE; o Google nao deve mostrar este site
+if (defined('AMBIENTE_TESTE') && AMBIENTE_TESTE && !headers_sent()) {
+    header("X-Robots-Tag: noindex, nofollow");
+}
 mysqli_report(MYSQLI_REPORT_OFF);
 $conn = @new mysqli($banco_host, $banco_usuario, $banco_senha, $banco_nome);
 if ($conn->connect_error) {

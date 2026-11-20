@@ -851,3 +851,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
     .com-menu .marca-linha .marca-logo { width: 34px; height: 34px; }
     .com-menu .marca-linha .tema-compacto, .com-menu .recolher-botao { width: 30px; height: 30px; }
 }
+
+/* Faixa do site de teste (homologacao) */
+.faixa-teste { position: sticky; top: 0; z-index: 60; background: repeating-linear-gradient(-45deg, #fde047 0 14px, #facc15 14px 28px); color: #422006; text-align: center; font-size: 14px; padding: 7px 12px; border-bottom: 2px solid #a16207; }
+.faixa-teste a { color: #422006; font-weight: 700; }

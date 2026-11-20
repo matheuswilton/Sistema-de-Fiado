@@ -5,7 +5,7 @@ Os testes rodam sozinhos no GitHub Actions (arquivo `.github/workflows/testes.ym
 - em todo **Pull Request** para a `main`;
 - antes de cada **publicação**: se algum teste falhar, o site não é atualizado.
 
-Eles usam um **banco só de testes**, criado do zero a cada execução. As contas de teste recebem uma senha própria (variável `SENHA_TESTE`), então nenhuma senha real do site fica no código.
+Eles usam um **banco só de testes**, criado vazio a cada execução: o próprio sistema monta as tabelas, como num site novo. As contas de teste recebem uma senha própria (variável `SENHA_TESTE`), então nenhuma senha real do site fica no código.
 
 ## O que é testado
 

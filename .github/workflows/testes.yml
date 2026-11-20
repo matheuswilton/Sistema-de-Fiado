@@ -60,7 +60,6 @@ jobs:
 
       - name: Preparar o banco de testes
         run: |
-          mysql --default-character-set=utf8mb4 -h127.0.0.1 -ufiado -pfiado sistema_fiado < fiadofacil/sql/banco.sql
           printf '<?php\n$banco_host = "127.0.0.1";\n$banco_usuario = "fiado";\n$banco_senha = "fiado";\n$banco_nome = "sistema_fiado";\n' > fiadofacil/config.local.php
           php testes/preparar.php
 
@@ -75,3 +74,57 @@ jobs:
       - name: Mostrar o log do servidor (so se algo falhou)
         if: failure()
         run: cat servidor.log
+
+  # Site de teste (homologacao): cada envio para a branch "teste" que passar nos testes
+  # e publicado no site de teste. So roda depois que os segredos FTP_TESTE_* forem criados.
+  publicar-teste:
+    name: Publicar no site de teste
+    needs: testes
+    if: github.event_name == 'push' && github.ref == 'refs/heads/teste'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-site-teste
+      cancel-in-progress: false
+    env:
+      TEM_SITE_TESTE: ${{ secrets.FTP_TESTE_SERVIDOR != '' && secrets.BANCO_TESTE_SERVIDOR != '' }}
+    steps:
+      - name: Avisar se o site de teste ainda nao foi configurado
+        if: env.TEM_SITE_TESTE != 'true'
+        run: echo "Site de teste ainda nao configurado (faltam os segredos FTP_TESTE_* e BANCO_TESTE_*). Nada a publicar."
+
+      - name: Baixar o codigo
+        if: env.TEM_SITE_TESTE == 'true'
+        uses: actions/checkout@v4
+
+      - name: Criar a configuracao do banco do site de teste (a partir dos segredos)
+        if: env.TEM_SITE_TESTE == 'true'
+        env:
+          B_SERVIDOR: ${{ secrets.BANCO_TESTE_SERVIDOR }}
+          B_NOME: ${{ secrets.BANCO_TESTE_NOME }}
+          # usuario e senha do banco sao os mesmos do FTP, a menos que existam segredos proprios
+          B_USUARIO: ${{ secrets.BANCO_TESTE_USUARIO || secrets.FTP_TESTE_USUARIO }}
+          B_SENHA: ${{ secrets.BANCO_TESTE_SENHA || secrets.FTP_TESTE_SENHA }}
+        run: |
+          php -r '
+            $c = "<?php\n// Gerado pela publicacao automatica do site de teste. Nao vai para o GitHub.\n";
+            foreach (["banco_host" => "B_SERVIDOR", "banco_usuario" => "B_USUARIO", "banco_senha" => "B_SENHA", "banco_nome" => "B_NOME"] as $variavel => $origem) {
+                $c .= "\$" . $variavel . " = " . var_export((string)getenv($origem), true) . ";\n";
+            }
+            $c .= "define(\"AMBIENTE_TESTE\", true);\n";
+            file_put_contents("fiadofacil/config.local.php", $c);
+          '
+          php -l fiadofacil/config.local.php
+
+      - name: Enviar por FTP para o site de teste
+        if: env.TEM_SITE_TESTE == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_TESTE_SERVIDOR }}
+          username: ${{ secrets.FTP_TESTE_USUARIO }}
+          password: ${{ secrets.FTP_TESTE_SENHA }}
+          local-dir: ./fiadofacil/
+          server-dir: /htdocs/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            sql/**

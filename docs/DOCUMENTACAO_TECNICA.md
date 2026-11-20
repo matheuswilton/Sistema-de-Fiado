@@ -315,12 +315,13 @@ O arquivo `migracoes.php` roda na primeira visita de cada sessão e atualiza a e
 
 | Etapa | O que faz |
 |---|---|
+| Banco vazio | Se não existe nenhuma tabela, cria as 4 tabelas originais e os dados de exemplo (o mesmo conteúdo do `sql/banco.sql`), sem precisar importar nada. |
 | Várias lojas | Cria `comercios`, adiciona `comercio_id` em clientes e usuários, cria o perfil `plataforma` e troca o índice de usuário para "único por loja". Os dados antigos viram a "Loja principal". |
 | Senhas de exemplo | Troca as senhas das contas de exemplo por senhas simples, sem mexer em senha que o dono já trocou. |
 | Integrações | Adiciona a chave Pix e a chave da API às lojas. |
 | Conta do cliente | Adiciona o CPF aos clientes e cria `contas_clientes` e `contas_vinculos`. |
 
-Para instalar do zero basta importar `sql/banco.sql` (as 4 tabelas originais e dados de exemplo): na primeira visita, as migrações criam o resto.
+Para instalar do zero basta criar um banco **vazio** e preencher o `config.local.php`: na primeira visita, o sistema cria todas as tabelas e as lojas de exemplo. Importar o `sql/banco.sql` continua funcionando.
 
 ---
 
@@ -460,7 +461,10 @@ O workflow `.github/workflows/deploy.yml` roda a cada atualização da `main` qu
 2. Envia por FTP para a pasta `htdocs` da InfinityFree, sem o `config.local.php` e sem a pasta `sql`.
 3. Testa se o site responde.
 
-Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`). Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
+Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`).
+
+### Site de teste (homologação)
+Cada envio para a branch `teste` que passa nos testes é publicado automaticamente num **site de teste** separado, com banco próprio. A publicação cria o `config.local.php` a partir dos segredos `FTP_TESTE_SERVIDOR`, `FTP_TESTE_USUARIO`, `FTP_TESTE_SENHA`, `BANCO_TESTE_SERVIDOR` e `BANCO_TESTE_NOME` (o usuário e a senha do banco são os do FTP, a menos que existam `BANCO_TESTE_USUARIO` e `BANCO_TESTE_SENHA`). O site de teste mostra uma faixa amarela de aviso e pede aos buscadores para não indexar (`X-Robots-Tag: noindex`). Enquanto os segredos não existem, a publicação de teste é pulada. Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
 
 ---
 
