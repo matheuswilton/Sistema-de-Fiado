@@ -254,7 +254,7 @@ if (!semAnimacao) {
         requestAnimationFrame(passo);
     });
     // Efeito de onda ao clicar em botoes
-    document.querySelectorAll('.botao, button[type="submit"], .botao-icone, .tema-botao:not(.tema-flutuante), .recolher-botao').forEach(function (botao) {
+    document.querySelectorAll('.botao, button[type="submit"], .botao-icone, .tema-botao:not(.tema-flutuante):not(.tema-interruptor)').forEach(function (botao) {
         botao.classList.add('tem-onda');
         botao.addEventListener('pointerdown', function (e) {
             var caixa = botao.getBoundingClientRect();
@@ -514,4 +514,25 @@ if (!semAnimacao) {
     document.querySelectorAll('form[action="registrar_compra.php"] button[type=submit]').forEach(function (botao) {
         botao.addEventListener('click', function () { cortar(botao); });
     });
+})();
+
+// Menu lateral: sombra de "tem mais" quando ha itens escondidos para rolar
+(function () {
+    var lista = document.querySelector('.menu-lista');
+    if (!lista) { return; }
+    function atualizar() { lista.classList.toggle('tem-mais', lista.scrollHeight - lista.scrollTop - lista.clientHeight > 6); }
+    lista.addEventListener('scroll', atualizar, { passive: true });
+    window.addEventListener('resize', atualizar);
+    atualizar();
+    // o item ativo sempre aparece (se estiver la embaixo, a lista rola ate ele)
+    var ativo = lista.querySelector('a.ativo');
+    if (ativo && ativo.offsetTop > lista.clientHeight - 40) { lista.scrollTop = ativo.offsetTop - lista.clientHeight / 2; atualizar(); }
+})();
+// interruptor do modo noturno: informa ao leitor de tela se esta ligado
+(function () {
+    var chave = document.querySelector('.tema-interruptor');
+    if (!chave) { return; }
+    function marcar() { chave.setAttribute('aria-checked', document.documentElement.getAttribute('data-tema') === 'escuro' ? 'true' : 'false'); }
+    chave.addEventListener('click', function () { setTimeout(marcar, 0); });
+    marcar();
 })();

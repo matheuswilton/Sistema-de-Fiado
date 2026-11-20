@@ -853,5 +853,87 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
 }
 
 /* Faixa do site de teste (homologacao) */
-.faixa-teste { position: sticky; top: 0; z-index: 60; background: repeating-linear-gradient(-45deg, #fde047 0 14px, #facc15 14px 28px); color: #422006; text-align: center; font-size: 14px; padding: 7px 12px; border-bottom: 2px solid #a16207; }
+.faixa-teste { position: fixed; z-index: 80; left: 50%; bottom: 14px; translate: -50% 0; max-width: calc(100vw - 24px); background: repeating-linear-gradient(-45deg, #fde047 0 14px, #facc15 14px 28px); color: #422006; text-align: center; font-size: 13px; padding: 7px 16px; border: 2px solid #a16207; border-radius: 99px; box-shadow: 0 6px 18px rgba(0, 0, 0, .25); }
+@media (min-width: 801px) { body.com-menu .faixa-teste { margin-left: 124px; } :root[data-menu="recolhido"] body.com-menu .faixa-teste { margin-left: 38px; } }
 .faixa-teste a { color: #422006; font-weight: 700; }
+
+/* =====================================================================
+   MENU LATERAL v2: topo so com a marca, bolinha de recolher na borda,
+   lista que rola (barra fina, sem setas, com sombra de "tem mais")
+   e rodape fixo com o usuario, o interruptor de modo noturno e o Sair
+   ===================================================================== */
+.tema-interruptor { display: none; }
+.menu-lista { display: flex; flex-direction: column; gap: 2px; }
+.menu-rodape, .menu-rodape-linha { display: flex; flex-direction: column; }
+@media (max-width: 800px) { .recolher-botao { display: none !important; } }
+@media (min-width: 801px) {
+    /* o menu nao rola inteiro: so a lista do meio */
+    .com-menu .topo { overflow: visible; }
+    .com-menu .topo-conteudo { height: 100%; min-height: 0; }
+    .com-menu .menu { min-height: 0; flex: 1; display: flex; flex-direction: column; }
+    .com-menu .menu-lista { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; margin: 0 -10px 0 0; padding: 0 10px 8px 0;
+        scrollbar-width: none; }
+    .com-menu .menu-lista::-webkit-scrollbar { width: 6px; }
+    .com-menu .menu-lista::-webkit-scrollbar-track { background: transparent; }
+    .com-menu .menu-lista::-webkit-scrollbar-thumb { background: transparent; border: 0; border-radius: 99px; }
+    .com-menu .menu-lista:hover::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--primaria) 55%, transparent); }
+    .com-menu .menu-lista:hover { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--primaria) 55%, transparent) transparent; }
+    @supports selector(::-webkit-scrollbar) { .com-menu .menu-lista:hover { scrollbar-width: auto; scrollbar-color: auto; } }
+    /* sombra de "tem mais" embaixo da lista (o script liga quando ha mais itens para rolar) */
+    .com-menu .menu-lista.tem-mais { -webkit-mask-image: linear-gradient(#000 calc(100% - 44px), transparent); mask-image: linear-gradient(#000 calc(100% - 44px), transparent); }
+    .com-menu .menu a::before { left: -14px; }
+
+    /* rodape fixo */
+    .com-menu .menu-rodape { flex-shrink: 0; gap: 10px; padding: 12px 4px 2px; border-top: 1px solid var(--borda); box-shadow: 0 -10px 14px -12px rgba(15, 23, 42, .35); }
+    .com-menu .menu-usuario { display: flex; align-items: center; gap: 10px; margin: 0; padding: 0 4px; border: 0; }
+    .com-menu .menu-avatar { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--lateral-ativo); color: var(--lateral-ativo-texto); font-weight: 800; font-size: 12.5px; letter-spacing: .02em; }
+    .com-menu .menu-usuario-texto { min-width: 0; display: flex; flex-direction: column; }
+    .com-menu .menu-usuario-texto span { font-size: 12.5px; color: var(--texto-suave); }
+    .com-menu .menu-rodape-linha { flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; padding: 0 2px; }
+    .com-menu .menu-rodape .menu-sair { padding: 7px 10px; font-size: 14px; color: var(--texto-suave); }
+    .com-menu .menu-rodape .menu-sair:hover { color: var(--texto); }
+    .com-menu .topo-botoes { display: none; }
+
+    /* interruptor de sol e lua */
+    .com-menu .tema-interruptor { display: inline-flex; position: relative; width: 66px; height: 32px; padding: 0 8px; border-radius: 99px; align-items: center; justify-content: space-between;
+        background: var(--superficie-2); border: 1px solid var(--borda); color: var(--texto-suave); cursor: pointer; overflow: hidden; flex-shrink: 0; }
+    .com-menu .tema-interruptor .icone { width: 14px; height: 14px; display: block; }
+    .com-menu .interruptor-bola { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(15, 23, 42, .3);
+        display: flex; align-items: center; justify-content: center; color: #f59e0b; transition: left .3s cubic-bezier(.3, 1.4, .5, 1), background-color .3s ease; }
+    .com-menu .interruptor-bola .bola-lua { display: none; }
+    :root[data-tema="escuro"] .com-menu .tema-interruptor { background: #0b1220; border-color: #334155; }
+    :root[data-tema="escuro"] .com-menu .interruptor-bola { left: 37px; background: #1e293b; color: #facc15; }
+    :root[data-tema="escuro"] .com-menu .interruptor-bola .bola-sol { display: none; }
+    :root[data-tema="escuro"] .com-menu .interruptor-bola .bola-lua { display: block; }
+    .com-menu .tema-interruptor:hover .interruptor-bola { transform: scale(1.06); }
+    .com-menu .tema-interruptor:focus-visible { outline: 2px solid var(--primaria); outline-offset: 2px; }
+
+    /* bolinha de recolher na borda do menu */
+    .com-menu .marca-linha { padding: 0 0 12px; }
+    .com-menu .marca-linha .marca { width: 100%; }
+    .com-menu .marca-linha .marca-texto { font-size: 22px; }
+    .com-menu .marca-linha .marca-logo { width: 38px; height: 38px; }
+    .com-menu .recolher-botao { position: absolute; top: 74px; right: -14px; z-index: 45; width: 28px; height: 28px; border-radius: 50%; padding: 0;
+        background: var(--superficie); color: var(--primaria); border: 1px solid var(--borda); box-shadow: 0 2px 8px rgba(15, 23, 42, .18);
+        display: inline-flex; align-items: center; justify-content: center; transition: transform .2s ease, background-color .2s ease; }
+    .com-menu .recolher-botao:hover { transform: scale(1.12); background: var(--superficie-2); color: var(--primaria); }
+    .com-menu .recolher-botao .icone { width: 15px; height: 15px; transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+    :root[data-menu="recolhido"] .com-menu .recolher-botao .icone { transform: rotate(180deg); }
+
+    /* menu recolhido: rodape vira so o avatar e o interruptor redondo */
+    :root[data-menu="recolhido"] .com-menu .menu-lista { margin-right: -6px; padding-right: 6px; }
+    :root[data-menu="recolhido"] .com-menu .menu-usuario { justify-content: center; padding: 0; }
+    :root[data-menu="recolhido"] .com-menu .menu-usuario-texto { display: none; }
+    :root[data-menu="recolhido"] .com-menu .menu-rodape-linha { flex-direction: column; gap: 6px; }
+    :root[data-menu="recolhido"] .com-menu .tema-interruptor { width: 32px; padding: 0; justify-content: center; }
+    :root[data-menu="recolhido"] .com-menu .interruptor-icone { display: none; }
+    :root[data-menu="recolhido"] .com-menu .interruptor-bola, :root[data-tema="escuro"][data-menu="recolhido"] .com-menu .interruptor-bola { left: 3px; }
+    :root[data-menu="recolhido"] .com-menu .menu-rodape .menu-sair { justify-content: center; padding: 8px 0; }
+    /* toldo da mercearia acima de tudo */
+    .com-menu .toldo-menu { margin: -18px -14px 8px; }
+}
+@media (min-width: 801px) and (max-height: 820px) {
+    .com-menu .menu-rodape { padding-top: 8px; gap: 6px; }
+    .com-menu .menu-avatar { width: 30px; height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .com-menu .interruptor-bola, .com-menu .recolher-botao .icone { transition: none; } }

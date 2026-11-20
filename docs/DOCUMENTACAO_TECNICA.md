@@ -211,6 +211,8 @@ fiadofacil/
 ├── css/lojas.css              animações de cada ramo (açougue, mercearia, padaria)
 ├── js/script.js               menu, tabelas em cartões, máscaras, CEP, QR Code, animações
 ├── js/qrcode.js               gerador de QR Code (licença MIT, Kazuhiko Arase)
+├── js/cinema.js, css/cinema.css  cena da página de apresentação (do caderninho ao celular, animada pela rolagem)
+├── js/vendor/                 GSAP e ScrollTrigger (licença gratuita "standard no-charge" da GreenSock)
 ├── img/                       emblema, ícones e foto
 └── sql/banco.sql              estrutura inicial e dados de exemplo
 ```
@@ -400,7 +402,8 @@ O acesso antigo do cliente (usuário e senha numa loja, `solicitar_acesso.php` e
 - **Responsiva:** no celular, o menu vira um botão e as tabelas viram cartões (o JavaScript copia o nome da coluna para cada célula).
 - **Modo claro e noturno** com variáveis CSS, salvo no aparelho; na primeira visita segue o tema do sistema.
 - **Tema por loja** (verde, caramelo, vinho) e letreiro 3D com o nome da loja no login.
-- **Menu lateral** recolhível, com ícones SVG que usam a cor do texto.
+- **Menu lateral** recolhível pela bolinha na borda, com ícones SVG, lista que rola com barra fina (sem setas) e sombra de "tem mais", e rodapé fixo com o usuário, o interruptor de modo noturno e o Sair.
+- **Página de apresentação cinematográfica:** uma cena presa na tela conta a história conforme a rolagem (o caderninho é escrito, vira bagunça e se transforma no FiadoFácil no celular), feita com GSAP + ScrollTrigger. Títulos com a fonte Bricolage Grotesque. Sem JavaScript ou com "reduzir movimento", a cena aparece parada.
 - **Acessibilidade:** contraste conferido, cor sempre acompanhada de texto e animações desligadas para quem ativa "reduzir movimento".
 - **Instalável** na tela inicial do celular (`manifest.json`).
 - **Prévia ao compartilhar** o link (metatags Open Graph).
