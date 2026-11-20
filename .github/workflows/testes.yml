@@ -1,0 +1,161 @@
+# Testes automaticos do FiadoFacil.
+# Rodam a cada envio para a branch "teste", em todo Pull Request para a main
+# e antes de cada publicacao (o deploy chama este arquivo). Se algum teste falhar, nada e publicado.
+name: Testes
+
+on:
+  push:
+    branches: [teste]
+  pull_request:
+    branches: [main]
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    name: Testes do sistema
+    runs-on: ubuntu-latest
+    services:
+      banco:
+        image: mariadb:10.6
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: sistema_fiado
+          MARIADB_USER: fiado
+          MARIADB_PASSWORD: fiado
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      SENHA_TESTE: teste-ci-2026
+      MYSQL_CMD: mysql -h127.0.0.1 -ufiado -pfiado sistema_fiado
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar o PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mysqli, iconv
+
+      - name: Instalar o Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Conferir a sintaxe de todos os arquivos PHP
+        run: for arquivo in fiadofacil/*.php testes/*.php; do php -l "$arquivo" > /dev/null || exit 1; done
+
+      - name: Testes das funcoes (Pix, CPF, WhatsApp)
+        run: php testes/unidade.php
+
+      - name: Instalar o navegador de testes
+        working-directory: testes
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Preparar o banco de testes
+        run: |
+          printf '<?php\n$banco_host = "127.0.0.1";\n$banco_usuario = "fiado";\n$banco_senha = "fiado";\n$banco_nome = "sistema_fiado";\n' > fiadofacil/config.local.php
+          php testes/preparar.php
+
+      - name: Ligar o site de testes
+        run: |
+          php -S 127.0.0.1:8080 -t fiadofacil testes/servidor.php > servidor.log 2>&1 &
+          sleep 2
+
+      - name: Testes no navegador (regras, conta por CPF, API e isolamento entre lojas)
+        run: bash testes/rodar.sh
+
+      - name: Mostrar o log do servidor (so se algo falhou)
+        if: failure()
+        run: cat servidor.log
+
+  # Site de teste (homologacao): cada envio para a branch "teste" que passar nos testes
+  # e publicado no site de teste. So roda depois que os segredos FTP_TESTE_* forem criados.
+  publicar-teste:
+    name: Publicar no site de teste
+    needs: testes
+    if: github.event_name == 'push' && github.ref == 'refs/heads/teste'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-site-teste
+      cancel-in-progress: false
+    env:
+      # o servidor do FTP pode estar salvo como FTP_TESTE_SERVIDOR ou FTP_TESTE_SERVER (os dois funcionam)
+      # O site de teste e um dominio a mais na MESMA conta da InfinityFree: ele tem uma pasta propria.
+      # Nunca pode ser a pasta /htdocs/, que e a do site oficial (a trava abaixo impede).
+      PASTA_SITE_TESTE: ${{ vars.PASTA_SITE_TESTE || '/fiadofacilteste.free.je/htdocs/' }}
+      TEM_SITE_TESTE: ${{ (secrets.FTP_TESTE_SERVIDOR != '' || secrets.FTP_TESTE_SERVER != '') && secrets.BANCO_TESTE_SERVIDOR != '' }}
+    steps:
+      - name: Conferir os segredos do site de teste (mostra so os NOMES que faltam, nunca os valores)
+        env:
+          S_FTP_SERVIDOR: ${{ secrets.FTP_TESTE_SERVIDOR != '' || secrets.FTP_TESTE_SERVER != '' }}
+          S_FTP_USUARIO: ${{ secrets.FTP_TESTE_USUARIO != '' }}
+          S_FTP_SENHA: ${{ secrets.FTP_TESTE_SENHA != '' }}
+          S_BANCO_SERVIDOR: ${{ secrets.BANCO_TESTE_SERVIDOR != '' }}
+          S_BANCO_NOME: ${{ secrets.BANCO_TESTE_NOME != '' }}
+        run: |
+          faltam=""
+          [ "$S_FTP_SERVIDOR" = "true" ] || faltam="$faltam FTP_TESTE_SERVIDOR"
+          [ "$S_FTP_USUARIO" = "true" ] || faltam="$faltam FTP_TESTE_USUARIO"
+          [ "$S_FTP_SENHA" = "true" ] || faltam="$faltam FTP_TESTE_SENHA"
+          [ "$S_BANCO_SERVIDOR" = "true" ] || faltam="$faltam BANCO_TESTE_SERVIDOR"
+          [ "$S_BANCO_NOME" = "true" ] || faltam="$faltam BANCO_TESTE_NOME"
+          if [ -n "$faltam" ]; then
+            echo "::warning title=Site de teste nao publicado::Faltam os segredos:$faltam (Configuracoes > Segredos e variaveis > Acoes)"
+          else
+            echo "Todos os segredos do site de teste estao configurados."
+          fi
+
+      - name: Trava de seguranca (nunca publicar o teste na pasta do site oficial)
+        if: env.TEM_SITE_TESTE == 'true'
+        run: |
+          pasta="$(echo "$PASTA_SITE_TESTE" | tr -s '/')"
+          case "$pasta" in
+            ""|"/"|"/htdocs"|"/htdocs/"|"htdocs"|"htdocs/")
+              echo "::error title=Publicacao bloqueada::A pasta do site de teste ($pasta) e a pasta do site oficial. Nada foi enviado."
+              exit 1 ;;
+          esac
+          echo "Pasta do site de teste: $pasta"
+
+      - name: Baixar o codigo
+        if: env.TEM_SITE_TESTE == 'true'
+        uses: actions/checkout@v4
+
+      - name: Criar a configuracao do banco do site de teste (a partir dos segredos)
+        if: env.TEM_SITE_TESTE == 'true'
+        env:
+          B_SERVIDOR: ${{ secrets.BANCO_TESTE_SERVIDOR }}
+          B_NOME: ${{ secrets.BANCO_TESTE_NOME }}
+          # usuario e senha do banco sao os mesmos do FTP, a menos que existam segredos proprios
+          B_USUARIO: ${{ secrets.BANCO_TESTE_USUARIO || secrets.FTP_TESTE_USUARIO }}
+          B_SENHA: ${{ secrets.BANCO_TESTE_SENHA || secrets.FTP_TESTE_SENHA }}
+        run: |
+          php -r '
+            $c = "<?php\n// Gerado pela publicacao automatica do site de teste. Nao vai para o GitHub.\n";
+            foreach (["banco_host" => "B_SERVIDOR", "banco_usuario" => "B_USUARIO", "banco_senha" => "B_SENHA", "banco_nome" => "B_NOME"] as $variavel => $origem) {
+                $c .= "\$" . $variavel . " = " . var_export((string)getenv($origem), true) . ";\n";
+            }
+            $c .= "define(\"AMBIENTE_TESTE\", true);\n";
+            file_put_contents("fiadofacil/config.local.php", $c);
+          '
+          php -l fiadofacil/config.local.php
+
+      - name: Enviar por FTP para o site de teste
+        if: env.TEM_SITE_TESTE == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_TESTE_SERVIDOR || secrets.FTP_TESTE_SERVER }}
+          username: ${{ secrets.FTP_TESTE_USUARIO }}
+          password: ${{ secrets.FTP_TESTE_SENHA }}
+          local-dir: ./fiadofacil/
+          server-dir: ${{ env.PASTA_SITE_TESTE }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            sql/**

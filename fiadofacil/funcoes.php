@@ -121,6 +121,7 @@ function icone($nome, $classe = "") {
         'pix'        => '<path d="m12 2.5 4 4-4 4-4-4Z"/><path d="m12 13.5 4 4-4 4-4-4Z"/><path d="m2.5 12 4-4 4 4-4 4Z"/><path d="m13.5 12 4-4 4 4-4 4Z"/>',
         'loja'       => '<path d="M3 9.5 4.5 4h15L21 9.5"/><path d="M3 9.5a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12v9h14v-9"/><path d="M10 21v-5h4v5"/>',
         'copiar'     => '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
+        'cobrancas'  => '<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z"/><path d="M15 9a4 4 0 0 1 0 6"/><path d="M18 6a8 8 0 0 1 0 12"/>',
         'lixeira'    => '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/>',
     ];
     return '<svg class="icone ' . $classe . '" viewBox="0 0 24 24" aria-hidden="true">' . ($desenhos[$nome] ?? '') . '</svg>';
@@ -146,17 +147,19 @@ function logo($tamanho = 32, $classe = "") {
         . '</svg>';
 }
 // Barra que mostra quanto do limite de credito ja foi usado (verde ate 50%, amarelo ate 80%, vermelho acima)
-function barra_limite($divida, $limite, $tela_do_cliente = false) {
+function barra_limite($divida, $limite, $tela_do_cliente = false, $tema = null) {
+    $tema = $tema ?? ($GLOBALS['tema_loja'] ?? '');
     $divida = max(0, (float)$divida);
     $limite = (float)$limite;
     $porcentagem = $limite > 0 ? min(100, round($divida / $limite * 100)) : ($divida > 0 ? 100 : 0);
     $nivel = $porcentagem >= 80 ? 'alto' : ($porcentagem >= 50 ? 'medio' : 'baixo');
     // na tela do proprio cliente nao usamos vermelho, para nao parecer cobranca
     if ($tela_do_cliente && $nivel === 'alto') { $nivel = 'medio'; }
-    $html = '<div class="uso-limite uso-' . $nivel . '">';
+    $html = '<div class="uso-limite uso-' . $nivel . ($tema ? ' uso-tema-' . $tema : '') . '">';
+    if ($tema === 'acougue') { $html .= balanca_limite($porcentagem); }
     $html .= '<div class="uso-limite-texto"><span>Uso do limite de crédito</span><strong>' . $porcentagem . '%</strong></div>';
     $html .= '<div class="uso-limite-trilho" role="progressbar" aria-valuenow="' . $porcentagem . '" aria-valuemin="0" aria-valuemax="100" aria-label="Uso do limite de crédito">';
-    $html .= '<div class="uso-limite-barra" style="--uso:' . $porcentagem . '%"></div></div>';
+    $html .= '<div class="uso-limite-barra" style="--uso:' . $porcentagem . '%;--pct:' . $porcentagem . '"></div></div>';
     $html .= '<div class="uso-limite-legenda">' . dinheiro($divida) . ' de ' . dinheiro($limite) . '</div></div>';
     return $html;
 }
@@ -446,14 +449,53 @@ function link_whatsapp($telefone, $mensagem) {
     }
     return "https://wa.me/55" . $numero . "?text=" . rawurlencode($mensagem);
 }
-function mensagem_cobranca($nome_cliente, $loja, $saldo) {
+// Cliente fica inadimplente quando a compra mais antiga ainda nao paga passa de 30 dias
+const DIAS_PARA_INADIMPLENCIA = 30;
+// Avisar quantos dias antes de o cliente ficar inadimplente
+const DIAS_AVISO_ANTES = 3;
+
+// Em quantos dias o cliente fica inadimplente (0 = ja esta; null = nao deve nada)
+function dias_para_vencer($saldo, $dias_devendo) {
+    if ($saldo <= 0) { return null; }
+    return max(0, DIAS_PARA_INADIMPLENCIA + 1 - (int)$dias_devendo);
+}
+
+// Mensagem de cobranca organizada para o WhatsApp (o *texto* fica em negrito no WhatsApp).
+// Tres modelos: lembrete comum, "vence em X dias" e "em atraso".
+function mensagem_cobranca($nome_cliente, $loja, $saldo, $dias_devendo = null) {
     $primeiro_nome = explode(' ', trim($nome_cliente))[0];
-    $texto = "Olá, " . $primeiro_nome . "! Aqui é da " . $loja['nome'] . ". "
-        . "Passando para lembrar que a sua conta no fiado está em " . dinheiro($saldo) . ".";
-    if (!empty($loja['chave_pix'])) {
-        $texto .= " Se preferir, pode pagar pelo Pix: " . $loja['chave_pix'] . ".";
+    $faltam = $dias_devendo === null ? null : dias_para_vencer($saldo, $dias_devendo);
+    $linhas = ["Olá, " . $primeiro_nome . "! 👋", "Aqui é da *" . $loja['nome'] . "*.", ""];
+    if ($faltam === 0) {
+        $linhas[] = "Sua conta no fiado está em aberto há *" . (int)$dias_devendo . " dias*:";
+    } elseif ($faltam !== null && $faltam <= DIAS_AVISO_ANTES) {
+        $linhas[] = "Passando para lembrar que sua conta no fiado vence em *" . $faltam . ($faltam === 1 ? " dia" : " dias") . "*:";
+    } else {
+        $linhas[] = "Passando para lembrar da sua conta no fiado:";
     }
-    return $texto . " Obrigado pela confiança!";
+    $linhas[] = "💰 Valor em aberto: *" . dinheiro($saldo) . "*";
+    $linhas[] = "";
+    if (!empty($loja['chave_pix'])) {
+        $linhas[] = "Para pagar pelo Pix:";
+        $linhas[] = "🔑 Chave: " . $loja['chave_pix'];
+        $linhas[] = "Ou, se preferir, pague aqui na loja.";
+    } else {
+        $linhas[] = "Pode pagar aqui na loja quando passar.";
+    }
+    $linhas[] = "";
+    $linhas[] = $faltam === 0 ? "Se precisar, podemos combinar o pagamento. Se já pagou, desconsidere esta mensagem." : "Se já pagou, desconsidere esta mensagem.";
+    $linhas[] = "Obrigado pela confiança! 🙏";
+    return implode("\n", $linhas);
+}
+
+// Le um valor em reais digitado de qualquer jeito: "R$ 1.234,56", "1234,56" ou "1234.56"
+function ler_valor($texto) {
+    $texto = trim(str_replace(['R$', ' ', "\u{00A0}"], '', (string)$texto));
+    if ($texto === '') { return 0.0; }
+    if (strpos($texto, ',') !== false) {
+        $texto = str_replace(',', '.', str_replace('.', '', $texto));
+    }
+    return round((float)$texto, 2);
 }
 
 // Pix "copia e cola" (BR Code do Banco Central): texto no padrao EMV, com codigo de conferencia CRC16 no fim.
@@ -559,3 +601,5 @@ function total_pedidos_pendentes($conn, $loja) {
     return $total;
 }
 
+// Desenhos das lojas (animacoes de cada ramo)
+require_once __DIR__ . "/desenhos.php";

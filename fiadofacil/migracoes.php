@@ -277,8 +277,118 @@ function semear_contas_exemplo($conn) {
     }
 }
 
+// Banco vazio (site novo): cria as 4 tabelas originais e os dados de exemplo, igual ao sql/banco.sql.
+// Assim nao e preciso importar nada pelo phpMyAdmin: na primeira visita o banco se monta sozinho.
+function migracao_tabela_existe($conn, $tabela) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?");
+    $stmt->bind_param("s", $tabela);
+    $stmt->execute();
+    $existe = (int)$stmt->get_result()->fetch_row()[0] > 0;
+    $stmt->close();
+    return $existe;
+}
+function criar_tabelas_iniciais($conn) {
+    $comandos = [
+        <<<'SQL'
+SET NAMES utf8mb4
+SQL,
+        <<<'SQL'
+SET FOREIGN_KEY_CHECKS = 0
+SQL,
+        <<<'SQL'
+CREATE TABLE IF NOT EXISTS clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20),
+    endereco VARCHAR(200),
+    limite_credito DECIMAL(10,2) DEFAULT 500.00,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+SQL,
+        <<<'SQL'
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    nivel ENUM('admin','comum','cliente') NOT NULL DEFAULT 'comum',
+    status ENUM('pendente','aprovado','recusado','bloqueado') NOT NULL DEFAULT 'aprovado',
+    cliente_id INT NULL,
+    telefone_solicitado VARCHAR(20) NULL,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+SQL,
+        <<<'SQL'
+CREATE TABLE IF NOT EXISTS compras (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    descricao VARCHAR(200),
+    valor DECIMAL(10,2) NOT NULL,
+    data_compra DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+SQL,
+        <<<'SQL'
+CREATE TABLE IF NOT EXISTS pagamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    data_pagamento DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+SQL,
+        <<<'SQL'
+SET FOREIGN_KEY_CHECKS = 1
+SQL,
+        <<<'SQL'
+INSERT INTO usuarios (nome, usuario, senha, nivel)
+SELECT x.nome, x.usuario, x.senha, x.nivel FROM (
+    SELECT 'Administrador' AS nome, 'admin' AS usuario, '$2y$10$MJxxI0F.bM2VFWJck879Vu0Hjgf9SUqQP3EKnVxW0uqApbfxhlO/S' AS senha, 'admin' AS nivel
+    UNION ALL
+    SELECT 'Atendente', 'usuario', '$2y$10$0HMHeAXinJ1McZeqFdMlTuNUpoM9n/jHCTstb0Kb/KVZJ.b9Q/dqy', 'comum'
+) x WHERE NOT EXISTS (SELECT 1 FROM usuarios)
+SQL,
+        <<<'SQL'
+INSERT INTO clientes (nome, telefone, endereco, limite_credito)
+SELECT x.nome, x.telefone, x.endereco, x.limite FROM (
+    SELECT 'João Silva' AS nome, '(62) 99999-9999' AS telefone, 'Rua das Flores, 123' AS endereco, 500.00 AS limite
+    UNION ALL SELECT 'Maria Souza', '(62) 98888-8888', 'Av. Goiás, 456', 300.00
+    UNION ALL SELECT 'Carlos Pereira', '(62) 97777-7777', 'Rua 10, 89', 400.00
+    UNION ALL SELECT 'Ana Lima', '(62) 96666-6666', 'Rua 5, 22', 200.00
+) x WHERE NOT EXISTS (SELECT 1 FROM clientes)
+SQL,
+        <<<'SQL'
+INSERT INTO compras (cliente_id, descricao, valor, data_compra)
+SELECT c.id, x.descricao, x.valor, NOW() - INTERVAL x.dias DAY FROM (
+    SELECT '(62) 99999-9999' AS telefone, 'Arroz e feijão' AS descricao, 45.00 AS valor, 10 AS dias
+    UNION ALL SELECT '(62) 99999-9999', 'Refrigerante', 15.00, 5
+    UNION ALL SELECT '(62) 98888-8888', 'Pão e manteiga', 20.00, 3
+    UNION ALL SELECT '(62) 97777-7777', 'Compra do mês', 180.00, 45
+    UNION ALL SELECT '(62) 96666-6666', 'Frios', 60.00, 20
+) x JOIN clientes c ON c.telefone = x.telefone WHERE NOT EXISTS (SELECT 1 FROM compras)
+SQL,
+        <<<'SQL'
+INSERT INTO pagamentos (cliente_id, valor, data_pagamento)
+SELECT c.id, x.valor, NOW() - INTERVAL x.dias DAY FROM (
+    SELECT '(62) 98888-8888' AS telefone, 10.00 AS valor, 1 AS dias
+    UNION ALL SELECT '(62) 97777-7777', 50.00, 30
+    UNION ALL SELECT '(62) 96666-6666', 60.00, 15
+) x JOIN clientes c ON c.telefone = x.telefone WHERE NOT EXISTS (SELECT 1 FROM pagamentos)
+SQL,
+    ];
+    $ok = true;
+    foreach ($comandos as $comando) {
+        $ok = migracao_sql($conn, $comando) && $ok;
+    }
+    return $ok;
+}
+
 // roda uma vez por sessao do navegador (depois que o banco esta atualizado, so faz uma consulta rapida)
 if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
+    if (!migracao_tabela_existe($conn, 'clientes')) {
+        criar_tabelas_iniciais($conn);
+    }
     $atualizado = migracao_coluna_existe($conn, 'usuarios', 'comercio_id')
         && migracao_indice_existe($conn, 'usuarios', 'uq_usuario_por_loja')
         && (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'plataforma'")->fetch_row()[0] > 0;
