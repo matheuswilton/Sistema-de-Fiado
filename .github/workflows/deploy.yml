@@ -33,8 +33,10 @@ jobs:
         id: config
         env:
           B_SERVIDOR: ${{ secrets.BANCO_SERVIDOR || secrets.BANCO_TESTE_SERVIDOR }}
-          B_USUARIO: ${{ secrets.BANCO_USUARIO || secrets.FTP_USERNAME }}
-          B_SENHA: ${{ secrets.BANCO_SENHA || secrets.FTP_PASSWORD }}
+          # site oficial e de teste estao na MESMA conta: usuario e senha do MySQL sao os mesmos
+          # (a senha do MySQL pode ser diferente da senha do FTP, por isso o FTP fica por ultimo)
+          B_USUARIO: ${{ secrets.BANCO_USUARIO || secrets.BANCO_TESTE_USUARIO || secrets.FTP_USERNAME }}
+          B_SENHA: ${{ secrets.BANCO_SENHA || secrets.BANCO_TESTE_SENHA || secrets.FTP_PASSWORD }}
           B_NOME: ${{ secrets.BANCO_NOME }}
         run: |
           if [ -z "$B_NOME" ] || [ -z "$B_SERVIDOR" ]; then
