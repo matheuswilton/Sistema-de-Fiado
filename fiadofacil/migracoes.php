@@ -4,7 +4,7 @@
 // Pode rodar quantas vezes for preciso: cada passo confere antes de mudar.
 
 if (!isset($conn)) { http_response_code(404); exit(); }
-const VERSAO_BANCO = 4;
+const VERSAO_BANCO = 5;
 
 function migracao_coluna_existe($conn, $tabela, $coluna) {
     $stmt = $conn->prepare("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?");
@@ -204,6 +204,79 @@ function migrar_integracoes($conn) {
     return $ok;
 }
 
+// Versao 5: conta unica do cliente (CPF + senha) que junta as dividas de todas as lojas
+function migrar_contas_cpf($conn) {
+    $ok = true;
+    if (!migracao_coluna_existe($conn, 'clientes', 'cpf')) {
+        $ok = migracao_sql($conn, "ALTER TABLE clientes ADD cpf CHAR(11) NULL AFTER telefone, ADD UNIQUE KEY uq_cliente_cpf_por_loja (comercio_id, cpf)") && $ok;
+    }
+    $ok = migracao_sql($conn, "CREATE TABLE IF NOT EXISTS contas_clientes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        cpf CHAR(11) NOT NULL UNIQUE,
+        telefone VARCHAR(20) NOT NULL,
+        senha VARCHAR(255) NOT NULL,
+        criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci") && $ok;
+    // ligacao da conta com o cadastro do cliente em cada loja; cada loja aprova a sua
+    $ok = migracao_sql($conn, "CREATE TABLE IF NOT EXISTS contas_vinculos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        conta_id INT NOT NULL,
+        cliente_id INT NOT NULL,
+        comercio_id INT NOT NULL,
+        status ENUM('pendente','aprovado','recusado') NOT NULL DEFAULT 'pendente',
+        criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uq_conta_cliente (conta_id, cliente_id),
+        INDEX idx_vinculo_loja (comercio_id, status),
+        CONSTRAINT fk_vinculo_conta FOREIGN KEY (conta_id) REFERENCES contas_clientes(id) ON DELETE CASCADE,
+        CONSTRAINT fk_vinculo_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+        CONSTRAINT fk_vinculo_comercio FOREIGN KEY (comercio_id) REFERENCES comercios(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci") && $ok;
+    if ($ok) {
+        semear_contas_exemplo($conn);
+    }
+    return $ok;
+}
+
+// Exemplo: o Joao Pereira compra na Mercearia e na Padaria (mesmo CPF); a Maria Oliveira no Acougue. Senha: cliente123
+function semear_contas_exemplo($conn) {
+    if ((int)$conn->query("SELECT COUNT(*) FROM contas_clientes")->fetch_row()[0] > 0) {
+        return;
+    }
+    $hash = '$2y$10$haA1uwTmMLbCquL7FRnN1.y5HQ88MN1B2LJ3C88dHd4X/P22b4Uza';
+    $exemplos = [
+        ['João Pereira', '52998224725', '(62) 98111-0001', ['mercearia-do-ze', 'padaria-pao-quente']],
+        ['Maria Oliveira', '11144477735', '(62) 98333-0001', ['acougue-bom-corte']],
+    ];
+    foreach ($exemplos as [$nome, $cpf, $telefone, $lojas]) {
+        $marcas = implode(',', array_fill(0, count($lojas), '?'));
+        $stmt = $conn->prepare("SELECT c.id, c.comercio_id FROM clientes c JOIN comercios m ON m.id = c.comercio_id WHERE c.nome = ? AND c.cpf IS NULL AND m.slug IN ($marcas)");
+        $parametros = array_merge([$nome], $lojas);
+        $stmt->bind_param(str_repeat('s', count($parametros)), ...$parametros);
+        $stmt->execute();
+        $cadastros = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        if (!$cadastros) {
+            continue;
+        }
+        $stmt = $conn->prepare("INSERT INTO contas_clientes (nome, cpf, telefone, senha) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $nome, $cpf, $telefone, $hash);
+        $stmt->execute();
+        $conta_id = $conn->insert_id;
+        $stmt->close();
+        foreach ($cadastros as $cadastro) {
+            $stmt = $conn->prepare("UPDATE clientes SET cpf = ? WHERE id = ?");
+            $stmt->bind_param("si", $cpf, $cadastro['id']);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $conn->prepare("INSERT IGNORE INTO contas_vinculos (conta_id, cliente_id, comercio_id, status) VALUES (?, ?, ?, 'aprovado')");
+            $stmt->bind_param("iii", $conta_id, $cadastro['id'], $cadastro['comercio_id']);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+}
+
 // roda uma vez por sessao do navegador (depois que o banco esta atualizado, so faz uma consulta rapida)
 if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
     $atualizado = migracao_coluna_existe($conn, 'usuarios', 'comercio_id')
@@ -211,7 +284,7 @@ if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
         && (int)$conn->query("SELECT COUNT(*) FROM usuarios WHERE nivel = 'plataforma'")->fetch_row()[0] > 0;
     if ($atualizado || migrar_banco($conn)) {
         atualizar_senhas_exemplo($conn);
-        if (migrar_integracoes($conn)) {
+        if (migrar_integracoes($conn) && migrar_contas_cpf($conn)) {
             $_SESSION['versao_banco'] = VERSAO_BANCO;
         }
     }

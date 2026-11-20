@@ -7,12 +7,7 @@ $esta_logado = isset($_SESSION['usuario_id']);
 $nivel_logado = $esta_logado ? $_SESSION['usuario_nivel'] : "";
 $total_pendentes_menu = 0;
 if ($esta_logado && $nivel_logado === 'admin' && isset($conn)) {
-    $stmt_pendentes = $conn->prepare("SELECT COUNT(*) FROM usuarios WHERE comercio_id = ? AND nivel = 'cliente' AND status = 'pendente'");
-    $id_loja_menu = loja_id();
-    $stmt_pendentes->bind_param("i", $id_loja_menu);
-    $stmt_pendentes->execute();
-    $total_pendentes_menu = (int)$stmt_pendentes->get_result()->fetch_row()[0];
-    $stmt_pendentes->close();
+    $total_pendentes_menu = total_pedidos_pendentes($conn, loja_id());
 }
 // Loja mostrada nesta tela: a do usuario logado ou a do endereco de login
 if (!isset($loja_atual) && $esta_logado && isset($conn) && loja_id() > 0) { $loja_atual = carregar_loja($conn, loja_id()); }
@@ -81,7 +76,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=27">
+<link rel="stylesheet" href="css/estilo.css?v=28">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>

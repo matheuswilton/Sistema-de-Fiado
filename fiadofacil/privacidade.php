@@ -15,11 +15,12 @@ topo_publico("Política de Privacidade", "Quais dados o FiadoFácil guarda, para
 
         <h2>Quais dados o sistema guarda</h2>
         <ul>
-            <li><strong>Dos clientes da loja:</strong> nome, telefone, endereço e limite de crédito.</li>
+            <li><strong>Dos clientes da loja:</strong> nome, telefone, endereço, limite de crédito e, se a loja quiser, o CPF.</li>
             <li><strong>Das compras e pagamentos:</strong> descrição da compra, valor e data.</li>
             <li><strong>Dos usuários que entram no sistema</strong> (dono, atendentes e clientes com acesso): nome, nome de usuário, senha e, no pedido de acesso do cliente, o telefone informado.</li>
+            <li><strong>Da conta do cliente:</strong> nome, CPF, telefone e senha (guardada só como código, nunca a senha em si).</li>
         </ul>
-        <p>O sistema <strong>não</strong> guarda CPF, documentos, dados de cartão ou conta bancária.</p>
+        <p>O CPF serve <strong>só</strong> para juntar, na conta do cliente, o fiado das lojas onde ele compra. Nas telas ele aparece mascarado (***.456.789-**). O sistema <strong>não</strong> guarda documentos, dados de cartão ou conta bancária.</p>
 
         <h2>Para que os dados são usados</h2>
         <ul>
@@ -34,7 +35,8 @@ topo_publico("Política de Privacidade", "Quais dados o FiadoFácil guarda, para
         <ul>
             <li><strong>Administrador (dono da loja):</strong> vê todos os clientes, compras, pagamentos e relatórios.</li>
             <li><strong>Atendente:</strong> vê os clientes e registra compras e pagamentos, mas não altera limites nem exclui clientes.</li>
-            <li><strong>Cliente com acesso:</strong> vê somente a própria dívida, as próprias compras e os próprios pagamentos.</li>
+            <li><strong>Cliente com acesso:</strong> vê somente a própria dívida, as próprias compras e os próprios pagamentos. Com a conta por CPF, vê isso em todas as lojas que confirmaram que é ele.</li>
+            <li><strong>Cada loja vê só os próprios dados:</strong> uma loja nunca sabe quanto o cliente deve em outra.</li>
         </ul>
 
         <h2>Como os dados são protegidos</h2>

@@ -72,6 +72,13 @@ Each store has its own address, login, data and look, and no store can see anoth
 - The platform owner uses `painel.php` to see all stores, create and block stores, and enter any store as administrator.
 - The database is upgraded automatically on the first visit after the update (`migracoes.php`): existing data becomes the "Loja principal" (`/loja/principal`).
 
+## Customer account (one login for every store)
+
+- **Staff** open the site, type the store name ("Qual é a sua loja?") and then their username and password. The direct address `/loja/store-name` still works, in any letter case.
+- **Customers** create one account with their **CPF** (Brazilian ID number) and a password, and see their store credit at **every** store on a single page, each with its own Pix QR code.
+- Safety: the account can only be created if a store already has that CPF **with the same phone number**, and each store must **confirm** the link before its data shows up. Stores never see what the customer owes at other stores.
+- CPF is checked (check digits), unique per store, and shown masked (`***.982.247-**`).
+
 ## Integrations (APIs)
 
 Each store administrator manages them in **Minha loja** (`minha_loja.php`):
