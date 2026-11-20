@@ -1,5 +1,5 @@
 </main>
 <footer class="rodape">FiadoFácil — Sistema de controle de fiado · Projeto acadêmico GTI / FPM · <a href="privacidade.php">Política de Privacidade</a></footer>
-<script src="js/script.js?v=21"></script>
+<script src="js/script.js?v=22"></script>
 </body>
 </html>

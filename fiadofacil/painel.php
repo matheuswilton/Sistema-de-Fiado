@@ -274,7 +274,7 @@ function botao_tema_painel() {
 function painel_rodape() {
     ?>
 </main>
-<script src="js/script.js?v=21"></script>
+<script src="js/script.js?v=22"></script>
 </body>
 </html>
     <?php

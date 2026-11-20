@@ -75,18 +75,20 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?>&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if ($tema_loja === 'acougue') echo '&family=Caveat:wght@600;700'; ?>&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=28">
+<?php if ($tema_loja): ?><link rel="stylesheet" href="css/lojas.css?v=1"><?php endif; ?>
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
 <header class="topo">
+    <?php if ($tema_loja === 'mercearia'): ?><div class="toldo toldo-menu" aria-hidden="true"></div><?php endif; ?>
     <div class="topo-conteudo">
         <div class="marca-linha">
             <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(40, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
             <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('recolher'); ?></button>
         </div>
-        <?php if ($loja_tem_nome_proprio): ?><div class="loja-nome" title="<?php echo htmlspecialchars($loja_tela['nome']); ?>"><?php echo icone('inicio'); ?><span><?php echo htmlspecialchars($loja_tela['nome']); ?></span></div><?php endif; ?>
+        <?php if ($loja_tem_nome_proprio): ?><div class="loja-nome" title="<?php echo htmlspecialchars($loja_tela['nome']); ?>"><?php echo desenho_loja($tema_loja) ?: icone('inicio'); ?><span><?php echo htmlspecialchars($loja_tela['nome']); ?></span></div><?php endif; ?>
         <nav class="menu" aria-label="Menu principal">
             <?php if ($nivel_logado === 'cliente'): ?>
                 <?php link_menu("minha_divida.php", "Minha dívida", "divida", $menu_ativo); ?>
@@ -126,6 +128,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php else: ?>
 <?php botao_tema("tema-flutuante"); ?>
 <div class="marca-login">
+    <?php echo cena_loja($tema_loja); ?>
     <div class="login-topo">
         <a href="index.php" class="marca-login-link" title="Voltar à página inicial"><?php echo logo(46, "logo-login"); ?><span>Conheça o FiadoFácil</span></a>
     </div>
@@ -143,4 +146,5 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php if ($esta_logado && eh_plataforma() && $loja_tela): ?>
 <div class="faixa-plataforma" role="status">Você está na loja <strong><?php echo htmlspecialchars($loja_tela['nome']); ?></strong> como dono da plataforma. <a href="painel.php?sair_da_loja=1">Voltar ao painel</a></div>
 <?php endif; ?>
+<?php if ($tema_loja): ?><template id="desenho-da-loja"><?php echo desenho_loja($tema_loja); ?></template><?php endif; ?>
 <main class="container <?php echo $classe_container; ?>">
