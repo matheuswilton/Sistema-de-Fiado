@@ -201,14 +201,12 @@ fiadofacil/
 ├── verifica_admin.php         exige perfil administrador
 ├── conexao.php                conexão com o banco (usa config.local.php)
 ├── migracoes.php              atualização automática da estrutura do banco
-├── desenhos.php               desenhos em SVG de cada ramo (bife, pão, sacola, cenários do login, balança)
 ├── cabecalho.php / rodape.php layout das páginas internas e menu
 ├── layout_publico.php         layout das páginas públicas
 ├── config.local.example.php   modelo do arquivo de configuração
 ├── .htaccess                  HTTPS, endereço /loja/nome, página 404, bloqueio de arquivos
 ├── manifest.json              instalação na tela inicial do celular
 ├── css/estilo.css, inicio.css estilos (claro, noturno, temas das lojas, celular)
-├── css/lojas.css              animações de cada ramo (açougue, mercearia, padaria)
 ├── js/script.js               menu, tabelas em cartões, máscaras, CEP, QR Code, animações
 ├── js/qrcode.js               gerador de QR Code (licença MIT, Kazuhiko Arase)
 ├── js/cinema.js, css/cinema.css  cena da página de apresentação (do caderninho ao celular, animada pela rolagem)
@@ -403,18 +401,11 @@ O acesso antigo do cliente (usuário e senha numa loja, `solicitar_acesso.php` e
 - **Modo claro e noturno** com variáveis CSS, salvo no aparelho; na primeira visita segue o tema do sistema.
 - **Tema por loja** (verde, caramelo, vinho) e letreiro 3D com o nome da loja no login.
 - **Menu lateral** recolhível pela bolinha na borda, com ícones SVG, lista que rola com barra fina (sem setas) e sombra de "tem mais", e rodapé fixo com o usuário, o interruptor de modo noturno e o Sair.
-- **Página de apresentação cinematográfica:** uma cena presa na tela conta a história conforme a rolagem (o caderninho é escrito, vira bagunça e se transforma no FiadoFácil no celular), feita com GSAP + ScrollTrigger. Títulos com a fonte Bricolage Grotesque. Sem JavaScript ou com "reduzir movimento", a cena aparece parada.
+- **Página de apresentação cinematográfica:** uma cena conta a história quando aparece na tela, sem prender a rolagem (o caderninho é escrito, vira bagunça e se transforma no FiadoFácil no celular), feita com GSAP + ScrollTrigger. Títulos com a fonte Bricolage Grotesque. Sem JavaScript ou com "reduzir movimento", a cena aparece parada.
 - **Acessibilidade:** contraste conferido, cor sempre acompanhada de texto e animações desligadas para quem ativa "reduzir movimento".
 - **Instalável** na tela inicial do celular (`manifest.json`).
 - **Prévia ao compartilhar** o link (metatags Open Graph).
-- **Animações de cada ramo** (`css/lojas.css` e `desenhos.php`), todas em SVG e CSS, sem imagens:
-
-| Loja | Animações |
-|---|---|
-| Açougue | Carnes penduradas balançando no login, lousa de preços no "Precisam de atenção", números como painel de senha, balança de ponteiro no uso do limite, bife "chiando" no menu, cutelo que corta o botão de compra, bancada de mármore. |
-| Mercearia | Toldo listrado ondulando, prateleiras com frutas pulando no login, cartões como etiquetas de preço penduradas, ripas de caixote nos painéis, extrato abrindo como página de caderno, sacola com frutas. |
-| Padaria | Vapor saindo dos pães no login, letreiro com brilho de forno, cartões crescendo como massa, barra do limite como termômetro que esquenta, farinha polvilhada no fundo, sino de balcão nos pedidos. |
-| Todas | Tela vazia ilustrada, mensagem de sucesso com o desenho da loja e, ao quitar uma dívida, chuva de bifes, pães ou frutas. |
+- **Tela de entrar com visual de cinema:** fundo escuro com a luz na cor da loja, ou a **foto real da loja** enviada em "Minha loja" (a imagem é conferida, diminuída e regravada em JPEG no servidor, na pasta `uploads/lojas`, onde nenhum script roda). Zoom bem lento, faixas pretas, grão de filme e letreiro limpo. Sem desenhos: cada loja mantém só as próprias cores.
 
 ---
 
@@ -469,7 +460,6 @@ Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `
 ### Site de teste (homologação)
 Cada envio para a branch `teste` que passa nos testes é publicado automaticamente num **site de teste** separado (https://fiadofacilteste.free.je), com banco próprio. A publicação cria o `config.local.php` a partir dos segredos `FTP_TESTE_SERVIDOR`, `FTP_TESTE_USUARIO`, `FTP_TESTE_SENHA`, `BANCO_TESTE_SERVIDOR` e `BANCO_TESTE_NOME` (o usuário e a senha do banco são os do FTP, a menos que existam `BANCO_TESTE_USUARIO` e `BANCO_TESTE_SENHA`). O site de teste mostra uma faixa amarela de aviso e pede aos buscadores para não indexar (`X-Robots-Tag: noindex`). Enquanto os segredos não existem, a publicação de teste é pulada.
 
-**Laboratório visual** (`laboratorio.php`, só no site de teste): troca na hora a rolagem da página inicial (presa, curta ou livre), o fundo do login das lojas (desenhos, escuro de cinema ou uma foto escolhida no computador) e os desenhos das lojas (como hoje ou discretos). As escolhas e as fotos ficam só no navegador de quem testa. O site de teste é reconhecido pelo arquivo `ambiente.php`, criado pela publicação do teste; no site oficial esse arquivo não existe e o laboratório responde 404. Também é possível publicar na hora em **Actions → Publicar na InfinityFree → Run workflow**.
 
 ---
 

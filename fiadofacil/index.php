@@ -26,7 +26,6 @@ if (isset($_SESSION['usuario_id'])) {
     document.documentElement.setAttribute('data-tema', tema);
 })();
 </script>
-<?php script_laboratorio(); ?>
 <meta name="theme-color" content="#1e3a8a">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="img/logo.svg?v=2">
@@ -35,7 +34,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=31">
+<link rel="stylesheet" href="css/estilo.css?v=32">
 <link rel="stylesheet" href="css/inicio.css?v=21">
 <link rel="stylesheet" href="css/cinema.css?v=1">
 </head>
@@ -247,10 +246,10 @@ if (isset($_SESSION['usuario_id'])) {
 </footer>
 
 <?php echo faixa_teste(); ?>
-<script src="js/script.js?v=24"></script>
+<script src="js/script.js?v=25"></script>
 <script src="js/vendor/gsap.min.js?v=3.12.5"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>
-<script src="js/cinema.js?v=1"></script>
+<script src="js/cinema.js?v=2"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
