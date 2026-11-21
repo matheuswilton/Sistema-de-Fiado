@@ -102,7 +102,7 @@ if ($esta_logado && $grupo_ativo === 'relatorios') {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if (!$esta_logado) echo '&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800'; ?>&display=swap">
 <?php if (eh_ambiente_teste()): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
-<link rel="stylesheet" href="css/estilo.css?v=34">
+<link rel="stylesheet" href="css/estilo.css?v=35">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
