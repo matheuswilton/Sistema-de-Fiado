@@ -16,3 +16,4 @@ fiadofacil/ambiente.php
 
 # Fotos enviadas pelas lojas (ficam so no servidor)
 fiadofacil/uploads/lojas/*.jpg
+fiadofacil/uploads/lojas/.fotos-exemplo

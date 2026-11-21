@@ -114,6 +114,7 @@ Dois tipos de pedido aparecem aqui (o número no menu mostra quantos estão espe
 Lista os acessos de cliente por usuário, com **Bloquear**, **Desbloquear** e **Trocar senha**.
 
 ### Minha loja
+- **Foto da loja:** escolha uma foto deitada (JPG, PNG ou WEBP, até 6 MB). Ela aparece no fundo da tela de entrar, escurecida, com o nome da loja por cima. As lojas de exemplo já vêm com foto; dá para trocar ou remover.
 - **Receber pelo Pix:** cadastre a chave Pix e a cidade. O cliente passa a ver um QR Code com o valor da dívida. Use **"Ver um Pix de teste"** para conferir no app do banco se o nome do recebedor está certo.
 - **Cobrar pelo WhatsApp:** já vem ligado.
 - **API da loja:** gere uma chave para outro programa ler os dados da loja. A chave aparece **uma vez só**; copie e guarde. Dá para gerar outra ou desligar. Veja [API.md](API.md).
