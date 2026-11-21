@@ -853,8 +853,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
 }
 
 /* Faixa do site de teste (homologacao) */
-.faixa-teste { position: fixed; z-index: 80; left: 50%; bottom: 14px; translate: -50% 0; max-width: calc(100vw - 24px); background: repeating-linear-gradient(-45deg, #fde047 0 14px, #facc15 14px 28px); color: #422006; text-align: center; font-size: 13px; padding: 7px 16px; border: 2px solid #a16207; border-radius: 99px; box-shadow: 0 6px 18px rgba(0, 0, 0, .25); }
-@media (min-width: 801px) { body.com-menu .faixa-teste { margin-left: 124px; } :root[data-menu="recolhido"] body.com-menu .faixa-teste { margin-left: 38px; } }
+/* Etiqueta "Site de teste": canto de baixo a direita, pequena, sem cobrir botoes. No celular fica no topo, parada. */
+.faixa-teste { position: fixed; z-index: 80; right: 14px; bottom: 14px; white-space: nowrap; background: repeating-linear-gradient(-45deg, #fde047 0 14px, #facc15 14px 28px); color: #422006; text-align: center; font-size: 12px; line-height: 1.35; padding: 6px 12px; border: 2px solid #a16207; border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, .25); }
+@media (max-width: 800px) { .faixa-teste { position: static; white-space: normal; border-radius: 0; border-width: 0 0 2px; box-shadow: none; } }
 .faixa-teste a { color: #422006; font-weight: 700; }
 
 /* =====================================================================
