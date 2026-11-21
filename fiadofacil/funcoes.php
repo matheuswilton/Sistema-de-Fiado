@@ -616,7 +616,9 @@ const PASTA_FOTOS_LOJAS = __DIR__ . '/uploads/lojas';
 // Endereco da foto da loja (ou null se ela ainda nao enviou). O ?v= faz o navegador buscar a foto nova ao trocar.
 function foto_da_loja($loja_id) {
     $arquivo = PASTA_FOTOS_LOJAS . '/' . (int)$loja_id . '.jpg';
-    return is_file($arquivo) ? 'uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
+    // Endereco absoluto (com / no inicio): a foto e usada dentro do CSS, que fica na pasta css/,
+    // e um endereco relativo seria procurado em css/uploads/ e nao apareceria.
+    return is_file($arquivo) ? '/uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
 }
 // Recebe a foto enviada: confere se e imagem de verdade, diminui para ate 1920 px e regrava em JPEG.
 // Regravar a imagem descarta qualquer conteudo escondido no arquivo original. Devolve [true/false, mensagem].
