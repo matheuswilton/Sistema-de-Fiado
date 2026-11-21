@@ -34,7 +34,7 @@ function topo_publico($titulo, $descricao, $sem_indexar = false, $botao_topo = n
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="/css/estilo.css?v=34">
+<link rel="stylesheet" href="/css/estilo.css?v=35">
 <link rel="stylesheet" href="/css/inicio.css?v=21">
 </head>
 <body class="pagina-inicio">

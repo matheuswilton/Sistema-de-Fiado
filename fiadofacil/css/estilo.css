@@ -1070,3 +1070,51 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--primaria); outl
     .abas-secao a { white-space: nowrap; }
 }
 @media print { .abas-secao { display: none; } }
+
+
+/* =====================================================================
+   SISTEMA DE CORES DAS TELAS INTERNAS
+   - Fundo neutro e cartoes brancos com borda fina (sem faixas coloridas).
+   - A cor da loja e identidade (inicial no menu, item escolhido, tela de entrar), nao acao.
+   - Um botao principal escuro por tela; os outros contornados.
+   - Vermelho, verde e amarelo so quando tem significado (devendo, em dia, atencao).
+   ===================================================================== */
+body.com-menu {
+  --fundo:#f6f6f7; --superficie:#ffffff; --superficie-2:#f3f4f6; --borda:#e5e7eb; --borda-forte:#d1d5db;
+  --texto:#111827; --texto-suave:#6b7280; --rotulo:#374151; --link:#111827;
+  --lateral:#fbfbfc; --lateral-hover:#f3f4f6;
+  --acao:#111827; --acao-hover:#1f2937; --acao-texto:#ffffff; --sombra:none;
+}
+:root[data-tema="escuro"] body.com-menu {
+  --fundo:#0e0f11; --superficie:#16171a; --superficie-2:#1c1d21; --borda:#26282d; --borda-forte:#34363c;
+  --texto:#f3f4f6; --texto-suave:#9ca3af; --rotulo:#d1d5db; --link:#f3f4f6;
+  --acao:#f3f4f6; --acao-hover:#ffffff; --acao-texto:#0b0c0e;
+  --lateral:#121315; --lateral-hover:#18191c;
+}
+/* botoes: 1 principal escuro, o resto contornado */
+:where(.com-menu) .botao, :where(.com-menu) button { background: var(--acao); color: var(--acao-texto); font-weight: 600; border-radius: 8px; }
+:where(.com-menu) .botao:hover, :where(.com-menu) button:hover { background: var(--acao-hover); color: var(--acao-texto); }
+.com-menu .botao-compra { background: var(--acao); } .com-menu .botao-compra:hover { background: var(--acao-hover); }
+.com-menu .botao-secundario, .com-menu .botao-verde, .com-menu .botao-whatsapp { background: var(--superficie); color: var(--texto); box-shadow: inset 0 0 0 1px var(--borda-forte); }
+.com-menu .botao-secundario:hover, .com-menu .botao-verde:hover, .com-menu .botao-whatsapp:hover { background: var(--superficie-2); color: var(--texto); }
+.botao-whatsapp .icone { color: #16a34a; }
+.com-menu .botao-perigo, .com-menu button.botao-perigo { background: #dc2626; color: #fff; }
+/* cartoes: sem faixa colorida, sem sombra; cor so no numero quando importa */
+.card { border: 1px solid var(--borda) !important; border-radius: 12px; box-shadow: none !important; transform: none !important; }
+.card-titulo { font-size: 13.5px; color: var(--texto-suave); font-weight: 500; }
+.card-valor { font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
+.card-icone, .card-aviso .card-icone, .card-alerta .card-icone, .card-ok .card-icone { background: var(--superficie-2); color: var(--texto-suave); }
+.card-alerta .card-valor { color: #dc2626; } :root[data-tema="escuro"] .card-alerta .card-valor { color: #f87171; }
+.painel, .tabela-rolagem { border: 1px solid var(--borda); box-shadow: none !important; border-radius: 12px; background: var(--superficie); }
+/* tabelas e listas: nomes em cor de texto, valores alinhados */
+th { background: transparent !important; color: var(--texto-suave) !important; font-size: 12px; letter-spacing: .04em; }
+td a, .lista-inicio a, .titulo-com-avatar a { color: var(--texto); font-weight: 600; text-decoration: none; }
+td a:hover, .lista-inicio a:hover { text-decoration: underline; }
+tr:hover td { background: var(--superficie-2); }
+td, .num, .card-valor { font-variant-numeric: tabular-nums; }
+.avatar { background: var(--superficie-2) !important; color: var(--rotulo) !important; }
+/* respiro entre blocos */
+.cabecalho-pagina { margin-bottom: 20px; }
+.barra-botoes, .acoes-rapidas { gap: 8px; }
+h1 { letter-spacing: -.02em; font-weight: 700; }
+.subtitulo { font-size: 15.5px; }
