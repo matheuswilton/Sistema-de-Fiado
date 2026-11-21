@@ -24,9 +24,13 @@
     gsap.set(['.app-aviso', '.app-recebido'], { autoAlpha: 0, y: 24, scale: .9 });
     gsap.set('.app-limite-barra', { scaleX: 0 });
 
-    // Rolagem livre: a pagina nunca fica presa; a cena toca sozinha quando aparece na tela
+    // Rolagem livre: a pagina nunca fica presa. A cena toca sozinha quando aparece na tela e se repete
+    // sem parar; fora da tela ela pausa (nao gasta bateria) e continua de onde parou quando volta.
     secao.classList.add('cinema-livre');
-    var cena = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: secao, start: 'top 55%', toggleActions: 'play none none none' } });
+    var palco = secao.querySelector('.cinema-palco');
+    var corInicial = palco ? getComputedStyle(palco).backgroundColor : null;
+    var textoInicial = palco ? getComputedStyle(palco).color : null;
+    var cena = gsap.timeline({ repeat: -1, defaults: { ease: 'none' }, scrollTrigger: { trigger: secao, start: 'top 85%', end: 'bottom 15%', toggleActions: 'play pause resume pause' } });
     cena.timeScale(1.7);
     cena
         // 1) o caderninho sendo escrito, linha por linha
@@ -53,7 +57,12 @@
         .to('.app-aviso', { autoAlpha: 1, y: 0, scale: 1, duration: .4, ease: 'back.out(2)' }, '>-.1')
         .to('.app-recebido', { autoAlpha: 1, y: 0, scale: 1, duration: .4, ease: 'back.out(2)' }, '+=.3')
         .to('.celular', { rotateY: -10, rotateX: 5, duration: .8, ease: 'sine.inOut' }, '<')
-        .to({}, { duration: .6 });
+        // 5) pausa para ler e recomeca suave: o celular sai, a luz volta e o caderninho reaparece
+        .to({}, { duration: 2.5 })
+        .to(['.celular', legenda(4)], { autoAlpha: 0, duration: .6, ease: 'power1.in' })
+        .to('.cinema-palco', { backgroundColor: corInicial, color: textoInicial, duration: .6 }, '<')
+        .set(valor, { v: 0, onComplete: function () { total.textContent = emReais(0); } })
+        .to({}, { duration: .3 });
 
     // as bolhas do fundo da abertura andam em velocidades diferentes (profundidade)
     gsap.to('.bolha-1', { yPercent: 60, ease: 'none', scrollTrigger: { trigger: '.inicio-hero', start: 'top top', end: 'bottom top', scrub: true } });
