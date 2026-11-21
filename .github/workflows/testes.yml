@@ -141,10 +141,12 @@ jobs:
             foreach (["banco_host" => "B_SERVIDOR", "banco_usuario" => "B_USUARIO", "banco_senha" => "B_SENHA", "banco_nome" => "B_NOME"] as $variavel => $origem) {
                 $c .= "\$" . $variavel . " = " . var_export((string)getenv($origem), true) . ";\n";
             }
-            $c .= "define(\"AMBIENTE_TESTE\", true);\n";
             file_put_contents("fiadofacil/config.local.php", $c);
+            // marcador do site de teste: faixa de aviso, nao indexar e laboratorio visual
+            file_put_contents("fiadofacil/ambiente.php", "<?php\n// Gerado pela publicacao do site de teste. O site oficial nao tem este arquivo.\ndefine(\"AMBIENTE_TESTE\", true);\n");
           '
           php -l fiadofacil/config.local.php
+          php -l fiadofacil/ambiente.php
 
       - name: Enviar por FTP para o site de teste
         if: env.TEM_SITE_TESTE == 'true'

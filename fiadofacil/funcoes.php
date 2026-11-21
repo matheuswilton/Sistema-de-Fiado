@@ -7,6 +7,22 @@ if (session_status() === PHP_SESSION_NONE && !defined('SEM_SESSAO')) {
     session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax', 'secure' => $conexao_segura]);
     session_start();
 }
+// Site de teste (homologacao): a publicacao do teste cria o arquivo ambiente.php com a constante AMBIENTE_TESTE.
+// O site oficial nunca tem esse arquivo.
+if (is_file(__DIR__ . '/ambiente.php')) { require_once __DIR__ . '/ambiente.php'; }
+function eh_ambiente_teste() {
+    return defined('AMBIENTE_TESTE') && AMBIENTE_TESTE;
+}
+// Etiqueta "Site de teste" com o atalho do laboratorio (so no site de teste)
+function faixa_teste() {
+    if (!eh_ambiente_teste()) { return ''; }
+    return '<div class="faixa-teste" role="note">🧪 <strong>Site de teste</strong>: dados de exemplo. <a href="/laboratorio.php">Laboratório visual</a> · <a href="https://fiadofacil.free.je">Site oficial</a></div>';
+}
+// Laboratorio visual (so no site de teste): aplica as escolhas salvas neste navegador antes de desenhar a pagina
+function script_laboratorio() {
+    if (!eh_ambiente_teste()) { return; }
+    echo "<script>(function(){try{var l=JSON.parse(localStorage.getItem('lab-visual')||'{}'),r=document.documentElement;['rolagem','fundo','desenhos'].forEach(function(k){if(l[k]){r.setAttribute('data-lab-'+k,l[k]);}});if(l.desenhos==='discretos'){r.removeAttribute('data-anim-loja');}}catch(e){}})();</script>\n";
+}
 // Loja (comercio) do usuario logado. Vem SEMPRE da sessao, nunca de formulario ou endereco.
 function loja_id() {
     // na API a loja vem da chave de acesso conferida em api.php (constante definida so depois da conferencia)

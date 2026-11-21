@@ -50,7 +50,7 @@ function botao_tema($classe_extra = "") {
 $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'cliente' => 'Cliente'];
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR"<?php if ($tema_loja) echo ' data-loja="' . $tema_loja . '"'; ?>>
+<html lang="pt-BR"<?php if ($tema_loja) echo ' data-loja="' . $tema_loja . '" data-anim-loja="' . $tema_loja . '"'; ?>>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -73,6 +73,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
     try { if (localStorage.getItem('menu') === 'recolhido') { document.documentElement.setAttribute('data-menu', 'recolhido'); } } catch (e) {}
 })();
 </script>
+<?php script_laboratorio(); ?>
 <meta name="theme-color" content="<?php echo $tema_loja ? $temas_lojas[$tema_loja] : '#1e3a8a'; ?>">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -83,8 +84,8 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if ($tema_loja === 'acougue') echo '&family=Caveat:wght@600;700'; ?>&display=swap">
-<?php if (defined('AMBIENTE_TESTE') && AMBIENTE_TESTE): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if ($tema_loja === 'acougue') echo '&family=Caveat:wght@600;700'; ?><?php if (eh_ambiente_teste() && !$esta_logado) echo '&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800'; ?>&display=swap">
+<?php if (eh_ambiente_teste()): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
 <link rel="stylesheet" href="css/estilo.css?v=31">
 <?php if ($tema_loja): ?><link rel="stylesheet" href="css/lojas.css?v=2"><?php endif; ?>
 </head>
@@ -165,6 +166,6 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php if ($esta_logado && eh_plataforma() && $loja_tela): ?>
 <div class="faixa-plataforma" role="status">Você está na loja <strong><?php echo htmlspecialchars($loja_tela['nome']); ?></strong> como dono da plataforma. <a href="painel.php?sair_da_loja=1">Voltar ao painel</a></div>
 <?php endif; ?>
-<?php if (defined('AMBIENTE_TESTE') && AMBIENTE_TESTE): ?><div class="faixa-teste" role="note">🧪 <strong>Site de teste</strong>: os dados aqui são de exemplo e podem ser apagados. <a href="https://fiadofacil.free.je">Ir para o site oficial</a></div><?php endif; ?>
+<?php echo faixa_teste(); ?>
 <?php if ($tema_loja): ?><template id="desenho-da-loja"><?php echo desenho_loja($tema_loja); ?></template><?php endif; ?>
 <main class="container <?php echo $classe_container; ?>">

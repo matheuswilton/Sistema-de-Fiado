@@ -10,3 +10,6 @@ config.local.php
 # Testes
 testes/node_modules/
 servidor.log
+
+# Marcador do site de teste (gerado pela publicacao do teste)
+fiadofacil/ambiente.php

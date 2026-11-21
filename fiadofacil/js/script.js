@@ -297,6 +297,7 @@ if (!semAnimacao) {
         if (reduzir) { return; }
         // loja com tema: chovem bifes, paes ou frutas em vez de papeizinhos
         var modelo = document.getElementById('desenho-da-loja');
+        if (document.documentElement.getAttribute('data-lab-desenhos') === 'discretos') { modelo = null; }
         if (modelo) {
             for (var k = 0; k < 28; k++) {
                 var peca = document.createElement('span');
@@ -483,7 +484,7 @@ if (!semAnimacao) {
 // Animacoes das lojas com tema (acougue, mercearia, padaria)
 (function () {
     var modelo = document.getElementById('desenho-da-loja');
-    if (!modelo) { return; }
+    if (!modelo || document.documentElement.getAttribute('data-lab-desenhos') === 'discretos') { return; }
     var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     // mensagem de sucesso com o desenho da loja (sacola enchendo, bife, pao)
     document.querySelectorAll('.mensagem').forEach(function (caixa) {
@@ -535,4 +536,13 @@ if (!semAnimacao) {
     function marcar() { chave.setAttribute('aria-checked', document.documentElement.getAttribute('data-tema') === 'escuro' ? 'true' : 'false'); }
     chave.addEventListener('click', function () { setTimeout(marcar, 0); });
     marcar();
+})();
+
+// Laboratorio (site de teste): foto escolhida pela pessoa como fundo do login da loja (fica so neste navegador)
+(function () {
+    var raiz = document.documentElement, faixa = document.querySelector('.marca-login');
+    if (!faixa || raiz.getAttribute('data-lab-fundo') !== 'foto') { return; }
+    var foto = null;
+    try { foto = localStorage.getItem('lab-foto-' + (raiz.getAttribute('data-loja') || 'geral')); } catch (e) {}
+    if (foto) { faixa.style.setProperty('--foto-lab', 'url("' + foto + '")'); } else { raiz.setAttribute('data-lab-fundo', 'escuro'); }
 })();
