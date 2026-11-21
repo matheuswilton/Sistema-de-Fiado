@@ -26,6 +26,7 @@ if (isset($_SESSION['usuario_id'])) {
     document.documentElement.setAttribute('data-tema', tema);
 })();
 </script>
+<?php script_laboratorio(); ?>
 <meta name="theme-color" content="#1e3a8a">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="img/logo.svg?v=2">
@@ -245,6 +246,7 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
 </footer>
 
+<?php echo faixa_teste(); ?>
 <script src="js/script.js?v=24"></script>
 <script src="js/vendor/gsap.min.js?v=3.12.5"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>

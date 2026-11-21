@@ -84,6 +84,8 @@ const { chromium, B, SENHA, ok, sql, entrar, postar, terminar } = require('./com
     ok((await p.textContent('body')).includes('Mercearia do Zé'), 'Endereço /loja com letras maiúsculas funciona');
     const r = await p.goto(B + 'pagina-que-nao-existe');
     ok(r.status() === 404, 'Endereço inexistente mostra a página 404');
+    const lab = await p.goto(B + 'laboratorio.php');
+    ok(lab.status() === 404, 'Laboratório visual não existe fora do site de teste');
 
     sql("DELETE FROM clientes WHERE nome='Cliente Teste Limite'");
     await terminar(b, 'Regras de negócio');
