@@ -249,7 +249,7 @@ if (isset($_SESSION['usuario_id'])) {
 <script src="js/script.js?v=25"></script>
 <script src="js/vendor/gsap.min.js?v=3.12.5"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>
-<script src="js/cinema.js?v=2"></script>
+<script src="js/cinema.js?v=3"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
