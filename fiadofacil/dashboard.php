@@ -94,7 +94,7 @@ if ($vencem_logo + $em_atraso > 0): ?>
     <section class="painel painel-lista painel-atencao">
         <div class="painel-cabecalho"><h2>Precisam de atenção</h2><a href="relatorio.php">Ver relatório</a></div>
         <?php if (count($precisam_atencao) === 0): ?>
-            <?php echo tela_vazia("Ninguém devendo agora. 🎉"); ?>
+            <p class="lista-vazia">Ninguém devendo agora. 🎉</p>
         <?php else: ?>
         <ul class="lista-inicio">
             <?php foreach ($precisam_atencao as $c): ?>

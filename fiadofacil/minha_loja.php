@@ -34,6 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: minha_loja.php");
         exit();
     }
+    if ($acao === 'foto') {
+        [$ok, $texto] = salvar_foto_da_loja($loja, $_FILES['foto'] ?? []);
+        definir_flash($texto, $ok ? "mensagem" : "erro");
+        header("Location: minha_loja.php");
+        exit();
+    }
+    if ($acao === 'remover_foto') {
+        remover_foto_da_loja($loja);
+        definir_flash("Foto removida. A tela de entrar volta ao fundo escuro com a cor da loja.");
+        header("Location: minha_loja.php");
+        exit();
+    }
     if ($acao === 'gerar_api') {
         // a chave aparece uma unica vez; no banco fica so o hash SHA-256 (se o banco vazar, a chave nao vaza)
         $chave_nova_api = "ff_" . bin2hex(random_bytes(24));
@@ -66,8 +78,32 @@ $classe_container = "container-medio";
 require "cabecalho.php";
 ?>
 <h1>Minha loja</h1>
-<p class="subtitulo">Integrações da <?php echo htmlspecialchars($dados['nome']); ?>: Pix, WhatsApp e API.</p>
+<p class="subtitulo">Foto e integrações da <?php echo htmlspecialchars($dados['nome']); ?>: Pix, WhatsApp e API.</p>
 <?php mostrar_flash(); ?>
+
+<section class="painel integracao">
+    <h2><?php echo icone('loja'); ?> Foto da loja</h2>
+    <p>A foto aparece no fundo da tela de entrar, escurecida e com um zoom bem lento, com o nome da loja por cima. Uma foto real da loja (o balcão, a vitrine, as prateleiras) passa mais confiança para clientes e funcionários.</p>
+    <?php $foto_atual = foto_da_loja($loja); ?>
+    <div class="foto-loja-previa"<?php if ($foto_atual) echo ' style="background-image: url(\'' . htmlspecialchars($foto_atual, ENT_QUOTES) . '\')"'; ?>><span><?php echo htmlspecialchars($dados['nome']); ?></span></div>
+    <form method="POST" action="minha_loja.php" enctype="multipart/form-data" class="foto-loja-acoes">
+        <?php campo_csrf(); ?>
+        <input type="hidden" name="acao" value="foto">
+        <label class="botao botao-secundario">Escolher foto<input type="file" name="foto" accept="image/jpeg,image/png,image/webp" required hidden onchange="this.form.requestSubmit ? this.form.requestSubmit() : this.form.submit()"></label>
+        <span class="dica">JPG, PNG ou WEBP, deitada, de pelo menos 800 × 400 pixels (até 6 MB).</span>
+    </form>
+    <?php if ($foto_atual): ?>
+    <form method="POST" action="minha_loja.php" data-confirmar="Remover a foto da loja?" style="margin-top: 10px"><?php campo_csrf(); ?><input type="hidden" name="acao" value="remover_foto"><button type="submit" class="botao-secundario botao-pequeno">Remover foto</button></form>
+    <?php endif; ?>
+    <details class="detalhe-tecnico">
+        <summary>Dicas para uma boa foto</summary>
+        <ul>
+            <li>Celular <strong>deitado</strong>, com a luz da loja acesa e sem flash.</li>
+            <li>Deixe espaço vazio no meio ou em cima, onde vai o nome da loja.</li>
+            <li>Evite pessoas olhando para a câmera e marcas de produtos em destaque.</li>
+        </ul>
+    </details>
+</section>
 
 <section class="painel integracao">
     <h2><?php echo icone('pix'); ?> Receber pelo Pix</h2>

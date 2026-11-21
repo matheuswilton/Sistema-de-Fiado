@@ -27,7 +27,6 @@ function topo_publico($titulo, $descricao, $sem_indexar = false, $botao_topo = n
     document.documentElement.setAttribute('data-tema', tema);
 })();
 </script>
-<?php script_laboratorio(); ?>
 <meta name="theme-color" content="#1e3a8a">
 <link rel="icon" type="image/svg+xml" href="/img/logo.svg?v=2">
 <link rel="alternate icon" type="image/png" href="/img/icone-192.png?v=2">
@@ -35,9 +34,8 @@ function topo_publico($titulo, $descricao, $sem_indexar = false, $botao_topo = n
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="/css/estilo.css?v=31">
+<link rel="stylesheet" href="/css/estilo.css?v=32">
 <link rel="stylesheet" href="/css/inicio.css?v=21">
-<link rel="stylesheet" href="/css/lojas.css?v=2">
 </head>
 <body class="pagina-inicio">
 <header class="inicio-topo">
@@ -62,7 +60,7 @@ function rodape_publico() {
     </div>
 </footer>
 <?php echo faixa_teste(); ?>
-<script src="/js/script.js?v=24"></script>
+<script src="/js/script.js?v=25"></script>
 </body>
 </html>
 <?php

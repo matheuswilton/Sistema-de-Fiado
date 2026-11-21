@@ -65,14 +65,14 @@ require "cabecalho.php";
 <section class="painel painel-cobranca">
     <h2><?php echo icone('relogio'); ?> Vencem nos próximos <?php echo DIAS_AVISO_ANTES; ?> dias</h2>
     <p class="dica">Um lembrete gentil antes de virar atraso costuma resolver sem constrangimento.</p>
-    <?php if (!$vencem): ?><?php echo tela_vazia("Ninguém vence nos próximos dias."); ?><?php else: ?>
+    <?php if (!$vencem): ?><p class="lista-vazia">Ninguém vence nos próximos dias.</p><?php else: ?>
     <ul class="lista-cobrancas"><?php foreach ($vencem as $c) { echo linha_cobranca($c, false); } ?></ul>
     <?php endif; ?>
 </section>
 
 <section class="painel painel-cobranca">
     <h2><?php echo icone('atencao'); ?> Em atraso</h2>
-    <?php if (!$atrasados): ?><?php echo tela_vazia("Nenhum cliente em atraso. 🎉"); ?><?php else: ?>
+    <?php if (!$atrasados): ?><p class="lista-vazia">Nenhum cliente em atraso. 🎉</p><?php else: ?>
     <ul class="lista-cobrancas"><?php foreach ($atrasados as $c) { echo linha_cobranca($c, true); } ?></ul>
     <?php endif; ?>
 </section>
