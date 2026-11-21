@@ -384,6 +384,30 @@ SQL,
     return $ok;
 }
 
+// Fotos das lojas de exemplo: na primeira vez, cada site copia img/lojas-exemplo/{endereco}.jpg para a
+// pasta de fotos (uploads/lojas/{id}.jpg). Uma marca na pasta garante que isso acontece uma vez so:
+// se a loja trocar ou remover a foto depois, a escolha dela vale e a foto de exemplo nao volta.
+function semear_fotos_exemplo($conn) {
+    $pasta = __DIR__ . '/uploads/lojas';
+    $marca = $pasta . '/.fotos-exemplo';
+    if (is_file($marca) || !is_dir($pasta) || !is_writable($pasta)) {
+        return;
+    }
+    foreach (glob(__DIR__ . '/img/lojas-exemplo/*.jpg') ?: [] as $origem) {
+        $slug = basename($origem, '.jpg');
+        $stmt = $conn->prepare("SELECT id FROM comercios WHERE slug = ?");
+        $stmt->bind_param("s", $slug);
+        $stmt->execute();
+        $linha = $stmt->get_result()->fetch_row();
+        $stmt->close();
+        $destino = $linha ? $pasta . '/' . (int)$linha[0] . '.jpg' : null;
+        if ($destino && !is_file($destino)) {
+            @copy($origem, $destino);
+        }
+    }
+    @file_put_contents($marca, "Fotos de exemplo ja copiadas. Apague este arquivo para copiar de novo.\n");
+}
+
 // roda uma vez por sessao do navegador (depois que o banco esta atualizado, so faz uma consulta rapida)
 if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
     if (!migracao_tabela_existe($conn, 'clientes')) {
@@ -396,6 +420,7 @@ if (($_SESSION['versao_banco'] ?? 0) !== VERSAO_BANCO) {
         atualizar_senhas_exemplo($conn);
         if (migrar_integracoes($conn) && migrar_contas_cpf($conn)) {
             $_SESSION['versao_banco'] = VERSAO_BANCO;
+            semear_fotos_exemplo($conn);
         }
     }
 }
