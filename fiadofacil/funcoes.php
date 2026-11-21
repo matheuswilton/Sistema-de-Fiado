@@ -7,6 +7,17 @@ if (session_status() === PHP_SESSION_NONE && !defined('SEM_SESSAO')) {
     session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax', 'secure' => $conexao_segura]);
     session_start();
 }
+// Site de teste (homologacao): a publicacao do teste cria o arquivo ambiente.php com a constante AMBIENTE_TESTE.
+// O site oficial nunca tem esse arquivo.
+if (is_file(__DIR__ . '/ambiente.php')) { require_once __DIR__ . '/ambiente.php'; }
+function eh_ambiente_teste() {
+    return defined('AMBIENTE_TESTE') && AMBIENTE_TESTE;
+}
+// Etiqueta "Site de teste" (so no site de teste)
+function faixa_teste() {
+    if (!eh_ambiente_teste()) { return ''; }
+    return '<div class="faixa-teste" role="note">🧪 <strong>Site de teste</strong>: dados de exemplo. <a href="https://fiadofacil.free.je">Site oficial</a></div>';
+}
 // Loja (comercio) do usuario logado. Vem SEMPRE da sessao, nunca de formulario ou endereco.
 function loja_id() {
     // na API a loja vem da chave de acesso conferida em api.php (constante definida so depois da conferencia)
@@ -149,18 +160,16 @@ function logo($tamanho = 32, $classe = "") {
 }
 // Barra que mostra quanto do limite de credito ja foi usado (verde ate 50%, amarelo ate 80%, vermelho acima)
 function barra_limite($divida, $limite, $tela_do_cliente = false, $tema = null) {
-    $tema = $tema ?? ($GLOBALS['tema_loja'] ?? '');
     $divida = max(0, (float)$divida);
     $limite = (float)$limite;
     $porcentagem = $limite > 0 ? min(100, round($divida / $limite * 100)) : ($divida > 0 ? 100 : 0);
     $nivel = $porcentagem >= 80 ? 'alto' : ($porcentagem >= 50 ? 'medio' : 'baixo');
     // na tela do proprio cliente nao usamos vermelho, para nao parecer cobranca
     if ($tela_do_cliente && $nivel === 'alto') { $nivel = 'medio'; }
-    $html = '<div class="uso-limite uso-' . $nivel . ($tema ? ' uso-tema-' . $tema : '') . '">';
-    if ($tema === 'acougue') { $html .= balanca_limite($porcentagem); }
+    $html = '<div class="uso-limite uso-' . $nivel . '">';
     $html .= '<div class="uso-limite-texto"><span>Uso do limite de crédito</span><strong>' . $porcentagem . '%</strong></div>';
     $html .= '<div class="uso-limite-trilho" role="progressbar" aria-valuenow="' . $porcentagem . '" aria-valuemin="0" aria-valuemax="100" aria-label="Uso do limite de crédito">';
-    $html .= '<div class="uso-limite-barra" style="--uso:' . $porcentagem . '%;--pct:' . $porcentagem . '"></div></div>';
+    $html .= '<div class="uso-limite-barra" style="--uso:' . $porcentagem . '%"></div></div>';
     $html .= '<div class="uso-limite-legenda">' . dinheiro($divida) . ' de ' . dinheiro($limite) . '</div></div>';
     return $html;
 }
@@ -602,5 +611,49 @@ function total_pedidos_pendentes($conn, $loja) {
     return $total;
 }
 
-// Desenhos das lojas (animacoes de cada ramo)
-require_once __DIR__ . "/desenhos.php";
+// ---------- Foto da loja (fundo do login, com tratamento de cinema) ----------
+const PASTA_FOTOS_LOJAS = __DIR__ . '/uploads/lojas';
+// Endereco da foto da loja (ou null se ela ainda nao enviou). O ?v= faz o navegador buscar a foto nova ao trocar.
+function foto_da_loja($loja_id) {
+    $arquivo = PASTA_FOTOS_LOJAS . '/' . (int)$loja_id . '.jpg';
+    return is_file($arquivo) ? 'uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
+}
+// Recebe a foto enviada: confere se e imagem de verdade, diminui para ate 1920 px e regrava em JPEG.
+// Regravar a imagem descarta qualquer conteudo escondido no arquivo original. Devolve [true/false, mensagem].
+function salvar_foto_da_loja($loja_id, $arquivo) {
+    if (!isset($arquivo['tmp_name']) || $arquivo['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($arquivo['tmp_name'])) {
+        return [false, "Não foi possível receber a foto. Tente de novo."];
+    }
+    if ($arquivo['size'] > 6 * 1024 * 1024) {
+        return [false, "A foto é grande demais (máximo de 6 MB)."];
+    }
+    $info = @getimagesize($arquivo['tmp_name']);
+    $tipos = [IMAGETYPE_JPEG => 'imagecreatefromjpeg', IMAGETYPE_PNG => 'imagecreatefrompng', IMAGETYPE_WEBP => 'imagecreatefromwebp'];
+    if (!$info || !isset($tipos[$info[2]]) || !function_exists($tipos[$info[2]])) {
+        return [false, "Envie uma foto em JPG, PNG ou WEBP."];
+    }
+    [$largura, $altura] = $info;
+    if ($largura < 800 || $altura < 400) {
+        return [false, "A foto é pequena demais. Use uma de pelo menos 800 × 400 pixels."];
+    }
+    $original = @$tipos[$info[2]]($arquivo['tmp_name']);
+    if (!$original) {
+        return [false, "Não foi possível abrir a foto."];
+    }
+    $nova_largura = min(1920, $largura);
+    $nova_altura = (int)round($altura * $nova_largura / $largura);
+    $foto = imagecreatetruecolor($nova_largura, $nova_altura);
+    imagecopyresampled($foto, $original, 0, 0, 0, 0, $nova_largura, $nova_altura, $largura, $altura);
+    if (!is_dir(PASTA_FOTOS_LOJAS)) {
+        @mkdir(PASTA_FOTOS_LOJAS, 0755, true);
+    }
+    $ok = imagejpeg($foto, PASTA_FOTOS_LOJAS . '/' . (int)$loja_id . '.jpg', 82);
+    imagedestroy($foto);
+    imagedestroy($original);
+    return $ok ? [true, "Foto da loja salva! Ela já aparece na tela de entrar."] : [false, "Não foi possível salvar a foto no servidor."];
+}
+function remover_foto_da_loja($loja_id) {
+    $arquivo = PASTA_FOTOS_LOJAS . '/' . (int)$loja_id . '.jpg';
+    if (is_file($arquivo)) { unlink($arquivo); }
+}
+

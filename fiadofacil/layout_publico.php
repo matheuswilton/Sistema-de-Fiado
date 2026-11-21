@@ -34,9 +34,8 @@ function topo_publico($titulo, $descricao, $sem_indexar = false, $botao_topo = n
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="/css/estilo.css?v=31">
+<link rel="stylesheet" href="/css/estilo.css?v=32">
 <link rel="stylesheet" href="/css/inicio.css?v=21">
-<link rel="stylesheet" href="/css/lojas.css?v=2">
 </head>
 <body class="pagina-inicio">
 <header class="inicio-topo">
@@ -60,7 +59,8 @@ function rodape_publico() {
         <span class="rodape-marca"><?php echo logo(32); ?><strong>FiadoFácil</strong></span> — Sistema de controle de fiado · Projeto Integrador GTI / FPM · Goiânia/GO · <a href="/privacidade.php">Política de Privacidade</a>
     </div>
 </footer>
-<script src="/js/script.js?v=24"></script>
+<?php echo faixa_teste(); ?>
+<script src="/js/script.js?v=25"></script>
 </body>
 </html>
 <?php

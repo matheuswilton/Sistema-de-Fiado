@@ -85,6 +85,26 @@ const { chromium, B, SENHA, ok, sql, entrar, postar, terminar } = require('./com
     const r = await p.goto(B + 'pagina-que-nao-existe');
     ok(r.status() === 404, 'Endereço inexistente mostra a página 404');
 
+    // foto da loja (Minha loja): so aceita imagem de verdade e aparece no fundo da tela de entrar
+    await ze.goto(B + 'minha_loja.php');
+    await Promise.all([ze.waitForNavigation(), ze.setInputFiles('input[name=foto]', { name: 'nao-e-foto.jpg', mimeType: 'image/jpeg', buffer: Buffer.from('isto nao e uma imagem') })]);
+    ok((await ze.textContent('body')).includes('Envie uma foto em JPG'), 'Arquivo que não é imagem é recusado');
+    const png = await ze.evaluate(() => { const c = document.createElement('canvas'); c.width = 1200; c.height = 700; const g = c.getContext('2d'); g.fillStyle = '#7c4a24'; g.fillRect(0, 0, 1200, 700); return c.toDataURL('image/png').split(',')[1]; });
+    await Promise.all([ze.waitForNavigation(), ze.setInputFiles('input[name=foto]', { name: 'loja.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') })]);
+    ok((await ze.textContent('body')).includes('Foto da loja salva'), 'Foto da loja é salva');
+    const visita = await (await b.newContext()).newPage();
+    await visita.goto(B + 'login.php?loja=mercearia-do-ze');
+    ok((await visita.locator('.marca-login.com-foto').count()) === 1, 'A foto aparece no fundo da tela de entrar da loja');
+    const fotoResp = await visita.request.get(B + (await visita.evaluate(() => getComputedStyle(document.querySelector('.marca-login')).getPropertyValue('--foto-loja').match(/url\(['"]?([^'")]+)/)[1])));
+    ok(fotoResp.status() === 200 && (fotoResp.headers()['content-type'] || '').includes('image/jpeg'), 'A foto foi regravada em JPEG');
+    await visita.goto(B + 'login.php?loja=padaria-pao-quente');
+    ok((await visita.locator('.marca-login.com-foto').count()) === 0, 'A foto de uma loja não aparece em outra');
+    await ze.goto(B + 'minha_loja.php');
+    await ze.click('form:has(input[value=remover_foto]) button');
+    await Promise.all([ze.waitForNavigation(), ze.click('.confirmar-caixa button[value=sim]')]);
+    await visita.goto(B + 'login.php?loja=mercearia-do-ze');
+    ok((await visita.locator('.marca-login.com-foto').count()) === 0, 'Foto removida: volta o fundo escuro');
+
     sql("DELETE FROM clientes WHERE nome='Cliente Teste Limite'");
     await terminar(b, 'Regras de negócio');
 })();

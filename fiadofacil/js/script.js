@@ -295,23 +295,6 @@ if (!semAnimacao) {
         if (!/quitada/i.test(caixa.textContent)) { return; }
         caixa.classList.add('comemora');
         if (reduzir) { return; }
-        // loja com tema: chovem bifes, paes ou frutas em vez de papeizinhos
-        var modelo = document.getElementById('desenho-da-loja');
-        if (modelo) {
-            for (var k = 0; k < 28; k++) {
-                var peca = document.createElement('span');
-                peca.className = 'confete-loja';
-                peca.innerHTML = modelo.innerHTML;
-                peca.style.left = (Math.random() * 96) + 'vw';
-                peca.style.setProperty('--desvio', (Math.random() * 160 - 80) + 'px');
-                peca.style.setProperty('--giro', (Math.random() * 360 - 180) + 'deg');
-                peca.style.setProperty('--duracao', (Math.random() * 1.4 + 2.2) + 's');
-                peca.style.animationDelay = (Math.random() * 0.6) + 's';
-                document.body.appendChild(peca);
-                setTimeout(function (c) { return function () { c.remove(); }; }(peca), 4800);
-            }
-            return;
-        }
         var cores = ['#16a34a', '#2563eb', '#f59e0b', '#ea580c', '#a855f7', '#06b6d4'];
         for (var i = 0; i < 70; i++) {
             var confete = document.createElement('span');
@@ -477,42 +460,6 @@ if (!semAnimacao) {
                 })
                 .catch(function () { avisar('Não deu para consultar o CEP agora. Digite o endereço.'); });
         });
-    });
-})();
-
-// Animacoes das lojas com tema (acougue, mercearia, padaria)
-(function () {
-    var modelo = document.getElementById('desenho-da-loja');
-    if (!modelo) { return; }
-    var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // mensagem de sucesso com o desenho da loja (sacola enchendo, bife, pao)
-    document.querySelectorAll('.mensagem').forEach(function (caixa) {
-        var desenho = modelo.content.firstElementChild.cloneNode(true);
-        desenho.classList.add('desenho-sucesso');
-        caixa.insertBefore(desenho, caixa.firstChild);
-    });
-    // acougue: o cutelo desce e "corta" o botao de registrar compra
-    if (document.documentElement.getAttribute('data-loja') !== 'acougue' || reduzir) { return; }
-    var cutelo = '<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="6" width="24" height="18" rx="2" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/><circle cx="10" cy="11" r="2" fill="#64748b"/><rect x="26" y="12" width="12" height="5" rx="2" fill="#7c2d12"/></svg>';
-    function cortar(botao) {
-        if (getComputedStyle(botao).position === 'static') { botao.style.position = 'relative'; }
-        var lamina = document.createElement('span');
-        lamina.className = 'cutelo';
-        lamina.innerHTML = cutelo;
-        botao.appendChild(lamina);
-        botao.classList.add('botao-cortado');
-        setTimeout(function () { lamina.remove(); botao.classList.remove('botao-cortado'); }, 600);
-    }
-    document.querySelectorAll('a.botao-compra').forEach(function (link) {
-        link.addEventListener('click', function (e) {
-            if (e.ctrlKey || e.metaKey || e.shiftKey) { return; }
-            e.preventDefault();
-            cortar(link);
-            setTimeout(function () { window.location.href = link.href; }, 420);
-        });
-    });
-    document.querySelectorAll('form[action="registrar_compra.php"] button[type=submit]').forEach(function (botao) {
-        botao.addEventListener('click', function () { cortar(botao); });
     });
 })();
 

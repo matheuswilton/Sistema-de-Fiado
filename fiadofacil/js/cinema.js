@@ -1,4 +1,4 @@
-// Cena de cinema da pagina de apresentacao: conforme a pessoa rola, o caderninho e escrito,
+// Cena de cinema da pagina de apresentacao: quando a cena aparece na tela, o caderninho e escrito,
 // vira bagunca (rasuras, cafe, interrogacoes) e se transforma no FiadoFacil no celular.
 // Usa GSAP + ScrollTrigger (js/vendor). Sem eles, ou com "reduzir movimento", a cena fica parada.
 (function () {
@@ -24,10 +24,10 @@
     gsap.set(['.app-aviso', '.app-recebido'], { autoAlpha: 0, y: 24, scale: .9 });
     gsap.set('.app-limite-barra', { scaleX: 0 });
 
-    var cena = gsap.timeline({
-        defaults: { ease: 'none' },
-        scrollTrigger: { trigger: secao, start: 'top top', end: '+=2800', scrub: 0.8, pin: true, anticipatePin: 1 }
-    });
+    // Rolagem livre: a pagina nunca fica presa; a cena toca sozinha quando aparece na tela
+    secao.classList.add('cinema-livre');
+    var cena = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: secao, start: 'top 55%', toggleActions: 'play none none none' } });
+    cena.timeScale(1.7);
     cena
         // 1) o caderninho sendo escrito, linha por linha
         .to('.caderno-linha', { clipPath: 'inset(0 0% 0 0)', duration: 1, stagger: .35, ease: 'power1.out' })

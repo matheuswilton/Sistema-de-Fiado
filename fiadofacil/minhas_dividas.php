@@ -92,7 +92,7 @@ topo_publico("Minhas dívidas", "Suas compras no fiado em todas as lojas.", true
     <?php foreach ($lojas as $i => $loja): ?>
     <article class="painel conta-loja" data-tema-loja="<?php echo htmlspecialchars($loja['tema']); ?>">
         <header class="conta-loja-topo">
-            <h2><?php echo desenho_loja($loja['tema']) ?: icone('loja'); ?> <?php echo htmlspecialchars($loja['loja_nome']); ?></h2>
+            <h2><?php echo icone('loja'); ?> <?php echo htmlspecialchars($loja['loja_nome']); ?></h2>
             <?php if ($loja['saldo'] > 0): ?><span class="selo selo-aviso">Em aberto</span><?php else: ?><span class="selo selo-ok">Em dia</span><?php endif; ?>
         </header>
         <div class="conta-numeros">
