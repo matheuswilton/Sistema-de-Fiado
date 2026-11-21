@@ -400,7 +400,9 @@ O acesso antigo do cliente (usuário e senha numa loja, `solicitar_acesso.php` e
 - **Responsiva:** no celular, o menu vira um botão e as tabelas viram cartões (o JavaScript copia o nome da coluna para cada célula).
 - **Modo claro e noturno** com variáveis CSS, salvo no aparelho; na primeira visita segue o tema do sistema.
 - **Tema por loja** (verde, caramelo, vinho) e letreiro 3D com o nome da loja no login.
-- **Menu lateral** recolhível pela bolinha na borda, com ícones SVG, lista que rola com barra fina (sem setas) e sombra de "tem mais", e rodapé fixo com o usuário, o interruptor de modo noturno e o Sair.
+- **Menu lateral enxuto**, só com texto: o nome da loja no topo, o botão **Nova venda** (abre a escolha entre compra e pagamento), quatro itens principais (Início, Clientes, Cobranças e Relatórios) e dois secundários (Loja e equipe, Minha conta). As páginas agrupadas mostram **abas** no topo (`$grupos_menu` em `cabecalho.php`): Relatórios reúne Relatório, Ranking e Resumo; Loja e equipe reúne Minha loja, Usuários, Aprovar acessos e Acessos de clientes. O modo noturno fica em Minha conta.
+- **Modo noturno das lojas em grafite**: fundo neutro, e a cor da loja aparece só nos detalhes (botões, item escolhido do menu, contadores).
+- **Letra Manrope** (Google Fonts) em todo o sistema.
 - **Página de apresentação cinematográfica:** uma cena conta a história quando aparece na tela, sem prender a rolagem (o caderninho é escrito, vira bagunça e se transforma no FiadoFácil no celular), feita com GSAP + ScrollTrigger. Títulos com a fonte Bricolage Grotesque. Sem JavaScript ou com "reduzir movimento", a cena aparece parada.
 - **Acessibilidade:** contraste conferido, cor sempre acompanhada de texto e animações desligadas para quem ativa "reduzir movimento".
 - **Instalável** na tela inicial do celular (`manifest.json`).

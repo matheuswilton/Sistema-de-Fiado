@@ -29,7 +29,7 @@ async function conta(b,cpf,s,mobile){ const c=await b.newContext(mobile?{...devi
  ok(!t.includes('R$ 46,00'),'Antes de confirmar não mostra a dívida');
  // 4) Padaria nao ve o pedido; Mercearia confirma
  const ro=await staff(b,'padaria-pao-quente','rosa',SENHA); await ro.goto(B+'aprovar_acessos.php'); ok(!(await ro.textContent('body')).includes('Lúcia'),'Padaria não vê o pedido da Mercearia');
- await ze.goto(B+'dashboard.php'); ok((await ze.locator('.menu a[href="aprovar_acessos.php"] .contador').textContent()).trim()==='1','Contador do menu mostra o pedido');
+ await ze.goto(B+'dashboard.php'); ok((await ze.locator('.menu a[href="minha_loja.php"] .contador').textContent()).trim()==='1','Contador do menu mostra o pedido');
  await ze.goto(B+'aprovar_acessos.php'); ok((await ze.textContent('body')).includes('confere'),'Telefone confere aparece');
 
  // tentativa de aprovar vinculo de outra loja (id do joao na padaria)

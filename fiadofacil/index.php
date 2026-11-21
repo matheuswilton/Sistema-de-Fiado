@@ -33,10 +33,10 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=33">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=34">
 <link rel="stylesheet" href="css/inicio.css?v=21">
-<link rel="stylesheet" href="css/cinema.css?v=1">
+<link rel="stylesheet" href="css/cinema.css?v=2">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -246,7 +246,7 @@ if (isset($_SESSION['usuario_id'])) {
 </footer>
 
 <?php echo faixa_teste(); ?>
-<script src="js/script.js?v=25"></script>
+<script src="js/script.js?v=26"></script>
 <script src="js/vendor/gsap.min.js?v=3.12.5"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>
 <script src="js/cinema.js?v=3"></script>

@@ -3,13 +3,13 @@
    cinema "do caderninho ao celular" (animada pela rolagem com GSAP).
    Sem JavaScript (ou com "reduzir movimento"), a cena aparece parada.
    ===================================================================== */
-.pagina-inicio h1, .pagina-inicio h2 { font-family: "Bricolage Grotesque", "Inter", system-ui, sans-serif; letter-spacing: -.025em; }
+.pagina-inicio h1, .pagina-inicio h2 { font-family: "Bricolage Grotesque", "Manrope", system-ui, sans-serif; letter-spacing: -.025em; }
 
 .cinema { --papel: #f4ecdd; --tinta: #1e3a8a; background: var(--papel); color: #1f2937; overflow: hidden; }
 .cinema-palco { max-width: 1180px; margin: 0 auto; padding: 72px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 40px; align-items: center; }
 .cinema-legendas { display: grid; gap: 18px; }
-.legenda { margin: 0; font-family: "Bricolage Grotesque", "Inter", system-ui, sans-serif; font-weight: 800; font-size: clamp(26px, 3.6vw, 48px); line-height: 1.08; letter-spacing: -.025em; }
-.legenda small { display: block; font-family: "Inter", system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .2em; opacity: .55; margin-bottom: 10px; }
+.legenda { margin: 0; font-family: "Bricolage Grotesque", "Manrope", system-ui, sans-serif; font-weight: 800; font-size: clamp(26px, 3.6vw, 48px); line-height: 1.08; letter-spacing: -.025em; }
+.legenda small { display: block; font-family: "Manrope", system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .2em; opacity: .55; margin-bottom: 10px; }
 .cinema-cena { position: relative; display: flex; gap: 34px; justify-content: center; align-items: center; min-height: 560px; perspective: 1200px; }
 
 /* caderninho */
@@ -35,7 +35,7 @@
 /* celular com o FiadoFacil */
 .celular { position: relative; width: 272px; height: 540px; flex-shrink: 0; border-radius: 40px; padding: 12px; background: #0b1220; box-shadow: 0 40px 80px -24px rgba(2, 6, 23, .7), inset 0 0 0 2px #334155; transform-style: preserve-3d; }
 .celular::before { content: ""; position: absolute; top: 18px; left: 50%; translate: -50% 0; width: 84px; height: 20px; border-radius: 99px; background: #0b1220; z-index: 2; }
-.celular-tela { position: relative; height: 100%; border-radius: 30px; overflow: hidden; background: #f1f5f9; color: #0f172a; padding: 46px 12px 12px; font-family: "Inter", system-ui, sans-serif; font-size: 12px; }
+.celular-tela { position: relative; height: 100%; border-radius: 30px; overflow: hidden; background: #f1f5f9; color: #0f172a; padding: 46px 12px 12px; font-family: "Manrope", system-ui, sans-serif; font-size: 12px; }
 .app-topo { background: #dcfce7; color: #166534; font-weight: 700; padding: 8px 10px; border-radius: 10px; margin-bottom: 10px; }
 .app-total { background: #fff; border-radius: 12px; padding: 10px 12px; border-top: 3px solid #16a34a; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, .06); }
 .app-total small, .app-limite small { display: block; color: #64748b; font-size: 11px; }
