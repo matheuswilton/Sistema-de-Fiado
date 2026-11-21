@@ -207,17 +207,6 @@ document.querySelectorAll('.mensagem, .erro, .aviso-caixa').forEach(function (ca
     botao.addEventListener('click', function () { caixa.classList.add('saindo'); setTimeout(function () { caixa.remove(); }, 250); });
     caixa.appendChild(botao);
 });
-// Menu lateral: botao para recolher (so os icones) ou expandir. A escolha fica salva neste aparelho.
-var botaoRecolher = document.querySelector('.recolher-botao');
-if (botaoRecolher) {
-    botaoRecolher.addEventListener('click', function () {
-        var raiz = document.documentElement;
-        var recolhido = raiz.getAttribute('data-menu') === 'recolhido';
-        if (recolhido) { raiz.removeAttribute('data-menu'); } else { raiz.setAttribute('data-menu', 'recolhido'); }
-        botaoRecolher.title = recolhido ? 'Recolher menu' : 'Expandir menu';
-        try { localStorage.setItem('menu', recolhido ? 'aberto' : 'recolhido'); } catch (e) {}
-    });
-}
 // Quem pediu "reduzir movimento" no aparelho nao recebe animacoes
 var semAnimacao = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!semAnimacao) {

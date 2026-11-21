@@ -252,8 +252,8 @@ function painel_topo($titulo, $logado) {
 <link rel="icon" type="image/svg+xml" href="img/logo.svg?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=33">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=34">
 </head>
 <body class="pagina-painel">
 <header class="painel-topo">
@@ -274,7 +274,7 @@ function botao_tema_painel() {
 function painel_rodape() {
     ?>
 </main>
-<script src="js/script.js?v=25"></script>
+<script src="js/script.js?v=26"></script>
 </body>
 </html>
     <?php

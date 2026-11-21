@@ -59,6 +59,9 @@ Mostra a dívida atual, o limite, o limite disponível, a barra de uso do limite
 
 **Cobrar no WhatsApp:** abre a conversa com a mensagem pronta, com o valor e a chave Pix da loja. Nada é enviado sem você apertar "enviar".
 
+### Nova venda
+No topo do menu, o botão **Nova venda** abre duas opções: **Registrar compra** (o cliente levou no fiado) e **Registrar pagamento** (o cliente pagou).
+
 ### Registrar compra
 Escolha o cliente (a lista mostra quanto cada um ainda tem disponível), descreva a compra (opcional) e digite o valor: digite só os números e o campo mostra sozinho "R$ 0,00". Antes de gravar, aparece uma janela com o resumo (cliente, valor, dívida antes e depois) para confirmar. Quem abriu a compra pelo extrato do cliente volta para o extrato depois de salvar ou cancelar. Se a compra passar do limite, o sistema **recusa** e mostra o limite, a dívida e o disponível.
 
@@ -76,6 +79,9 @@ No menu **Cobranças** (com um número quando há alguém para cobrar), aparecem
 
 Em cada cliente: **Enviar no WhatsApp** (abre a conversa com a mensagem pronta e organizada: valor, prazo e chave Pix) e **Ver mensagem**, com o botão para copiar. Na tela inicial, o aviso **"Hora de cobrar"** leva direto para cá.
 
+### Relatórios
+No menu **Relatórios**, as abas no topo levam ao **Relatório de dívidas**, ao **Ranking** e, para o administrador, ao **Resumo financeiro**.
+
 ### Relatório de dívidas
 Filtre por **período** (de/até) e **situação** (todas, devendo, inadimplente ou em dia). Mostra compras e pagamentos no período, saldo devedor, dias em aberto e situação. Use **Imprimir** para uma versão limpa em papel ou PDF.
 
@@ -86,12 +92,14 @@ Ordena os clientes pelo score de 0 a 100: **80 ou mais** confiável, **50 a 79**
 
 ![Ranking](img/telas/09-ranking.jpg)
 
-### Minha senha
-No menu **Minha senha**, informe a senha atual e a nova (mínimo de 8 caracteres).
+### Minha conta
+No menu **Minha conta**: troque entre **modo claro e noturno** e troque a senha (informe a atual e a nova, com no mínimo 8 caracteres).
 
 ---
 
 ## Somente o administrador
+
+Tudo fica no menu **Loja e equipe**, com abas no topo: **Minha loja**, **Usuários**, **Aprovar acessos** e **Acessos de clientes**. Quando há pedidos esperando aprovação, aparece um número ao lado de "Loja e equipe".
 
 ### Resumo financeiro
 Clientes, devedores, inadimplentes, total a receber, total já recebido, total vendido no fiado, ticket médio e dívida média, mais a lista dos **maiores devedores**.
@@ -104,7 +112,7 @@ Crie usuários **administrador** ou **comum (atendente)**, com senha de no míni
 ![Usuários](img/telas/11-usuarios.jpg)
 
 ### Aprovar acessos
-Dois tipos de pedido aparecem aqui (o número no menu mostra quantos estão esperando):
+Dois tipos de pedido aparecem aqui (o número ao lado de "Loja e equipe" e da aba mostra quantos estão esperando):
 1. **Pedidos de acesso por usuário** (feitos em "Sou cliente" pelo jeito antigo): escolha a qual cliente o pedido pertence (o sistema sugere pelo telefone) e clique em **Aprovar** ou **Recusar**.
 2. **Contas de clientes por CPF:** o cliente criou a conta com o CPF que está no cadastro. Confira o nome e se o telefone **confere**, e clique em **Confirmar** ou **Recusar**. As contas já confirmadas podem ser **desligadas**.
 
@@ -171,7 +179,7 @@ Endereço: `fiadofacil.free.je/painel.php` (login próprio).
 
 ## No celular
 
-O sistema funciona no navegador do celular: o menu vira o botão **☰ Menu** e as tabelas viram cartões. O botão de lua/sol troca entre **modo claro e noturno**. Para usar como aplicativo, abra o menu do navegador e escolha **"Adicionar à tela inicial"**.
+O sistema funciona no navegador do celular: o menu vira o botão **☰ Menu** e as tabelas viram cartões. Em **Minha conta** você troca entre **modo claro e noturno**. Para usar como aplicativo, abra o menu do navegador e escolha **"Adicionar à tela inicial"**.
 
 | Loja no modo noturno | Cliente no celular |
 |---|---|
