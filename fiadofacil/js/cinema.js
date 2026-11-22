@@ -31,19 +31,19 @@
     var corInicial = palco ? getComputedStyle(palco).backgroundColor : null;
     var textoInicial = palco ? getComputedStyle(palco).color : null;
     var cena = gsap.timeline({ repeat: -1, defaults: { ease: 'none' }, scrollTrigger: { trigger: secao, start: 'top 85%', end: 'bottom 15%', toggleActions: 'play pause resume pause' } });
-    cena.timeScale(1.7);
+    cena.timeScale(1);
     cena
         // 1) o caderninho sendo escrito, linha por linha
         .to('.caderno-linha', { clipPath: 'inset(0 0% 0 0)', duration: 1, stagger: .35, ease: 'power1.out' })
         // 2) a bagunca: rasuras, cafe, interrogacoes e a soma que nao fecha
-        .to(legenda(1), { autoAlpha: 0, y: -30, duration: .4 }, '+=.3')
+        .to(legenda(1), { autoAlpha: 0, y: -30, duration: .5 }, '+=1.8')
         .to(legenda(2), { autoAlpha: 1, y: 0, duration: .4 }, '<.2')
         .to('.rasura path', { strokeDashoffset: 0, duration: .8, stagger: .25 }, '<')
         .to('.mancha-cafe', { autoAlpha: 1, scale: 1, duration: .6, ease: 'back.out(1.6)' }, '<.3')
         .to('.interrogacao', { autoAlpha: 1, scale: 1, duration: .5, stagger: .2, ease: 'back.out(2.4)' }, '<')
         .to('.caderno', { rotate: -10, duration: .6, ease: 'power1.inOut' }, '<')
         // 3) o caderninho vira sistema: a luz muda e o celular sobe
-        .to(legenda(2), { autoAlpha: 0, y: -30, duration: .4 }, '+=.4')
+        .to(legenda(2), { autoAlpha: 0, y: -30, duration: .5 }, '+=1.8')
         .to(legenda(3), { autoAlpha: 1, y: 0, duration: .4 }, '<.2')
         .to('.cinema-palco', { backgroundColor: '#0d1b36', color: '#f1f5f9', duration: 1 }, '<')
         .to('.caderno', { scale: .3, rotate: 28, y: -120, autoAlpha: 0, duration: 1, ease: 'power2.in' }, '<')
@@ -51,14 +51,14 @@
         .to('.app-item', { autoAlpha: 1, x: 0, duration: .5, stagger: .2, ease: 'power2.out' }, '<.5')
         .to(valor, { v: 1240, duration: 1, ease: 'power1.out', onUpdate: function () { total.textContent = emReais(valor.v); } }, '<')
         // 4) as regras trabalhando: limite, bloqueio e pagamento registrado
-        .to(legenda(3), { autoAlpha: 0, y: -30, duration: .4 }, '+=.3')
+        .to(legenda(3), { autoAlpha: 0, y: -30, duration: .5 }, '+=1.8')
         .to(legenda(4), { autoAlpha: 1, y: 0, duration: .4 }, '<.2')
         .to('.app-limite-barra', { scaleX: .92, duration: .8, ease: 'power2.out' }, '<')
         .to('.app-aviso', { autoAlpha: 1, y: 0, scale: 1, duration: .4, ease: 'back.out(2)' }, '>-.1')
         .to('.app-recebido', { autoAlpha: 1, y: 0, scale: 1, duration: .4, ease: 'back.out(2)' }, '+=.3')
         .to('.celular', { rotateY: -10, rotateX: 5, duration: .8, ease: 'sine.inOut' }, '<')
         // 5) pausa para ler e recomeca suave: o celular sai, a luz volta e o caderninho reaparece
-        .to({}, { duration: 2.5 })
+        .to({}, { duration: 4 })
         .to(['.celular', legenda(4)], { autoAlpha: 0, duration: .6, ease: 'power1.in' })
         .to('.cinema-palco', { backgroundColor: corInicial, color: textoInicial, duration: .6 }, '<')
         .set(valor, { v: 0, onComplete: function () { total.textContent = emReais(0); } })

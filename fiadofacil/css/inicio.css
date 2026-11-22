@@ -134,7 +134,7 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 /* ---------- faixa de frases de efeito correndo ---------- */
 .faixa-frases { overflow: hidden; background: #0f1f4d; color: #f8fafc; border-block: 1px solid rgba(255,255,255,.08); padding-block: 16px; }
 :root[data-tema="escuro"] .faixa-frases { background: #111a2e; }
-.faixa-frases-trilho { display: flex; width: max-content; animation: correr 38s linear infinite; }
+.faixa-frases-trilho { display: flex; width: max-content; animation: correr 70s linear infinite; }
 .faixa-frases:hover .faixa-frases-trilho { animation-play-state: paused; }
 .faixa-frases-grupo { display: flex; align-items: center; gap: 28px; padding-right: 28px; }
 .faixa-frases span { font-size: 22px; font-weight: 800; letter-spacing: -.01em; white-space: nowrap; }
@@ -266,3 +266,9 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
     .erro-404 h1 { font-size: 26px; }
 }
 @media (prefers-reduced-motion: reduce) { .erro-404-numero .logo { animation: none; } }
+
+/* Quem fez: detalhes tecnicos e links (GitHub, LinkedIn) lado a lado */
+.perfil-acoes { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.perfil-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--borda); background: var(--superficie); color: var(--texto); font-weight: 600; text-decoration: none; }
+.perfil-link:hover { border-color: var(--texto-suave); }
+.perfil-link .icone { width: 18px; height: 18px; }
