@@ -59,7 +59,7 @@ Sem o sistema, a compra de Carlos, de 45 dias atrás, poderia ter sido esquecida
 - **Custo zero**: hospedagem gratuita e nenhuma instalação.
 
 ## 7. Várias lojas na mesma plataforma
-O FiadoFácil atende várias lojas ao mesmo tempo. Cada comércio tem o seu endereço (por exemplo `/loja/mercearia-do-ze`), o seu login, os seus dados e o seu visual, e nenhuma loja enxerga os dados das outras. O dono da plataforma acompanha todas pelo painel: cria lojas, bloqueia e entra em qualquer uma como administrador.
+O FiadoFácil foi feito para atender várias lojas ao mesmo tempo. Cada comércio tem o seu endereço (por exemplo `/loja/mercearia-do-ze`), o seu login, os seus dados e o seu visual, e nenhuma loja enxerga os dados das outras. O dono da plataforma acompanha todas pelo painel: cria lojas, bloqueia e entra em qualquer uma como administrador.
 
 Lojas de exemplo para a demonstração: Mercearia do Zé, Padaria Pão Quente e Açougue Bom Corte.
 
