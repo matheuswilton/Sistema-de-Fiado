@@ -4,7 +4,7 @@
   "description": "Testes automaticos do FiadoFacil (navegador automatizado)",
   "scripts": {
     "test": "bash rodar.sh",
-    "seguranca": "npx --yes snyk@1.1309.0 code test .. --exclude=vendor"
+    "seguranca": "npx --yes snyk@1.1309.0 code test .. --org=matheuswilton --exclude=vendor"
   },
   "devDependencies": {
     "playwright": "1.49.1"
