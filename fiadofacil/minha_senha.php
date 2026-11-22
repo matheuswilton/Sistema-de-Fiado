@@ -45,12 +45,12 @@ require "cabecalho.php";
 <p class="subtitulo"><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?> · <?php echo htmlspecialchars($nomes_perfil[$nivel_logado] ?? ''); ?></p>
 <?php mostrar_flash(); ?>
 <div class="painel conta-aparencia">
-    <div><h2>Aparência</h2><p class="dica">Modo claro ou noturno. A escolha fica salva neste aparelho.</p></div>
+    <div><h2>Aparência</h2><p class="dica">Vale para este aparelho.</p></div>
     <?php botao_tema("tema-conta"); ?>
 </div>
 <div class="painel">
 <h2>Trocar a senha</h2>
-<p class="dica">Escolha uma senha com pelo menos 8 caracteres.</p>
+<p class="dica">Mínimo de 8 caracteres.</p>
 <form method="POST" action="minha_senha.php">
     <?php campo_csrf(); ?>
     <label for="senha_atual">Senha atual</label>

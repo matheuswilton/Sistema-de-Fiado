@@ -76,7 +76,7 @@ $menu_ativo = "aprovar";
 require "cabecalho.php";
 ?>
 <h1>Solicitações de acesso de clientes</h1>
-<p class="subtitulo">Confira o telefone informado, escolha o cliente correto e aprove. O cliente passa a ver somente a própria dívida.</p>
+<p class="subtitulo">Confira o telefone e escolha o cliente certo.</p>
 <?php mostrar_flash(); ?>
 <div class="tabela-rolagem"><table>
     <tr><th>Nome</th><th>Usuário</th><th>Telefone informado</th><th>Solicitado em</th><th>Cliente / Ação</th></tr>
@@ -106,7 +106,7 @@ require "cabecalho.php";
 </table></div>
 
 <h2 class="titulo-secao">Contas de clientes por CPF</h2>
-<p class="subtitulo">O cliente criou a conta com o CPF que está no cadastro da loja. Confira o nome e o telefone e confirme que é a mesma pessoa.</p>
+<p class="subtitulo">Contas criadas com um CPF cadastrado na loja. Confira o nome e o telefone.</p>
 <div class="tabela-rolagem"><table>
     <tr><th>Conta</th><th>CPF</th><th>Telefone da conta</th><th>Cadastro na loja</th><th>Ação</th></tr>
     <?php foreach ($contas_pendentes as $v): $confere = so_numeros($v['conta_telefone']) === so_numeros($v['cliente_telefone'] ?? ''); ?>

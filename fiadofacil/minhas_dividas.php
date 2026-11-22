@@ -82,7 +82,7 @@ topo_publico("Minhas dívidas", "Suas compras no fiado em todas as lojas.", true
 <section class="inicio-secao conta-secao">
 <div class="inicio-largura conta-area">
     <h1>Olá, <?php echo htmlspecialchars($primeiro_nome); ?>!</h1>
-    <p class="subtitulo">Seu fiado em todas as lojas, num lugar só · CPF <?php echo htmlspecialchars(mascarar_cpf($conta['cpf'])); ?></p>
+    <p class="subtitulo">Suas dívidas · CPF <?php echo htmlspecialchars(mascarar_cpf($conta['cpf'])); ?></p>
     <?php mostrar_flash(); ?>
     <div class="cards">
         <div class="card card-calma"><span class="card-titulo">Total que você deve</span><span class="card-valor"><?php echo dinheiro($total_geral); ?></span></div>
@@ -107,9 +107,9 @@ topo_publico("Minhas dívidas", "Suas compras no fiado em todas as lojas.", true
             <div class="pix-caixa">
                 <div class="pix-qr" data-qrcode="<?php echo htmlspecialchars($loja['pix']); ?>" role="img" aria-label="QR Code Pix de <?php echo dinheiro($loja['saldo']); ?> para <?php echo htmlspecialchars($loja['loja_nome']); ?>"></div>
                 <div class="pix-info">
-                    <p>Leia o QR Code no app do seu banco. O valor de <strong><?php echo dinheiro($loja['saldo']); ?></strong> já vem preenchido; para pagar só uma parte, mude o valor no app.</p>
+                    <p>Leia o QR Code no app do banco. Valor: <strong><?php echo dinheiro($loja['saldo']); ?></strong>.</p>
                     <div class="copiar-linha"><code id="pix-<?php echo $i; ?>" class="pix-codigo"><?php echo htmlspecialchars($loja['pix']); ?></code><button type="button" class="botao-pequeno" data-copiar="#pix-<?php echo $i; ?>"><?php echo icone('copiar'); ?> Copiar código</button></div>
-                    <p class="dica">O pagamento aparece aqui depois que a loja confirmar.</p>
+                    <p class="dica">O pagamento aparece aqui quando a loja registrar.</p>
                 </div>
             </div>
         </details>
@@ -131,15 +131,15 @@ topo_publico("Minhas dívidas", "Suas compras no fiado em todas as lojas.", true
     <div class="painel conta-aguardando">
         <?php echo icone($loja['status'] === 'pendente' ? 'relogio' : 'atencao'); ?>
         <div><strong><?php echo htmlspecialchars($loja['loja_nome']); ?></strong>
-        <p><?php echo $loja['status'] === 'pendente' ? 'Aguardando a loja confirmar que é você. Assim que confirmar, a dívida aparece aqui.' : 'A loja não confirmou a ligação. Fale com a loja.'; ?></p></div>
+        <p><?php echo $loja['status'] === 'pendente' ? 'Aguardando a loja confirmar que é você.' : 'A loja não confirmou a ligação. Fale com a loja.'; ?></p></div>
     </div>
     <?php endforeach; ?>
 
     <?php if (!$lojas && !$aguardando): ?>
-    <div class="painel conta-aguardando"><?php echo icone('atencao'); ?><div><strong>Nenhuma loja ligada ainda.</strong><p>Peça para a loja onde você compra incluir o seu CPF no cadastro. Ela aparece aqui sozinha.</p></div></div>
+    <div class="painel conta-aguardando"><?php echo icone('atencao'); ?><div><strong>Nenhuma loja ligada ainda.</strong><p>Peça para a loja incluir o seu CPF no cadastro.</p></div></div>
     <?php endif; ?>
 
-    <p class="dica conta-nota">Não aparece alguma loja? Peça para ela incluir o seu CPF no cadastro. Cada loja só vê os próprios dados: a Mercearia não sabe o que você deve na Padaria.</p>
+    <p class="dica conta-nota">Falta alguma loja? Peça para ela incluir o seu CPF no cadastro.</p>
 
     <details class="detalhe-tecnico conta-senha">
         <summary><?php echo icone('senha'); ?> Trocar minha senha</summary>

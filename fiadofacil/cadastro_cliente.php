@@ -49,7 +49,7 @@ $classe_container = "container-medio";
 require "cabecalho.php";
 ?>
 <h1>Cadastrar cliente</h1>
-<p class="subtitulo">Só o nome é obrigatório.</p>
+<p class="subtitulo">Campos com * são obrigatórios.</p>
 <?php if ($mensagem): ?><div class="erro" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
 <div class="painel">
 <form method="POST" action="cadastro_cliente.php">
@@ -80,7 +80,7 @@ require "cabecalho.php";
     <label for="limite_credito">Limite de crédito (R$)</label>
     <?php if (eh_admin()): ?>
         <input type="text" id="limite_credito" name="limite_credito" data-mascara="dinheiro" inputmode="numeric" autocomplete="off" value="<?php echo htmlspecialchars(dinheiro($limite_credito)); ?>">">
-        <div class="dica">Quanto o cliente pode dever ao mesmo tempo.</div>
+        <div class="dica">Valor máximo em aberto.</div>
     <?php else: ?>
         <input type="text" id="limite_credito" value="R$ 500,00 (limite padrão — somente o administrador altera)" disabled>
     <?php endif; ?>

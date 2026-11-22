@@ -22,8 +22,8 @@ topo_publico("Página não encontrada", "Este endereço não existe no FiadoFác
 <section class="inicio-secao pagina-404">
     <div class="inicio-largura erro-404">
         <div class="erro-404-numero" aria-hidden="true">4<span><?php echo logo(120); ?></span>4</div>
-        <h1>Essa página não está no caderninho.</h1>
-        <p>O endereço que você abriu não existe ou mudou de lugar. Confira se digitou certo, ou volte para um lugar conhecido:</p>
+        <h1>Página não encontrada</h1>
+        <p>Confira o endereço ou volte para o início.</p>
         <div class="inicio-botoes erro-404-botoes">
             <a href="/index.php" class="botao botao-grande">Ir para o início</a>
             <a href="/login.php" class="botao botao-secundario botao-grande">Encontrar a minha loja</a>

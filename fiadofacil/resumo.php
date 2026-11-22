@@ -33,7 +33,7 @@ $menu_ativo = "resumo";
 require "cabecalho.php";
 ?>
 <h1>Resumo financeiro</h1>
-<p class="subtitulo">Visão geral do fiado de toda a loja.</p>
+<p class="subtitulo">Números da loja.</p>
 <div class="cards">
     <div class="card"><span class="card-titulo">Clientes cadastrados</span><span class="card-valor"><?php echo $total_clientes; ?></span></div>
     <div class="card card-aviso"><span class="card-titulo">Clientes devendo</span><span class="card-valor"><?php echo $quantidade_devendo; ?></span></div>
@@ -50,7 +50,7 @@ require "cabecalho.php";
     <?php foreach ($maiores_devedores as $linha): ?>
     <tr><td><a href="cliente.php?id=<?php echo $linha['id']; ?>"><?php echo htmlspecialchars($linha['nome']); ?></a></td><td class="num"><?php echo dinheiro($linha['saldo_devedor']); ?></td><td class="num"><?php echo $linha['dias_devendo']; ?></td></tr>
     <?php endforeach; ?>
-    <?php if (count($maiores_devedores) === 0): ?><tr><td colspan="3" class="vazio">Nenhum cliente devendo. 🎉</td></tr><?php endif; ?>
+    <?php if (count($maiores_devedores) === 0): ?><tr><td colspan="3" class="vazio">Nenhum cliente devendo.</td></tr><?php endif; ?>
 </table></div>
 <div class="barra-botoes"><a href="relatorio.php" class="botao">Ver relatório detalhado</a></div>
 <?php require "rodape.php"; ?>

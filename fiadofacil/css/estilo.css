@@ -312,7 +312,7 @@ main.container { animation: aparecer .25s ease-out; }
 
 /* ===================== Interatividade e transicoes ===================== */
 /* entrada em cascata (o script coloca a classe "entrada" e o atraso --i em cada item) */
-.entrada { animation: subir .45s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 55ms); }
+.entrada { animation: subir .3s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 35ms); }
 @keyframes subir { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 /* efeito de onda ao clicar em botoes */
 .tem-onda { position: relative; overflow: hidden; }
@@ -1118,3 +1118,13 @@ td, .num, .card-valor { font-variant-numeric: tabular-nums; }
 .barra-botoes, .acoes-rapidas { gap: 8px; }
 h1 { letter-spacing: -.02em; font-weight: 700; }
 .subtitulo { font-size: 15.5px; }
+
+/* Botao de modo noturno no pe do menu (sol ou lua) */
+.menu-rodape .tema-botao.tema-menu { margin-left: auto; width: 32px; height: 32px; padding: 0; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: transparent; color: inherit; box-shadow: inset 0 0 0 1px var(--borda); }
+.menu-rodape .tema-botao.tema-menu:hover { background: var(--lateral-hover); color: var(--texto); }
+.menu-rodape .tema-botao.tema-menu .icone { width: 16px; height: 16px; }
+.menu-rodape .tema-botao.tema-menu .tema-texto { display: none !important; }
+.menu-rodape .tema-botao.tema-menu .icone-lua { display: block; }
+.menu-rodape .tema-botao.tema-menu .icone-sol, :root[data-tema="escuro"] .menu-rodape .tema-botao.tema-menu .icone-lua { display: none; }
+:root[data-tema="escuro"] .menu-rodape .tema-botao.tema-menu .icone-sol { display: block; }
+@media (max-width: 800px) { .menu-rodape .tema-botao.tema-menu { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); color: #fff; } }

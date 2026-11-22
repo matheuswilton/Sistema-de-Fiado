@@ -44,7 +44,7 @@ $classe_container = "container-medio";
 require "cabecalho.php";
 ?>
 <h1>Registrar compra no fiado</h1>
-<p class="subtitulo">A compra só é aceita se não passar do limite de crédito do cliente.</p>
+<p class="subtitulo">Compras acima do limite do cliente são recusadas.</p>
 <?php mostrar_flash(); ?>
 <?php if ($mensagem): ?><div class="erro" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
 <div class="painel">
