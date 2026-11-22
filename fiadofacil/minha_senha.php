@@ -36,15 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: minha_senha.php");
     exit();
 }
-$titulo_pagina = "Minha senha";
+$titulo_pagina = "Minha conta";
 $menu_ativo = "senha";
 $classe_container = "container-medio";
 require "cabecalho.php";
 ?>
-<h1>Minha senha</h1>
-<p class="subtitulo">Escolha uma senha com pelo menos 8 caracteres.</p>
+<h1>Minha conta</h1>
+<p class="subtitulo"><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?> · <?php echo htmlspecialchars($nomes_perfil[$nivel_logado] ?? ''); ?></p>
 <?php mostrar_flash(); ?>
+<div class="painel conta-aparencia">
+    <div><h2>Aparência</h2><p class="dica">Vale para este aparelho.</p></div>
+    <?php botao_tema("tema-conta"); ?>
+</div>
 <div class="painel">
+<h2>Trocar a senha</h2>
+<p class="dica">Mínimo de 8 caracteres.</p>
 <form method="POST" action="minha_senha.php">
     <?php campo_csrf(); ?>
     <label for="senha_atual">Senha atual</label>

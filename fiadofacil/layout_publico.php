@@ -33,8 +33,8 @@ function topo_publico($titulo, $descricao, $sem_indexar = false, $botao_topo = n
 <link rel="apple-touch-icon" href="/img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="/css/estilo.css?v=32">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/estilo.css?v=36">
 <link rel="stylesheet" href="/css/inicio.css?v=21">
 </head>
 <body class="pagina-inicio">
@@ -60,7 +60,7 @@ function rodape_publico() {
     </div>
 </footer>
 <?php echo faixa_teste(); ?>
-<script src="/js/script.js?v=25"></script>
+<script src="/js/script.js?v=26"></script>
 </body>
 </html>
 <?php

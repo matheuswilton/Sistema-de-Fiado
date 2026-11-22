@@ -43,7 +43,7 @@ $classe_container = "container-pequeno";
 require "cabecalho.php";
 ?>
 <h1>Área do cliente</h1>
-<p class="subtitulo">Entre com o seu CPF e a senha que você criou para ver suas dívidas em todas as lojas.</p>
+<p class="subtitulo">Entre com CPF e senha.</p>
 <?php mostrar_flash(); ?>
 <?php if ($erro): ?><div class="erro" role="alert"><?php echo htmlspecialchars($erro); ?></div><?php endif; ?>
 <form method="POST" action="conta_entrar.php">

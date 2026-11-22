@@ -44,7 +44,7 @@ $menu_ativo = "acessos";
 require "cabecalho.php";
 ?>
 <h1>Acessos de clientes</h1>
-<p class="subtitulo">Clientes que já podem ver a própria dívida. Aqui você bloqueia, desbloqueia e troca a senha.</p>
+<p class="subtitulo">Clientes que entram para ver a própria dívida.</p>
 <?php mostrar_flash(); ?>
 <div class="tabela-rolagem"><table>
     <tr><th>Usuário</th><th>Cliente vinculado</th><th>Situação</th><th>Ações</th></tr>

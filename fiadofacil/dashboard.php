@@ -56,8 +56,9 @@ $titulo_pagina = "Início";
 $menu_ativo = "inicio";
 require "cabecalho.php";
 ?>
-<h1>Olá, <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>!</h1>
-<p class="subtitulo">Perfil: <strong><?php echo eh_admin() ? "Administrador" : "Usuário comum"; ?></strong>. Veja o resumo do fiado e o que fazer agora.</p>
+<h1>Olá, <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></h1>
+<?php $dias_semana = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"]; $meses = ["", "janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]; ?>
+<p class="subtitulo"><?php echo ucfirst($dias_semana[(int)date("w")]) . ", " . (int)date("j") . " de " . $meses[(int)date("n")]; ?></p>
 <?php mostrar_flash(); ?>
 <?php if ($senha_de_exemplo): ?>
 <div class="aviso-caixa">Você ainda está usando a senha de exemplo do sistema. Por segurança, <a href="minha_senha.php">troque a sua senha agora</a>.</div>

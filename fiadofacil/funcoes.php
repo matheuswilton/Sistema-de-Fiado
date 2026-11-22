@@ -475,7 +475,7 @@ function dias_para_vencer($saldo, $dias_devendo) {
 function mensagem_cobranca($nome_cliente, $loja, $saldo, $dias_devendo = null) {
     $primeiro_nome = explode(' ', trim($nome_cliente))[0];
     $faltam = $dias_devendo === null ? null : dias_para_vencer($saldo, $dias_devendo);
-    $linhas = ["Olá, " . $primeiro_nome . "! 👋", "Aqui é da *" . $loja['nome'] . "*.", ""];
+    $linhas = ["Olá, " . $primeiro_nome . "!", "Aqui é da *" . $loja['nome'] . "*.", ""];
     if ($faltam === 0) {
         $linhas[] = "Sua conta no fiado está em aberto há *" . (int)$dias_devendo . " dias*:";
     } elseif ($faltam !== null && $faltam <= DIAS_AVISO_ANTES) {
@@ -483,18 +483,18 @@ function mensagem_cobranca($nome_cliente, $loja, $saldo, $dias_devendo = null) {
     } else {
         $linhas[] = "Passando para lembrar da sua conta no fiado:";
     }
-    $linhas[] = "💰 Valor em aberto: *" . dinheiro($saldo) . "*";
+    $linhas[] = "Valor em aberto: *" . dinheiro($saldo) . "*";
     $linhas[] = "";
     if (!empty($loja['chave_pix'])) {
         $linhas[] = "Para pagar pelo Pix:";
-        $linhas[] = "🔑 Chave: " . $loja['chave_pix'];
+        $linhas[] = "Chave Pix: " . $loja['chave_pix'];
         $linhas[] = "Ou, se preferir, pague aqui na loja.";
     } else {
         $linhas[] = "Pode pagar aqui na loja quando passar.";
     }
     $linhas[] = "";
     $linhas[] = $faltam === 0 ? "Se precisar, podemos combinar o pagamento. Se já pagou, desconsidere esta mensagem." : "Se já pagou, desconsidere esta mensagem.";
-    $linhas[] = "Obrigado pela confiança! 🙏";
+    $linhas[] = "Obrigado!";
     return implode("\n", $linhas);
 }
 
@@ -616,7 +616,9 @@ const PASTA_FOTOS_LOJAS = __DIR__ . '/uploads/lojas';
 // Endereco da foto da loja (ou null se ela ainda nao enviou). O ?v= faz o navegador buscar a foto nova ao trocar.
 function foto_da_loja($loja_id) {
     $arquivo = PASTA_FOTOS_LOJAS . '/' . (int)$loja_id . '.jpg';
-    return is_file($arquivo) ? 'uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
+    // Endereco absoluto (com / no inicio): a foto e usada dentro do CSS, que fica na pasta css/,
+    // e um endereco relativo seria procurado em css/uploads/ e nao apareceria.
+    return is_file($arquivo) ? '/uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
 }
 // Recebe a foto enviada: confere se e imagem de verdade, diminui para ate 1920 px e regrava em JPEG.
 // Regravar a imagem descarta qualquer conteudo escondido no arquivo original. Devolve [true/false, mensagem].

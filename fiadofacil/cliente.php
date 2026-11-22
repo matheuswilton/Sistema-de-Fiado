@@ -85,6 +85,6 @@ require "cabecalho.php";
     </table></div>
 </div>
 </div>
-<?php if (count($lista_compras) >= 100 || count($lista_pagamentos) >= 100): ?><p class="dica">Mostrando os 100 registros mais recentes de cada lista.</p><?php endif; ?>
+<?php if (count($lista_compras) >= 100 || count($lista_pagamentos) >= 100): ?><p class="dica">Últimos 100 registros.</p><?php endif; ?>
 <div class="barra-botoes nao-imprimir"><a href="listar_clientes.php" class="botao botao-secundario">Voltar para clientes</a></div>
 <?php require "rodape.php"; ?>

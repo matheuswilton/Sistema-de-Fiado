@@ -36,7 +36,7 @@ $menu_ativo = "ranking";
 require "cabecalho.php";
 ?>
 <h1>Ranking de confiabilidade</h1>
-<p class="subtitulo">Do cliente mais confiável para o mais arriscado. Score: 80+ confiável, 50 a 79 regular, abaixo de 50 risco.</p>
+<p class="subtitulo">Score de 0 a 100: 80 ou mais confiável, 50 a 79 regular, abaixo de 50 risco.</p>
 <div class="tabela-rolagem"><table>
     <tr><th>#</th><th>Cliente</th><th class="num">Saldo devedor</th><th class="num">Dias em aberto</th><th>Score</th></tr>
     <?php foreach ($linhas_da_pagina as $posicao => $linha): ?>
@@ -51,7 +51,7 @@ require "cabecalho.php";
             <?php else: ?><span class="selo selo-alerta">Risco</span><?php endif; ?></td>
     </tr>
     <?php endforeach; ?>
-    <?php if ($total === 0): ?><tr><td colspan="5" class="vazio"><strong>Nenhum cliente cadastrado ainda.</strong><span>O ranking aparece quando houver clientes.</span></td></tr><?php endif; ?>
+    <?php if ($total === 0): ?><tr><td colspan="5" class="vazio"><strong>Nenhum cliente cadastrado ainda.</strong></td></tr><?php endif; ?>
 </table></div>
 <?php mostrar_paginacao($pagina, $total_paginas); ?>
 <?php require "rodape.php"; ?>

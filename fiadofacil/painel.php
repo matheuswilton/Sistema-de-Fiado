@@ -67,7 +67,7 @@ if (!eh_plataforma()) {
     ?>
     <section class="painel-login">
         <h1>Painel da plataforma</h1>
-        <p class="subtitulo">Acesso exclusivo do dono do FiadoFácil.</p>
+        <p class="subtitulo">Acesso do dono da plataforma.</p>
         <?php mostrar_flash(); ?>
         <?php if ($erro): ?><div class="erro" role="alert"><?php echo htmlspecialchars($erro); ?></div><?php endif; ?>
         <form method="POST" action="painel.php">
@@ -181,7 +181,7 @@ $lojas_ativas = count(array_filter($lojas, function ($l) { return $l['status'] =
 painel_topo("Painel da plataforma", true);
 ?>
 <div class="cabecalho-pagina">
-    <div><h1>Painel da plataforma</h1><p class="subtitulo">Todas as lojas que usam o FiadoFácil. Entre em qualquer uma como administrador.</p></div>
+    <div><h1>Painel da plataforma</h1><p class="subtitulo">Todas as lojas cadastradas.</p></div>
 </div>
 <?php mostrar_flash(); ?>
 <div class="cards">
@@ -252,8 +252,8 @@ function painel_topo($titulo, $logado) {
 <link rel="icon" type="image/svg+xml" href="img/logo.svg?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=32">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/estilo.css?v=36">
 </head>
 <body class="pagina-painel">
 <header class="painel-topo">
@@ -274,7 +274,7 @@ function botao_tema_painel() {
 function painel_rodape() {
     ?>
 </main>
-<script src="js/script.js?v=25"></script>
+<script src="js/script.js?v=26"></script>
 </body>
 </html>
     <?php

@@ -41,13 +41,31 @@ function letras_letreiro($texto, $inicio) {
 }
 function link_menu($arquivo, $texto, $chave, $menu_ativo, $extra = "") {
     $classe = ($chave === $menu_ativo) ? ' class="ativo"' : '';
-    echo '<a href="' . $arquivo . '"' . $classe . ' data-dica="' . htmlspecialchars(strip_tags($texto)) . '">' . icone($chave) . '<span class="menu-texto">' . $texto . '</span>' . $extra . '</a>';
+    echo '<a href="' . $arquivo . '"' . $classe . '><span class="menu-texto">' . $texto . '</span>' . $extra . '</a>';
 }
 function botao_tema($classe_extra = "") {
     echo '<button type="button" class="tema-botao ' . $classe_extra . '" aria-label="Alternar modo noturno" title="Modo noturno">'
         . icone('lua', 'icone-lua') . icone('sol', 'icone-sol') . '<span class="tema-texto tema-texto-claro">Modo noturno</span><span class="tema-texto tema-texto-escuro">Modo claro</span></button>';
 }
 $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'cliente' => 'Cliente'];
+// Menu enxuto: varias paginas ficam dentro de um item so, e a pagina mostra abas para trocar entre elas
+$grupos_menu = [
+    'relatorios' => ['relatorio', 'ranking', 'resumo'],
+    'equipe' => ['loja', 'usuarios', 'aprovar', 'acessos'],
+    'conta' => ['senha'],
+];
+$grupo_ativo = $menu_ativo;
+foreach ($grupos_menu as $grupo => $paginas_grupo) {
+    if (in_array($menu_ativo, $paginas_grupo, true)) { $grupo_ativo = $grupo; }
+}
+$abas_grupo = [];
+if ($esta_logado && $grupo_ativo === 'relatorios') {
+    $abas_grupo = [['relatorio.php', 'Relatório', 'relatorio'], ['ranking.php', 'Ranking', 'ranking']];
+    if ($nivel_logado === 'admin') { $abas_grupo[] = ['resumo.php', 'Resumo', 'resumo']; }
+} elseif ($esta_logado && $grupo_ativo === 'equipe' && $nivel_logado === 'admin') {
+    $abas_grupo = [['minha_loja.php', 'Minha loja', 'loja'], ['usuarios.php', 'Usuários', 'usuarios'],
+        ['aprovar_acessos.php', 'Aprovar acessos', 'aprovar', $total_pendentes_menu], ['acessos_clientes.php', 'Acessos de clientes', 'acessos']];
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR"<?php if ($tema_loja) echo ' data-loja="' . $tema_loja . '"'; ?>>
@@ -70,7 +88,6 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
         tema = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'escuro' : 'claro';
     }
     document.documentElement.setAttribute('data-tema', tema);
-    try { if (localStorage.getItem('menu') === 'recolhido') { document.documentElement.setAttribute('data-menu', 'recolhido'); } } catch (e) {}
 })();
 </script>
 <meta name="theme-color" content="<?php echo $tema_loja ? $temas_lojas[$tema_loja] : '#1e3a8a'; ?>">
@@ -83,63 +100,54 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <link rel="apple-touch-icon" href="img/icone-180.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if (!$esta_logado) echo '&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800'; ?>&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if (!$esta_logado) echo '&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800'; ?>&display=swap">
 <?php if (eh_ambiente_teste()): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
-<link rel="stylesheet" href="css/estilo.css?v=32">
+<link rel="stylesheet" href="css/estilo.css?v=36">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
 <header class="topo">
-    <button type="button" class="recolher-botao" aria-label="Recolher ou expandir o menu" title="Recolher menu"><?php echo icone('seta-esquerda'); ?></button>
     <div class="topo-conteudo">
-        <div class="marca-linha">
-            <a class="marca" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>"><?php echo logo(40, "marca-logo"); ?><span class="marca-texto">FiadoFácil</span></a>
-        </div>
-        <?php if ($loja_tem_nome_proprio): ?><div class="loja-nome" title="<?php echo htmlspecialchars($loja_tela['nome']); ?>"><?php echo icone('loja'); ?><span><?php echo htmlspecialchars($loja_tela['nome']); ?></span></div><?php endif; ?>
+        <a class="menu-loja" href="<?php echo $nivel_logado === 'cliente' ? 'minha_divida.php' : 'dashboard.php'; ?>">
+            <?php if ($loja_tem_nome_proprio): ?>
+            <span class="menu-loja-letra" aria-hidden="true"><?php echo htmlspecialchars(mb_strtoupper(mb_substr(trim($loja_tela['nome']), 0, 1))); ?></span>
+            <span class="menu-loja-texto"><strong><?php echo htmlspecialchars($loja_tela['nome']); ?></strong><small>FiadoFácil</small></span>
+            <?php else: ?>
+            <?php echo logo(32, "marca-logo"); ?><span class="menu-loja-texto"><strong>FiadoFácil</strong><small>Controle do fiado</small></span>
+            <?php endif; ?>
+        </a>
+        <button type="button" class="menu-botao" aria-label="Abrir ou fechar o menu">&#9776; Menu</button>
         <nav class="menu" aria-label="Menu principal">
             <div class="menu-lista">
             <?php if ($nivel_logado === 'cliente'): ?>
-                <?php link_menu("minha_divida.php", "Minha dívida", "divida", $menu_ativo); ?>
-                <?php link_menu("minha_senha.php", "Minha senha", "senha", $menu_ativo); ?>
+                <?php link_menu("minha_divida.php", "Minhas dívidas", "divida", $grupo_ativo); ?>
+                <?php link_menu("minha_senha.php", "Minha conta", "conta", $grupo_ativo); ?>
             <?php else: ?>
-                <?php link_menu("dashboard.php", "Início", "inicio", $menu_ativo); ?>
-                <?php link_menu("listar_clientes.php", "Clientes", "clientes", $menu_ativo); ?>
-                <?php link_menu("registrar_compra.php", "Nova compra", "compra", $menu_ativo); ?>
-                <?php link_menu("registrar_pagamento.php", "Pagamento", "pagamento", $menu_ativo); ?>
-                <?php link_menu("relatorio.php", "Relatório", "relatorio", $menu_ativo); ?>
-                <?php link_menu("ranking.php", "Ranking", "ranking", $menu_ativo); ?>
-                <?php link_menu("cobrancas.php", "Cobranças", "cobrancas", $menu_ativo, $total_cobrancas_menu > 0 ? ' <span class="contador">' . $total_cobrancas_menu . '</span>' : ''); ?>
+                <details class="nova-venda">
+                    <summary><?php echo icone('mais'); ?> Nova venda</summary>
+                    <div class="nova-venda-opcoes">
+                        <a href="registrar_compra.php"><strong>Registrar compra</strong><small>O cliente levou no fiado</small></a>
+                        <a href="registrar_pagamento.php"><strong>Registrar pagamento</strong><small>O cliente pagou</small></a>
+                    </div>
+                </details>
+                <?php link_menu("dashboard.php", "Início", "inicio", $grupo_ativo); ?>
+                <?php link_menu("listar_clientes.php", "Clientes", "clientes", $grupo_ativo); ?>
+                <?php link_menu("cobrancas.php", "Cobranças", "cobrancas", $grupo_ativo, $total_cobrancas_menu > 0 ? ' <span class="contador">' . $total_cobrancas_menu . '</span>' : ''); ?>
+                <?php link_menu("relatorio.php", "Relatórios", "relatorios", $grupo_ativo); ?>
+                <span class="menu-divisor" aria-hidden="true"></span>
                 <?php if ($nivel_logado === 'admin'): ?>
-                    <span class="menu-separador"></span>
-                    <span class="menu-grupo">Administração</span>
-                    <?php link_menu("resumo.php", "Resumo", "resumo", $menu_ativo); ?>
-                    <?php link_menu("usuarios.php", "Usuários", "usuarios", $menu_ativo); ?>
-                    <?php link_menu("aprovar_acessos.php", "Aprovar acessos", "aprovar", $menu_ativo, $total_pendentes_menu > 0 ? ' <span class="contador">' . $total_pendentes_menu . '</span>' : ''); ?>
-                    <?php link_menu("acessos_clientes.php", "Acessos de clientes", "acessos", $menu_ativo); ?>
-                    <?php link_menu("minha_loja.php", "Minha loja", "loja", $menu_ativo); ?>
+                    <?php link_menu("minha_loja.php", "Loja e equipe", "equipe", $grupo_ativo, $total_pendentes_menu > 0 ? ' <span class="contador" title="Acessos esperando aprovação">' . $total_pendentes_menu . '</span>' : ''); ?>
                 <?php endif; ?>
-                <span class="menu-separador"></span>
-                <span class="menu-grupo">Conta</span>
-                <?php link_menu("minha_senha.php", "Minha senha", "senha", $menu_ativo); ?>
+                <?php link_menu("minha_senha.php", "Minha conta", "conta", $grupo_ativo); ?>
             <?php endif; ?>
             </div>
-            <!-- rodape fixo do menu: quem esta logado, modo noturno e sair (sempre visiveis) -->
             <div class="menu-rodape">
-                <div class="menu-usuario">
-                    <span class="menu-avatar" aria-hidden="true"><?php echo htmlspecialchars(mb_strtoupper(mb_substr(trim($_SESSION['usuario_nome']), 0, 2))); ?></span>
-                    <span class="menu-usuario-texto"><strong><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></strong>
-                    <span><?php echo $nomes_perfil[$nivel_logado] ?? ''; ?></span></span>
-                </div>
-                <div class="menu-rodape-linha">
-                    <button type="button" class="tema-botao tema-interruptor" role="switch" aria-label="Modo noturno" title="Modo noturno"><span class="interruptor-icone interruptor-sol"><?php echo icone('sol'); ?></span><span class="interruptor-icone interruptor-lua"><?php echo icone('lua'); ?></span><span class="interruptor-bola" aria-hidden="true"><?php echo icone('sol', 'bola-sol') . icone('lua', 'bola-lua'); ?></span></button>
-                    <a href="logout.php" class="menu-sair" data-dica="Sair" data-confirmar="Deseja sair do sistema?"><?php echo icone('sair'); ?><span class="menu-texto">Sair<span class="menu-sair-nome"> (<?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>)</span></span></a>
-                </div>
+                <span class="menu-rodape-nome" title="<?php echo htmlspecialchars($nomes_perfil[$nivel_logado] ?? ''); ?>"><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></span>
+                <span aria-hidden="true">·</span>
+                <a href="logout.php" class="menu-sair" data-confirmar="Deseja sair do sistema?">Sair</a>
+                <?php botao_tema("tema-menu"); ?>
             </div>
         </nav>
-        <div class="topo-botoes">
-            <?php botao_tema(); ?>
-            <button type="button" class="menu-botao" aria-label="Abrir ou fechar o menu">&#9776; Menu</button>
-        </div>
     </div>
 </header>
 <?php else: ?>
@@ -156,7 +164,7 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
             </div>
         </div>
         <?php if ($loja_tem_nome_proprio): ?><p class="loja-por">Fiado organizado com <strong>FiadoFácil</strong></p><?php endif; ?>
-        <p class="marca-frase" aria-live="polite"><span class="frase-atual" data-frases="Controle do fiado sem caderninho.|Quem anota, recebe.|Adeus, caderninho. Olá, controle.|Cada real anotado é um real recebido.|Fiado organizado, cliente fiel.|Seu caderninho agora cabe no bolso.">Controle do fiado sem caderninho.</span></p>
+        <p class="marca-frase" aria-live="polite"><span class="frase-atual">Controle de fiado</span></p>
     </div>
 </div>
 <?php endif; ?>
@@ -165,3 +173,10 @@ $nomes_perfil = ['admin' => 'Administrador', 'comum' => 'Usuário comum', 'clien
 <?php endif; ?>
 <?php echo faixa_teste(); ?>
 <main class="container <?php echo $classe_container; ?>">
+<?php if ($abas_grupo): ?>
+<nav class="abas-secao nao-imprimir" aria-label="<?php echo $grupo_ativo === 'relatorios' ? 'Relatórios' : 'Loja e equipe'; ?>">
+    <?php foreach ($abas_grupo as $aba): ?>
+    <a href="<?php echo $aba[0]; ?>"<?php if ($aba[2] === $menu_ativo) echo ' class="ativo" aria-current="page"'; ?>><?php echo $aba[1]; ?><?php if (!empty($aba[3])) echo ' <span class="contador">' . (int)$aba[3] . '</span>'; ?></a>
+    <?php endforeach; ?>
+</nav>
+<?php endif; ?>

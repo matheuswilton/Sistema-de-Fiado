@@ -34,7 +34,7 @@ $menu_ativo = "relatorio";
 require "cabecalho.php";
 ?>
 <div class="cabecalho-pagina nao-imprimir">
-    <div><h1>Relatório de dívidas</h1><p class="subtitulo">Inadimplente = dívida mais antiga com mais de 30 dias.</p></div>
+    <div><h1>Relatório de dívidas</h1><p class="subtitulo">Inadimplente: dívida com mais de 30 dias.</p></div>
     <button type="button" class="botao-secundario nao-imprimir" onclick="window.print()">Imprimir</button>
 </div>
 <div class="so-impressao cabecalho-impressao">
@@ -80,7 +80,7 @@ require "cabecalho.php";
         <?php endforeach; ?>
         <?php if ($total_clientes === 0): ?><tr><td colspan="6" class="vazio"><strong>Nenhum cliente encontrado.</strong><span>Tente outro período ou outra situação.</span></td></tr><?php endif; ?>
     </table></div>
-    <?php if ($data_inicio !== "" || $data_fim !== ""): ?><p class="dica">Compras e pagamentos somados só dentro do período escolhido. O saldo devedor considera todo o histórico.</p><?php endif; ?>
+    <?php if ($data_inicio !== "" || $data_fim !== ""): ?><p class="dica">Compras e pagamentos: só o período escolhido. Saldo devedor: todo o histórico.</p><?php endif; ?>
     <?php mostrar_paginacao($pagina, $total_paginas, ['data_ini' => $data_inicio, 'data_fim' => $data_fim, 'situacao' => $situacao]); ?>
 <?php endif; ?>
 <?php require "rodape.php"; ?>

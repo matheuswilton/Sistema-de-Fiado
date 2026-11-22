@@ -95,10 +95,17 @@ const { chromium, B, SENHA, ok, sql, entrar, postar, terminar } = require('./com
     const visita = await (await b.newContext()).newPage();
     await visita.goto(B + 'login.php?loja=mercearia-do-ze');
     ok((await visita.locator('.marca-login.com-foto').count()) === 1, 'A foto aparece no fundo da tela de entrar da loja');
-    const fotoResp = await visita.request.get(B + (await visita.evaluate(() => getComputedStyle(document.querySelector('.marca-login')).getPropertyValue('--foto-loja').match(/url\(['"]?([^'")]+)/)[1])));
+    const fotoCarregada = await visita.evaluate(async () => {
+        await new Promise(r => setTimeout(r, 1000));
+        return performance.getEntriesByType('resource').filter(e => e.name.includes('/uploads/lojas/')).map(e => e.responseStatus);
+    });
+    ok(fotoCarregada.length > 0 && fotoCarregada.every(s => s === 200), 'O navegador carrega a foto de verdade no fundo da tela de entrar');
+    const fotoResp = await visita.request.get(new URL(await visita.evaluate(() => getComputedStyle(document.querySelector('.marca-login')).getPropertyValue('--foto-loja').match(/url\(['"]?([^'")]+)/)[1]), B).href);
     ok(fotoResp.status() === 200 && (fotoResp.headers()['content-type'] || '').includes('image/jpeg'), 'A foto foi regravada em JPEG');
-    await visita.goto(B + 'login.php?loja=padaria-pao-quente');
+    await visita.goto(B + 'login.php?loja=principal');
     ok((await visita.locator('.marca-login.com-foto').count()) === 0, 'A foto de uma loja não aparece em outra');
+    await visita.goto(B + 'login.php?loja=padaria-pao-quente');
+    ok((await visita.locator('.marca-login.com-foto').count()) === 1, 'As lojas de exemplo já começam com foto');
     await ze.goto(B + 'minha_loja.php');
     await ze.click('form:has(input[value=remover_foto]) button');
     await Promise.all([ze.waitForNavigation(), ze.click('.confirmar-caixa button[value=sim]')]);

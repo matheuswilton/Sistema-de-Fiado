@@ -83,7 +83,7 @@ require "cabecalho.php";
 
 <section class="painel integracao">
     <h2><?php echo icone('loja'); ?> Foto da loja</h2>
-    <p>A foto aparece no fundo da tela de entrar, escurecida e com um zoom bem lento, com o nome da loja por cima. Uma foto real da loja (o balcão, a vitrine, as prateleiras) passa mais confiança para clientes e funcionários.</p>
+    <p>Aparece no fundo da tela de entrar.</p>
     <?php $foto_atual = foto_da_loja($loja); ?>
     <div class="foto-loja-previa"<?php if ($foto_atual) echo ' style="background-image: url(\'' . htmlspecialchars($foto_atual, ENT_QUOTES) . '\')"'; ?>><span><?php echo htmlspecialchars($dados['nome']); ?></span></div>
     <form method="POST" action="minha_loja.php" enctype="multipart/form-data" class="foto-loja-acoes">
@@ -95,19 +95,11 @@ require "cabecalho.php";
     <?php if ($foto_atual): ?>
     <form method="POST" action="minha_loja.php" data-confirmar="Remover a foto da loja?" style="margin-top: 10px"><?php campo_csrf(); ?><input type="hidden" name="acao" value="remover_foto"><button type="submit" class="botao-secundario botao-pequeno">Remover foto</button></form>
     <?php endif; ?>
-    <details class="detalhe-tecnico">
-        <summary>Dicas para uma boa foto</summary>
-        <ul>
-            <li>Celular <strong>deitado</strong>, com a luz da loja acesa e sem flash.</li>
-            <li>Deixe espaço vazio no meio ou em cima, onde vai o nome da loja.</li>
-            <li>Evite pessoas olhando para a câmera e marcas de produtos em destaque.</li>
-        </ul>
-    </details>
 </section>
 
 <section class="painel integracao">
     <h2><?php echo icone('pix'); ?> Receber pelo Pix</h2>
-    <p>Com a chave Pix cadastrada, o cliente vê na tela "Minha dívida" um <strong>QR Code com o valor da dívida</strong> e o código "copia e cola". O dinheiro cai direto na conta da loja. Depois de conferir no banco, registre o pagamento normalmente.</p>
+    <p>O cliente vê um QR Code com o valor da dívida. Depois de conferir no banco, registre o pagamento.</p>
     <form method="POST" action="minha_loja.php">
         <?php campo_csrf(); ?>
         <input type="hidden" name="acao" value="pix">
@@ -137,12 +129,12 @@ require "cabecalho.php";
 
 <section class="painel integracao">
     <h2><?php echo icone('whatsapp'); ?> Cobrar pelo WhatsApp</h2>
-    <p>Já está ligado. No extrato de quem está devendo aparece o botão <strong>"Cobrar no WhatsApp"</strong>, que abre a conversa com a mensagem pronta, o valor e a chave Pix. Também aparece em "Precisam de atenção", na tela inicial. Nada é enviado sem você apertar "enviar".</p>
+    <p>Ligado. O botão "Cobrar no WhatsApp" aparece no extrato de quem está devendo.</p>
 </section>
 
 <section class="painel integracao">
     <h2><?php echo icone('acessos'); ?> API da loja</h2>
-    <p>A API entrega os dados da loja em <strong>JSON</strong> para outro programa (um app, uma planilha, outro sistema). É <strong>só leitura</strong> e só mostra os dados desta loja.</p>
+    <p>Acesso de leitura aos dados desta loja, em JSON.</p>
     <?php if ($chave_nova_api): ?>
         <div class="mensagem" role="status"><strong>Chave criada. Copie agora: ela não aparece de novo.</strong></div>
         <div class="copiar-linha"><code id="chave-api"><?php echo htmlspecialchars($chave_nova_api); ?></code><button type="button" class="botao-pequeno" data-copiar="#chave-api"><?php echo icone('copiar'); ?> Copiar</button></div>
@@ -166,7 +158,7 @@ require "cabecalho.php";
             <li><code>/api.php?recurso=cliente&amp;id=5</code>: extrato de um cliente.</li>
         </ul>
 <pre class="codigo">curl -H "X-Api-Key: SUA_CHAVE" "<?php echo htmlspecialchars($endereco_api); ?>?recurso=clientes"</pre>
-        <p class="dica">Atenção: a hospedagem gratuita (InfinityFree) tem uma proteção contra robôs que bloqueia chamadas feitas fora do navegador. A API funciona completa no XAMPP e em hospedagens pagas.</p>
+        
     </details>
 </section>
 <?php require "rodape.php"; ?>

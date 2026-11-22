@@ -43,7 +43,7 @@ $classe_container = "container-medio";
 require "cabecalho.php";
 ?>
 <h1>Registrar pagamento</h1>
-<p class="subtitulo">Só aparecem clientes que estão devendo. O pagamento não pode ser maior que a dívida.</p>
+<p class="subtitulo">Só clientes com dívida em aberto.</p>
 <?php mostrar_flash(); ?>
 <?php if ($mensagem): ?><div class="erro" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
 <div class="painel">

@@ -60,7 +60,7 @@ $menu_ativo = "divida";
 require "cabecalho.php";
 ?>
 <h1>Olá, <?php echo htmlspecialchars($cliente['nome']); ?>!</h1>
-<p class="subtitulo">Aqui você acompanha suas compras no fiado e seus pagamentos.</p>
+<p class="subtitulo">Compras e pagamentos.</p>
 <?php mostrar_flash(); ?>
 <div class="cards">
     <div class="card card-calma"><span class="card-titulo">Quanto você deve</span><span class="card-valor"><?php echo dinheiro(max(0, $saldo_devedor)); ?></span></div>
@@ -74,10 +74,10 @@ require "cabecalho.php";
     <div class="pix-caixa">
         <div class="pix-qr" data-qrcode="<?php echo htmlspecialchars($pix); ?>" role="img" aria-label="QR Code Pix de <?php echo dinheiro($saldo_devedor); ?>"></div>
         <div class="pix-info">
-            <p>Abra o app do seu banco, escolha <strong>Pix → Ler QR Code</strong> e aponte para o código. O valor de <strong><?php echo dinheiro($saldo_devedor); ?></strong> já vem preenchido; se quiser pagar só uma parte, é só mudar o valor no app.</p>
-            <p class="dica">No celular? Use o "copia e cola":</p>
+            <p>Leia o QR Code no app do banco. Valor: <strong><?php echo dinheiro($saldo_devedor); ?></strong>.</p>
+            <p class="dica">Pix copia e cola:</p>
             <div class="copiar-linha"><code id="pix-codigo" class="pix-codigo"><?php echo htmlspecialchars($pix); ?></code><button type="button" class="botao-pequeno" data-copiar="#pix-codigo"><?php echo icone('copiar'); ?> Copiar código</button></div>
-            <p class="dica">Recebedor: <?php echo htmlspecialchars($loja_atual['nome']); ?> · chave <?php echo htmlspecialchars($loja_atual['chave_pix']); ?>. O pagamento aparece aqui depois que a loja confirmar.</p>
+            <p class="dica">Recebedor: <?php echo htmlspecialchars($loja_atual['nome']); ?> · chave <?php echo htmlspecialchars($loja_atual['chave_pix']); ?>. O pagamento aparece aqui quando a loja registrar.</p>
         </div>
     </div>
 </section>
