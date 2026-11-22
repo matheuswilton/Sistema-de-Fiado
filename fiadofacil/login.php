@@ -94,7 +94,7 @@ require "cabecalho.php";
 ?>
 <?php if (!$loja_publica): ?>
 <h1>Entrar</h1>
-<p class="subtitulo">Primeiro, qual é a sua loja?</p>
+<p class="subtitulo">Digite o nome da loja.</p>
 <?php mostrar_flash(); ?>
 <?php if ($aviso_loja): ?><div class="erro" role="alert"><?php echo htmlspecialchars($aviso_loja); ?></div><?php endif; ?>
 <form method="GET" action="login.php" class="form-loja">
@@ -104,7 +104,7 @@ require "cabecalho.php";
 </form>
 <?php if (count($lojas_encontradas) > 1): ?>
 <div class="lista-lojas" role="list" aria-label="Lojas encontradas">
-    <p class="dica">Encontramos estas lojas. Escolha a sua:</p>
+    <p class="dica">Escolha a loja:</p>
     <?php foreach ($lojas_encontradas as $encontrada): ?>
     <a role="listitem" class="loja-opcao" href="<?php echo htmlspecialchars(endereco_login($encontrada['slug'])); ?>"><?php echo icone('loja'); ?><span><?php echo htmlspecialchars($encontrada['nome']); ?></span><?php echo icone('seta'); ?></a>
     <?php endforeach; ?>

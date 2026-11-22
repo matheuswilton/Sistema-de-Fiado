@@ -64,7 +64,7 @@ require "cabecalho.php";
 
 <section class="painel painel-cobranca">
     <h2><?php echo icone('relogio'); ?> Vencem nos próximos <?php echo DIAS_AVISO_ANTES; ?> dias</h2>
-    <p class="dica">Um lembrete gentil antes de virar atraso costuma resolver sem constrangimento.</p>
+    
     <?php if (!$vencem): ?><p class="lista-vazia">Ninguém vence nos próximos dias.</p><?php else: ?>
     <ul class="lista-cobrancas"><?php foreach ($vencem as $c) { echo linha_cobranca($c, false); } ?></ul>
     <?php endif; ?>
@@ -76,5 +76,5 @@ require "cabecalho.php";
     <ul class="lista-cobrancas"><?php foreach ($atrasados as $c) { echo linha_cobranca($c, true); } ?></ul>
     <?php endif; ?>
 </section>
-<p class="dica">O WhatsApp abre com a mensagem pronta; a mensagem só sai quando você aperta "enviar". O envio 100% automático precisa da API paga do WhatsApp e de uma hospedagem que rode tarefas agendadas.</p>
+<p class="dica">A mensagem abre pronta no WhatsApp. Você revisa e envia.</p>
 <?php require "rodape.php"; ?>

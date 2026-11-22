@@ -475,7 +475,7 @@ function dias_para_vencer($saldo, $dias_devendo) {
 function mensagem_cobranca($nome_cliente, $loja, $saldo, $dias_devendo = null) {
     $primeiro_nome = explode(' ', trim($nome_cliente))[0];
     $faltam = $dias_devendo === null ? null : dias_para_vencer($saldo, $dias_devendo);
-    $linhas = ["Olá, " . $primeiro_nome . "! 👋", "Aqui é da *" . $loja['nome'] . "*.", ""];
+    $linhas = ["Olá, " . $primeiro_nome . "!", "Aqui é da *" . $loja['nome'] . "*.", ""];
     if ($faltam === 0) {
         $linhas[] = "Sua conta no fiado está em aberto há *" . (int)$dias_devendo . " dias*:";
     } elseif ($faltam !== null && $faltam <= DIAS_AVISO_ANTES) {
@@ -483,18 +483,18 @@ function mensagem_cobranca($nome_cliente, $loja, $saldo, $dias_devendo = null) {
     } else {
         $linhas[] = "Passando para lembrar da sua conta no fiado:";
     }
-    $linhas[] = "💰 Valor em aberto: *" . dinheiro($saldo) . "*";
+    $linhas[] = "Valor em aberto: *" . dinheiro($saldo) . "*";
     $linhas[] = "";
     if (!empty($loja['chave_pix'])) {
         $linhas[] = "Para pagar pelo Pix:";
-        $linhas[] = "🔑 Chave: " . $loja['chave_pix'];
+        $linhas[] = "Chave Pix: " . $loja['chave_pix'];
         $linhas[] = "Ou, se preferir, pague aqui na loja.";
     } else {
         $linhas[] = "Pode pagar aqui na loja quando passar.";
     }
     $linhas[] = "";
     $linhas[] = $faltam === 0 ? "Se precisar, podemos combinar o pagamento. Se já pagou, desconsidere esta mensagem." : "Se já pagou, desconsidere esta mensagem.";
-    $linhas[] = "Obrigado pela confiança! 🙏";
+    $linhas[] = "Obrigado!";
     return implode("\n", $linhas);
 }
 

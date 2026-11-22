@@ -179,7 +179,7 @@ Endereço: `fiadofacil.free.je/painel.php` (login próprio).
 
 ## No celular
 
-O sistema funciona no navegador do celular: o menu vira o botão **☰ Menu** e as tabelas viram cartões. Em **Minha conta** você troca entre **modo claro e noturno**. Para usar como aplicativo, abra o menu do navegador e escolha **"Adicionar à tela inicial"**.
+O sistema funciona no navegador do celular: o menu vira o botão **☰ Menu** e as tabelas viram cartões. O botão de lua/sol, no pé do menu (ou em **Minha conta**), troca entre **modo claro e noturno**. Para usar como aplicativo, abra o menu do navegador e escolha **"Adicionar à tela inicial"**.
 
 | Loja no modo noturno | Cliente no celular |
 |---|---|

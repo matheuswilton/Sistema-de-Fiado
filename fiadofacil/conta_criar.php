@@ -76,7 +76,7 @@ $classe_container = "container-pequeno";
 require "cabecalho.php";
 ?>
 <h1>Criar minha conta</h1>
-<p class="subtitulo">Uma conta só para ver o fiado de todas as lojas onde você compra.</p>
+<p class="subtitulo">Veja o seu fiado em todas as lojas.</p>
 <?php if ($erro): ?><div class="erro" role="alert"><?php echo htmlspecialchars($erro); ?></div><?php endif; ?>
 <form method="POST" action="conta_criar.php">
     <?php campo_csrf(); campo_antispam('conta'); ?>
@@ -86,7 +86,7 @@ require "cabecalho.php";
     <input type="text" id="cpf" name="cpf" data-mascara="cpf" inputmode="numeric" placeholder="000.000.000-00" value="<?php echo htmlspecialchars(formatar_cpf($cpf)); ?>" required>
     <label for="telefone">Telefone</label>
     <input type="text" id="telefone" name="telefone" data-mascara="telefone" inputmode="tel" placeholder="(62) 99999-9999" value="<?php echo htmlspecialchars($telefone); ?>" autocomplete="tel" required>
-    <div class="dica">Use o mesmo telefone que a loja tem no seu cadastro.</div>
+    <div class="dica">O mesmo telefone do cadastro na loja.</div>
     <label for="senha">Crie uma senha</label>
     <input type="password" id="senha" name="senha" minlength="8" autocomplete="new-password" required>
     <div class="dica">No mínimo 8 caracteres.</div>

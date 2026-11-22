@@ -12,9 +12,9 @@ if (isset($_SESSION['usuario_id'])) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FiadoFácil — Controle do fiado sem caderninho</title>
+<title>FiadoFácil: controle de fiado</title>
 <meta name="description" content="Sistema web gratuito para pequenos comércios controlarem compras no fiado, pagamentos e dívidas de clientes, no computador e no celular.">
-<?php metas_compartilhamento("FiadoFácil — Controle do fiado sem caderninho", "Quem anota, recebe. Sistema gratuito para o comércio de bairro controlar o fiado, no computador e no celular."); ?>
+<?php metas_compartilhamento("FiadoFácil: controle de fiado", "Sistema gratuito para o comércio de bairro controlar o fiado, no computador e no celular."); ?>
 <script>
 // aplica o tema (claro/noturno) antes de desenhar a pagina, para nao piscar
 (function () {
@@ -34,8 +34,8 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
-<link rel="stylesheet" href="css/estilo.css?v=35">
-<link rel="stylesheet" href="css/inicio.css?v=21">
+<link rel="stylesheet" href="css/estilo.css?v=36">
+<link rel="stylesheet" href="css/inicio.css?v=22">
 <link rel="stylesheet" href="css/cinema.css?v=2">
 </head>
 <body class="pagina-inicio">
@@ -64,8 +64,8 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="inicio-largura inicio-hero-grade">
             <div class="revelar">
                 <span class="inicio-selo">Projeto Integrador · GTI · FPM</span>
-                <h1><span class="h1-linha">Quem anota, recebe.</span> O fiado da sua loja <span class="destaque-texto">sem caderninho</span>.</h1>
-                <p class="inicio-lead">Anote cada compra a prazo, trave o limite de cada cliente e saiba na hora quem está devendo. No computador e no celular, de graça.</p>
+                <h1><span class="h1-linha">Controle de fiado</span> para o comércio <span class="destaque-texto">de bairro</span>.</h1>
+                <p class="inicio-lead">Registre as compras a prazo, defina um limite para cada cliente e veja quem está devendo. Funciona no computador e no celular.</p>
                 <div class="inicio-botoes">
                     <a href="login.php" class="botao botao-grande">Entrar no sistema <?php echo icone('seta'); ?></a>
                     <a href="conta_entrar.php" class="botao botao-secundario botao-grande">Sou cliente e quero ver minhas dívidas</a>
@@ -88,8 +88,8 @@ if (isset($_SESSION['usuario_id'])) {
     </section>
 
     <!-- Faixa de frases de efeito correndo -->
-    <div class="faixa-frases" role="marquee" aria-label="Quem anota, recebe. Adeus, caderninho. Fiado organizado, cliente fiel. Cada real anotado é um real recebido. Seu caderninho agora cabe no bolso. Vender a prazo sem perder o sono. Confiança se constrói. Controle também.">
-        <div class="faixa-frases-trilho" aria-hidden="true"><div class="faixa-frases-grupo"><span>Quem anota, recebe</span><i aria-hidden="true">✓</i><span>Adeus, caderninho</span><i aria-hidden="true">✓</i><span>Fiado organizado, cliente fiel</span><i aria-hidden="true">✓</i><span>Cada real anotado é um real recebido</span><i aria-hidden="true">✓</i><span>Seu caderninho agora cabe no bolso</span><i aria-hidden="true">✓</i><span>Vender a prazo sem perder o sono</span><i aria-hidden="true">✓</i><span>Confiança se constrói. Controle também</span><i aria-hidden="true">✓</i></div><div class="faixa-frases-grupo"><span>Quem anota, recebe</span><i aria-hidden="true">✓</i><span>Adeus, caderninho</span><i aria-hidden="true">✓</i><span>Fiado organizado, cliente fiel</span><i aria-hidden="true">✓</i><span>Cada real anotado é um real recebido</span><i aria-hidden="true">✓</i><span>Seu caderninho agora cabe no bolso</span><i aria-hidden="true">✓</i><span>Vender a prazo sem perder o sono</span><i aria-hidden="true">✓</i><span>Confiança se constrói. Controle também</span><i aria-hidden="true">✓</i></div></div>
+    <div class="faixa-frases" role="marquee" aria-label="Limite por cliente. Pagamento parcial ou total. Cobrança pelo WhatsApp. Pix com QR Code. Relatórios para imprimir. Conta do cliente por CPF. Funciona no celular.">
+        <div class="faixa-frases-trilho" aria-hidden="true"><div class="faixa-frases-grupo"><span>Limite por cliente</span><i aria-hidden="true">✓</i><span>Pagamento parcial ou total</span><i aria-hidden="true">✓</i><span>Cobrança pelo WhatsApp</span><i aria-hidden="true">✓</i><span>Pix com QR Code</span><i aria-hidden="true">✓</i><span>Relatórios para imprimir</span><i aria-hidden="true">✓</i><span>Conta do cliente por CPF</span><i aria-hidden="true">✓</i><span>Funciona no celular</span><i aria-hidden="true">✓</i></div><div class="faixa-frases-grupo"><span>Limite por cliente</span><i aria-hidden="true">✓</i><span>Pagamento parcial ou total</span><i aria-hidden="true">✓</i><span>Cobrança pelo WhatsApp</span><i aria-hidden="true">✓</i><span>Pix com QR Code</span><i aria-hidden="true">✓</i><span>Relatórios para imprimir</span><i aria-hidden="true">✓</i><span>Conta do cliente por CPF</span><i aria-hidden="true">✓</i><span>Funciona no celular</span><i aria-hidden="true">✓</i></div></div>
     </div>
 
 
@@ -97,10 +97,10 @@ if (isset($_SESSION['usuario_id'])) {
     <section class="cinema" aria-label="Do caderninho ao celular">
         <div class="cinema-palco">
             <div class="cinema-legendas">
-                <p class="legenda" data-cena="1"><small>01</small>Todo fiado começava assim.</p>
-                <p class="legenda" data-cena="2"><small>02</small>Até a página acabar, a conta não fechar e alguém esquecer de pagar.</p>
-                <p class="legenda" data-cena="3"><small>03</small>Então o caderninho virou sistema.</p>
-                <p class="legenda" data-cena="4"><small>04</small>Cada compra respeita o limite. Cada atraso aparece sozinho.</p>
+                <p class="legenda" data-cena="1"><small>01</small>O fiado anotado no caderno.</p>
+                <p class="legenda" data-cena="2"><small>02</small>Rasuras, contas que não fecham e pagamentos esquecidos.</p>
+                <p class="legenda" data-cena="3"><small>03</small>No FiadoFácil, cada compra fica registrada.</p>
+                <p class="legenda" data-cena="4"><small>04</small>O limite é conferido e os atrasos aparecem na tela.</p>
             </div>
             <div class="cinema-cena" aria-hidden="true">
                 <div class="caderno">
@@ -136,7 +136,7 @@ if (isset($_SESSION['usuario_id'])) {
             <div class="grade-inicio grade-numeros">
                 <div class="numero-cartao revelar">
                     <strong class="conta" data-valor="84.2" data-casas="1" data-sufixo=" mi">84,2 mi</strong>
-                    <p>Brasileiros estavam inadimplentes em setembro de 2026 — mais da metade dos adultos.</p>
+                    <p>Brasileiros estavam inadimplentes em setembro de 2026, mais da metade dos adultos.</p>
                     <small>Fonte: Serasa, Mapa da Inadimplência</small>
                 </div>
                 <div class="numero-cartao revelar">
@@ -158,15 +158,15 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
                 <span class="inicio-sobretitulo">Funcionalidades</span>
-                <h2>Tudo o que o caderninho nunca fez por você</h2>
+                <h2>O que o sistema faz</h2>
             </div>
             <div class="grade-inicio grade-funcoes">
-                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('compra'); ?></span><h3>Compra com limite</h3><p>Cada cliente tem um limite de crédito. Se a compra passar dele, o sistema bloqueia.</p></div>
-                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('pagamento'); ?></span><h3>Pagamentos</h3><p>Pagamento parcial ou "quitar tudo". A dívida é sempre calculada, nunca digitada.</p></div>
-                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('atencao'); ?></span><h3>Quem está atrasado</h3><p>Situação automática: em dia, devendo ou inadimplente (mais de 30 dias).</p></div>
-                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('relatorio'); ?></span><h3>Relatórios e ranking</h3><p>Dívidas por período, pronto para imprimir, e ranking de confiabilidade.</p></div>
-                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('clientes'); ?></span><h3>Cliente consulta</h3><p>Com login próprio, o cliente vê só a própria dívida. Acabam as discussões.</p></div>
-                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('celular'); ?></span><h3>Computador e celular</h3><p>Funciona no navegador, com modo noturno, e pode virar app na tela inicial.</p></div>
+                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('compra'); ?></span><h3>Compra com limite</h3><p>Cada cliente tem um limite de crédito. Compras acima dele são recusadas.</p></div>
+                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('pagamento'); ?></span><h3>Pagamentos</h3><p>Pagamento parcial ou total. A dívida é calculada pelo sistema.</p></div>
+                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('atencao'); ?></span><h3>Quem está atrasado</h3><p>Em dia, devendo ou inadimplente (mais de 30 dias).</p></div>
+                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('relatorio'); ?></span><h3>Relatórios e ranking</h3><p>Dívidas por período, para imprimir, e ranking de confiabilidade.</p></div>
+                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('clientes'); ?></span><h3>Cliente consulta</h3><p>Com login próprio, o cliente vê só a própria dívida.</p></div>
+                <div class="funcao-cartao revelar"><span class="funcao-icone"><?php echo icone('celular'); ?></span><h3>Computador e celular</h3><p>Funciona no navegador e pode ser instalado na tela inicial.</p></div>
             </div>
         </div>
     </section>
@@ -175,13 +175,13 @@ if (isset($_SESSION['usuario_id'])) {
     <section id="como" class="inicio-secao">
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
-                <span class="inicio-sobretitulo">Como funciona · três passos no dia a dia da loja</span>
-                <h2>Anotou. Controlou. Recebeu.</h2>
+                <span class="inicio-sobretitulo">Como funciona</span>
+                <h2>Três passos</h2>
             </div>
             <ol class="passos-inicio">
-                <li class="revelar"><span>1</span><h3>Cadastre o cliente</h3><p>Nome, telefone e o limite de crédito que você confia a ele.</p></li>
-                <li class="revelar"><span>2</span><h3>Anote compras e pagamentos</h3><p>No balcão, pelo celular, em poucos segundos.</p></li>
-                <li class="revelar"><span>3</span><h3>Acompanhe quem deve</h3><p>Painel, relatório e ranking mostram quem cobrar e em quem confiar.</p></li>
+                <li class="revelar"><span>1</span><h3>Cadastre o cliente</h3><p>Nome, telefone e limite de crédito.</p></li>
+                <li class="revelar"><span>2</span><h3>Anote compras e pagamentos</h3><p>No computador ou no celular.</p></li>
+                <li class="revelar"><span>3</span><h3>Acompanhe quem deve</h3><p>O painel mostra quem está devendo e quem está atrasado.</p></li>
             </ol>
         </div>
     </section>
@@ -191,8 +191,8 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
                 <span class="inicio-sobretitulo">Quem fez</span>
-                <h2>Quem está por trás do FiadoFácil</h2>
-                <p>Sou aluno do curso de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o meu Projeto Integrador: um sistema simples e gratuito para ajudar o pequeno comércio a trocar o caderninho por um controle seguro.</p>
+                <h2>Matheus Wilton</h2>
+                <p>Aluno de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o meu Projeto Integrador.</p>
             </div>
             <div class="perfil-autor revelar">
                 <div class="perfil-topo">
@@ -203,8 +203,7 @@ if (isset($_SESSION['usuario_id'])) {
                         <p class="perfil-local">Gestão da Tecnologia da Informação · FPM · Goiânia/GO</p>
                     </div>
                 </div>
-                <p class="perfil-texto">Fui responsável por todo o projeto, do papel ao site no ar: entendi como o fiado funciona no comércio de bairro, transformei isso em regras de negócio, modelei o banco de dados, programei o sistema e cuidei da segurança e da publicação.</p>
-                <p class="perfil-frase">“Criei o FiadoFácil para que o comerciante de bairro tenha o mesmo controle que uma grande loja, sem perder a confiança no cliente.”</p>
+                <p class="perfil-texto">Fiz o projeto completo: regras de negócio, banco de dados, programação, segurança e publicação.</p>
                 <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
             </div>
             <dialog id="detalhes-tecnicos" class="janela-tecnica" aria-labelledby="t-detalhes">
@@ -212,14 +211,16 @@ if (isset($_SESSION['usuario_id'])) {
                     <button type="button" class="janela-fechar" data-fechar aria-label="Fechar">&times;</button>
                     <span class="inicio-sobretitulo">Detalhes técnicos</span>
                     <h3 id="t-detalhes">Por dentro do FiadoFácil</h3>
-                    <p class="janela-intro">Como o sistema foi construído, para quem é da área de tecnologia.</p>
+                    <p class="janela-intro">Como o sistema foi construído.</p>
                     <ul class="perfil-lista">
-                        <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong>Limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas e score de confiabilidade.</span></li>
-                        <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong>Modelagem MySQL com 4 tabelas relacionadas, dívida sempre calculada e transações com trava para nenhuma compra estourar o limite.</span></li>
-                        <li><?php echo icone('celular'); ?><span><strong>Desenvolvimento</strong>PHP, HTML, CSS e JavaScript; layout para computador e celular, modo noturno e página de apresentação.</span></li>
-                        <li><?php echo icone('escudo'); ?><span><strong>Segurança e publicação</strong>Senhas com hash, proteção contra SQL Injection e CSRF, perfis de acesso e publicação automática do GitHub para a InfinityFree.</span></li>
+                        <li><?php echo icone('relatorio'); ?><span><strong>Regras de negócio</strong>Limite de crédito por cliente, situação automática (em dia, devendo, inadimplente), pagamentos que quitam as compras mais antigas, score de confiabilidade e cobrança 3 dias antes do vencimento.</span></li>
+                        <li><?php echo icone('loja'); ?><span><strong>Várias lojas</strong>Cada loja tem endereço próprio, usuários e dados separados no mesmo banco. O cliente tem uma conta única pelo CPF e vê o fiado de todas as lojas onde compra.</span></li>
+                        <li><?php echo icone('resumo'); ?><span><strong>Banco de dados</strong>MySQL com 7 tabelas relacionadas (lojas, usuários, clientes, compras, pagamentos, contas e vínculos de clientes). A dívida é sempre calculada, e uma trava na transação impede passar do limite. O banco se atualiza sozinho a cada versão.</span></li>
+                        <li><?php echo icone('pix'); ?><span><strong>Integrações</strong>Pix com QR Code no padrão do Banco Central, cobrança pelo WhatsApp com a mensagem pronta, busca de endereço pelo CEP (ViaCEP) e API REST com chave de acesso para outros programas.</span></li>
+                        <li><?php echo icone('escudo'); ?><span><strong>Segurança</strong>Senhas com bcrypt, consultas preparadas contra SQL Injection, proteção contra CSRF e XSS, limite de tentativas de login, perfis de acesso e fotos regravadas no servidor.</span></li>
+                        <li><?php echo icone('celular'); ?><span><strong>Testes e publicação</strong>Testes automáticos no navegador a cada mudança (GitHub Actions e Playwright). Primeiro a mudança vai para um site de teste e, depois de aprovada, para o site oficial.</span></li>
                     </ul>
-                    <div class="perfil-tags"><span>PHP</span><span>MySQL</span><span>JavaScript</span><span>HTML e CSS</span><span>Git e GitHub</span><span>UML</span></div>
+                    <div class="perfil-tags"><span>PHP 8</span><span>MySQL</span><span>JavaScript</span><span>HTML e CSS</span><span>GSAP</span><span>Git e GitHub</span><span>GitHub Actions</span><span>Playwright</span><span>API REST</span><span>UML</span></div>
                 </div>
             </dialog>
             </div>
@@ -229,8 +230,8 @@ if (isset($_SESSION['usuario_id'])) {
     <!-- Chamada final -->
     <section class="inicio-chamada">
         <div class="inicio-largura revelar">
-            <h2>Fiado sem dor de cabeça começa agora.</h2>
-            <p>Adeus, caderninho. Entre com seu usuário ou peça acesso como cliente.</p>
+            <h2>Acessar o FiadoFácil</h2>
+            <p>Entre com seu usuário ou acesse como cliente.</p>
             <div class="inicio-botoes">
                 <a href="login.php" class="botao botao-grande botao-claro">Entrar no sistema <?php echo icone('seta'); ?></a>
                 <a href="conta_entrar.php" class="botao botao-grande botao-contorno">Sou cliente</a>
@@ -263,7 +264,7 @@ if (isset($_SESSION['usuario_id'])) {
             if (entrada.isIntersecting) { entrada.target.classList.add('visivel'); observador.unobserve(entrada.target); }
         });
     }, { threshold: 0.12 });
-    blocos.forEach(function (b, i) { b.style.setProperty('--atraso', (i % 3) * 90 + 'ms'); observador.observe(b); });
+    blocos.forEach(function (b, i) { b.style.setProperty('--atraso', (i % 3) * 60 + 'ms'); observador.observe(b); });
     // topo ganha sombra ao rolar e a barrinha do topo mostra quanto da pagina ja foi lido
     var topo = document.querySelector('.inicio-topo');
     var progresso = document.querySelector('.progresso-rolagem');

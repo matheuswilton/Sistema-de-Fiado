@@ -98,7 +98,7 @@ $menu_ativo = "usuarios";
 require "cabecalho.php";
 ?>
 <h1>Usuários do sistema</h1>
-<p class="subtitulo">Funcionários que usam o sistema. Os acessos dos clientes ficam em “Acessos de clientes”.</p>
+<p class="subtitulo">Funcionários com acesso ao sistema.</p>
 <?php mostrar_flash(); ?>
 <?php if ($mensagem): ?><div class="erro" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
 <div class="painel">

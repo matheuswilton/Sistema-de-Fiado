@@ -85,7 +85,7 @@ $classe_container = "container-pequeno";
 require "cabecalho.php";
 ?>
 <h1>Solicitar acesso de cliente</h1>
-<p class="subtitulo">Com este acesso você só consegue ver a sua própria dívida.</p>
+<p class="subtitulo">Para ver a sua dívida nesta loja.</p>
 <?php if ($mensagem): ?><div class="<?php echo $tipo; ?>" role="alert"><?php echo htmlspecialchars($mensagem); ?></div><?php endif; ?>
 <form method="POST" action="solicitar_acesso.php<?php echo $loja_publica ? "?loja=" . urlencode($loja_publica['slug']) : ""; ?>">
     <?php campo_csrf(); campo_antispam('solicitar_acesso'); ?>

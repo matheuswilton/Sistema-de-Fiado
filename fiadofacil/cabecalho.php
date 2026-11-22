@@ -102,7 +102,7 @@ if ($esta_logado && $grupo_ativo === 'relatorios') {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800<?php if (!$esta_logado) echo '&family=Baloo+2:wght@800'; ?><?php if (!$esta_logado) echo '&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800'; ?>&display=swap">
 <?php if (eh_ambiente_teste()): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
-<link rel="stylesheet" href="css/estilo.css?v=35">
+<link rel="stylesheet" href="css/estilo.css?v=36">
 </head>
 <body<?php if ($esta_logado) echo ' class="com-menu"'; ?>>
 <?php if ($esta_logado): ?>
@@ -145,6 +145,7 @@ if ($esta_logado && $grupo_ativo === 'relatorios') {
                 <span class="menu-rodape-nome" title="<?php echo htmlspecialchars($nomes_perfil[$nivel_logado] ?? ''); ?>"><?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></span>
                 <span aria-hidden="true">·</span>
                 <a href="logout.php" class="menu-sair" data-confirmar="Deseja sair do sistema?">Sair</a>
+                <?php botao_tema("tema-menu"); ?>
             </div>
         </nav>
     </div>
@@ -163,7 +164,7 @@ if ($esta_logado && $grupo_ativo === 'relatorios') {
             </div>
         </div>
         <?php if ($loja_tem_nome_proprio): ?><p class="loja-por">Fiado organizado com <strong>FiadoFácil</strong></p><?php endif; ?>
-        <p class="marca-frase" aria-live="polite"><span class="frase-atual" data-frases="Controle do fiado sem caderninho.|Quem anota, recebe.|Adeus, caderninho. Olá, controle.|Cada real anotado é um real recebido.|Fiado organizado, cliente fiel.|Seu caderninho agora cabe no bolso.">Controle do fiado sem caderninho.</span></p>
+        <p class="marca-frase" aria-live="polite"><span class="frase-atual">Controle de fiado</span></p>
     </div>
 </div>
 <?php endif; ?>

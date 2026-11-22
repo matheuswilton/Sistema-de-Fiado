@@ -192,7 +192,7 @@ html:has(body.pagina-inicio) { scroll-behavior: smooth; scroll-padding-top: 76px
 @keyframes item-entra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* ---------- aparecer ao rolar ---------- */
-.revelar { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); transition-delay: var(--atraso, 0ms); }
+.revelar { opacity: 0; transform: translateY(14px); transition: opacity .35s ease-out, transform .35s cubic-bezier(.2,.8,.2,1); transition-delay: var(--atraso, 0ms); }
 .revelar.visivel { opacity: 1; transform: none; }
 .inicio-mock.revelar.visivel { transform: rotate(1.5deg); }
 .inicio-mock.revelar.visivel:hover { transform: rotate(0deg) translateY(-4px); }
