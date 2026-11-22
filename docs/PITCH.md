@@ -63,7 +63,7 @@ Ver o roteiro em [APRESENTACAO.md](APRESENTACAO.md). Mostre no **computador** e 
 - **Isolamento de dados:** uma loja nunca vê clientes, compras ou funcionários de outra. Toda consulta filtra pela loja da sessão, e cada ação confere se o registro é da loja (proteção contra IDOR).
 - **Painel do dono da plataforma:** cria lojas, bloqueia e entra em qualquer uma como administrador.
 
-*Fala:* "O mesmo sistema atende várias lojas ao mesmo tempo, cada uma com os seus dados separados, como um SaaS."
+*Fala:* "O mesmo sistema pode atender várias lojas ao mesmo tempo, cada uma com os seus dados separados, como um SaaS."
 
 ## Slide 8: Soluções existentes × FiadoFácil
 | | Caderninho | Planilha | ERP pago | **FiadoFácil** |
