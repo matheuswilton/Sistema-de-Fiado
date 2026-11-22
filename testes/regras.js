@@ -112,6 +112,11 @@ const { chromium, B, SENHA, ok, sql, entrar, postar, terminar } = require('./com
     await visita.goto(B + 'login.php?loja=mercearia-do-ze');
     ok((await visita.locator('.marca-login.com-foto').count()) === 0, 'Foto removida: volta o fundo escuro');
 
+    // formulario sem o codigo de seguranca (CSRF): volta para a mesma pagina do proprio site, nunca para outro
+    const semToken = await ze.request.post(B + 'minha_senha.php?aba=1', { form: { senha_atual: 'x' }, maxRedirects: 0 });
+    const destino = semToken.headers()['location'] || '';
+    ok(semToken.status() === 302 && destino === 'minha_senha.php?aba=1', 'Formulário sem código de segurança volta para a mesma página do site');
+
     sql("DELETE FROM clientes WHERE nome='Cliente Teste Limite'");
     await terminar(b, 'Regras de negócio');
 })();

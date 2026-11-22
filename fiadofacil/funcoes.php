@@ -230,7 +230,14 @@ function verificar_csrf() {
     $token_sessao = isset($_SESSION['csrf']) ? $_SESSION['csrf'] : '';
     if ($token_sessao === '' || !hash_equals($token_sessao, $token_enviado)) {
         definir_flash("Sua sessão expirou ou o formulário é inválido. Tente novamente.", "erro");
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        // Volta para a mesma pagina do proprio site. O endereco e montado aqui (nome do arquivo + parametros
+        // refeitos), nunca copiado da requisicao: assim ninguem consegue mandar o usuario para outro site.
+        $pagina = basename((string)($_SERVER['SCRIPT_NAME'] ?? ''));
+        if (!preg_match('/^[a-z0-9_]+\.php$/', $pagina)) {
+            $pagina = 'index.php';
+        }
+        $parametros = $_GET ? '?' . http_build_query($_GET) : '';
+        header("Location: " . $pagina . $parametros);
         exit();
     }
 }

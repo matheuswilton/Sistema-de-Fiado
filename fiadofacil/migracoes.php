@@ -64,7 +64,11 @@ function migrar_banco($conn) {
     $resultado = $conn->query("SELECT INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'usuarios' AND NON_UNIQUE = 0 AND INDEX_NAME <> 'PRIMARY' GROUP BY INDEX_NAME HAVING COUNT(*) = 1 AND MAX(COLUMN_NAME) = 'usuario'");
     if ($resultado) {
         while ($linha = $resultado->fetch_row()) {
-            $ok = migracao_sql($conn, "ALTER TABLE usuarios DROP INDEX `" . str_replace('`', '', $linha[0]) . "`") && $ok;
+            // o nome do indice vem do banco; mesmo assim so passam letras, numeros e "_" antes de entrar no comando
+            $nome_indice = preg_replace('/[^A-Za-z0-9_]/', '', (string)$linha[0]);
+            if ($nome_indice !== '') {
+                $ok = migracao_sql($conn, "ALTER TABLE usuarios DROP INDEX `" . $nome_indice . "`") && $ok;
+            }
         }
     }
     if (!migracao_indice_existe($conn, 'usuarios', 'uq_usuario_por_loja')) {
