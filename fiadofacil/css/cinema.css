@@ -70,3 +70,7 @@
     .legenda { font-size: clamp(24px, 7vw, 34px); }
 }
 @media (max-width: 380px) { .cinema-ativo .cinema-cena { scale: .68; } }
+
+/* Cena ligada a rolagem: a secao fica mais alta e o palco gruda na tela enquanto ela passa */
+.cinema.cinema-rolagem { height: 260vh; overflow: clip; }
+.cinema-rolagem .cinema-palco { position: sticky; top: 0; }
