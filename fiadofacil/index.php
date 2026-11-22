@@ -36,7 +36,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=36">
 <link rel="stylesheet" href="css/inicio.css?v=23">
-<link rel="stylesheet" href="css/cinema.css?v=2">
+<link rel="stylesheet" href="css/cinema.css?v=3">
 </head>
 <body class="pagina-inicio">
 <div class="progresso-rolagem" aria-hidden="true"></div>
@@ -254,7 +254,7 @@ if (isset($_SESSION['usuario_id'])) {
 <script src="js/script.js?v=26"></script>
 <script src="js/vendor/gsap.min.js?v=3.12.5"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>
-<script src="js/cinema.js?v=4"></script>
+<script src="js/cinema.js?v=5"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {

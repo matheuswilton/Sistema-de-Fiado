@@ -1,4 +1,4 @@
-// Cena de cinema da pagina de apresentacao: quando a cena aparece na tela, o caderninho e escrito,
+// Cena de cinema da pagina de apresentacao: conforme o visitante rola a pagina, o caderninho e escrito,
 // vira bagunca (rasuras, cafe, interrogacoes) e se transforma no FiadoFacil no celular.
 // Usa GSAP + ScrollTrigger (js/vendor). Sem eles, ou com "reduzir movimento", a cena fica parada.
 (function () {
@@ -24,26 +24,22 @@
     gsap.set(['.app-aviso', '.app-recebido'], { autoAlpha: 0, y: 24, scale: .9 });
     gsap.set('.app-limite-barra', { scaleX: 0 });
 
-    // Rolagem livre: a pagina nunca fica presa. A cena toca sozinha quando aparece na tela e se repete
-    // sem parar; fora da tela ela pausa (nao gasta bateria) e continua de onde parou quando volta.
-    secao.classList.add('cinema-livre');
-    var palco = secao.querySelector('.cinema-palco');
-    var corInicial = palco ? getComputedStyle(palco).backgroundColor : null;
-    var textoInicial = palco ? getComputedStyle(palco).color : null;
-    var cena = gsap.timeline({ repeat: -1, defaults: { ease: 'none' }, scrollTrigger: { trigger: secao, start: 'top 85%', end: 'bottom 15%', toggleActions: 'play pause resume pause' } });
-    cena.timeScale(1);
+    // A cena anda junto com a rolagem: descendo a pagina ela avanca, subindo ela volta, parando ela para.
+    // O palco fica grudado na tela (CSS sticky) enquanto a secao passa; a rolagem nunca e bloqueada.
+    secao.classList.add('cinema-rolagem');
+    var cena = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: secao, start: 'top top', end: 'bottom bottom', scrub: 0.6 } });
     cena
         // 1) o caderninho sendo escrito, linha por linha
         .to('.caderno-linha', { clipPath: 'inset(0 0% 0 0)', duration: 1, stagger: .35, ease: 'power1.out' })
         // 2) a bagunca: rasuras, cafe, interrogacoes e a soma que nao fecha
-        .to(legenda(1), { autoAlpha: 0, y: -30, duration: .5 }, '+=1.8')
+        .to(legenda(1), { autoAlpha: 0, y: -30, duration: .5 }, '+=.8')
         .to(legenda(2), { autoAlpha: 1, y: 0, duration: .4 }, '<.2')
         .to('.rasura path', { strokeDashoffset: 0, duration: .8, stagger: .25 }, '<')
         .to('.mancha-cafe', { autoAlpha: 1, scale: 1, duration: .6, ease: 'back.out(1.6)' }, '<.3')
         .to('.interrogacao', { autoAlpha: 1, scale: 1, duration: .5, stagger: .2, ease: 'back.out(2.4)' }, '<')
         .to('.caderno', { rotate: -10, duration: .6, ease: 'power1.inOut' }, '<')
         // 3) o caderninho vira sistema: a luz muda e o celular sobe
-        .to(legenda(2), { autoAlpha: 0, y: -30, duration: .5 }, '+=1.8')
+        .to(legenda(2), { autoAlpha: 0, y: -30, duration: .5 }, '+=.8')
         .to(legenda(3), { autoAlpha: 1, y: 0, duration: .4 }, '<.2')
         .to('.cinema-palco', { backgroundColor: '#0d1b36', color: '#f1f5f9', duration: 1 }, '<')
         .to('.caderno', { scale: .3, rotate: 28, y: -120, autoAlpha: 0, duration: 1, ease: 'power2.in' }, '<')
@@ -51,18 +47,13 @@
         .to('.app-item', { autoAlpha: 1, x: 0, duration: .5, stagger: .2, ease: 'power2.out' }, '<.5')
         .to(valor, { v: 1240, duration: 1, ease: 'power1.out', onUpdate: function () { total.textContent = emReais(valor.v); } }, '<')
         // 4) as regras trabalhando: limite, bloqueio e pagamento registrado
-        .to(legenda(3), { autoAlpha: 0, y: -30, duration: .5 }, '+=1.8')
+        .to(legenda(3), { autoAlpha: 0, y: -30, duration: .5 }, '+=.8')
         .to(legenda(4), { autoAlpha: 1, y: 0, duration: .4 }, '<.2')
         .to('.app-limite-barra', { scaleX: .92, duration: .8, ease: 'power2.out' }, '<')
         .to('.app-aviso', { autoAlpha: 1, y: 0, scale: 1, duration: .4, ease: 'back.out(2)' }, '>-.1')
         .to('.app-recebido', { autoAlpha: 1, y: 0, scale: 1, duration: .4, ease: 'back.out(2)' }, '+=.3')
         .to('.celular', { rotateY: -10, rotateX: 5, duration: .8, ease: 'sine.inOut' }, '<')
-        // 5) pausa para ler e recomeca suave: o celular sai, a luz volta e o caderninho reaparece
-        .to({}, { duration: 4 })
-        .to(['.celular', legenda(4)], { autoAlpha: 0, duration: .6, ease: 'power1.in' })
-        .to('.cinema-palco', { backgroundColor: corInicial, color: textoInicial, duration: .6 }, '<')
-        .set(valor, { v: 0, onComplete: function () { total.textContent = emReais(0); } })
-        .to({}, { duration: .3 });
+        .to({}, { duration: 1 });
 
     // as bolhas do fundo da abertura andam em velocidades diferentes (profundidade)
     gsap.to('.bolha-1', { yPercent: 60, ease: 'none', scrollTrigger: { trigger: '.inicio-hero', start: 'top top', end: 'bottom top', scrub: true } });
