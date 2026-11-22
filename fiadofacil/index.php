@@ -203,7 +203,7 @@ if (isset($_SESSION['usuario_id'])) {
                         <p class="perfil-local">Gestão da Tecnologia da Informação · FPM · Goiânia/GO</p>
                     </div>
                 </div>
-                <p class="perfil-texto">Fiz o FiadoFácil sozinho, do levantamento das regras do fiado até o site no ar: banco de dados, programação, segurança, testes automáticos e publicação. Hoje o sistema atende várias lojas ao mesmo tempo, cada uma com os seus dados.</p>
+                <p class="perfil-texto">Fiz o FiadoFácil sozinho, do levantamento das regras do fiado até o site no ar: banco de dados, programação, segurança, testes automáticos e publicação.</p>
                 <div class="perfil-acoes">
                     <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
                     <a class="perfil-link" href="https://github.com/matheuswilton" target="_blank" rel="noopener"><?php echo icone('github'); ?><span>GitHub</span></a>
