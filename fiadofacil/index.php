@@ -35,7 +35,7 @@ if (isset($_SESSION['usuario_id'])) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/estilo.css?v=36">
-<link rel="stylesheet" href="css/inicio.css?v=22">
+<link rel="stylesheet" href="css/inicio.css?v=23">
 <link rel="stylesheet" href="css/cinema.css?v=2">
 </head>
 <body class="pagina-inicio">
@@ -191,20 +191,24 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="inicio-largura">
             <div class="inicio-titulo revelar">
                 <span class="inicio-sobretitulo">Quem fez</span>
-                <h2>Matheus Wilton</h2>
-                <p>Aluno de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO. O FiadoFácil é o meu Projeto Integrador.</p>
+                <h2>Quem desenvolveu</h2>
+                <p>Projeto Integrador do curso de Gestão da Tecnologia da Informação da FPM, em Goiânia/GO.</p>
             </div>
             <div class="perfil-autor revelar">
                 <div class="perfil-topo">
                     <img src="img/matheus.jpg" class="foto-autor" alt="Foto de Matheus Wilton" width="120" height="120">
                     <div>
                         <h3>Matheus Wilton</h3>
-                        <p class="perfil-cargo">Idealizador e desenvolvedor do FiadoFácil</p>
+                        <p class="perfil-cargo">Desenvolvedor do FiadoFácil</p>
                         <p class="perfil-local">Gestão da Tecnologia da Informação · FPM · Goiânia/GO</p>
                     </div>
                 </div>
-                <p class="perfil-texto">Fiz o projeto completo: regras de negócio, banco de dados, programação, segurança e publicação.</p>
-                <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
+                <p class="perfil-texto">Fiz o FiadoFácil sozinho, do levantamento das regras do fiado até o site no ar: banco de dados, programação, segurança, testes automáticos e publicação. Hoje o sistema atende várias lojas ao mesmo tempo, cada uma com os seus dados.</p>
+                <div class="perfil-acoes">
+                    <button type="button" class="botao-detalhes" data-abrir="detalhes-tecnicos"><?php echo icone('relatorio'); ?><span>Ver detalhes técnicos</span><small>Para quem é da área</small></button>
+                    <a class="perfil-link" href="https://github.com/matheuswilton" target="_blank" rel="noopener"><?php echo icone('github'); ?><span>GitHub</span></a>
+                    <a class="perfil-link" href="https://www.linkedin.com/in/matheus-wilton-04b56a402" target="_blank" rel="noopener"><?php echo icone('linkedin'); ?><span>LinkedIn</span></a>
+                </div>
             </div>
             <dialog id="detalhes-tecnicos" class="janela-tecnica" aria-labelledby="t-detalhes">
                 <div class="janela-conteudo">
@@ -250,7 +254,7 @@ if (isset($_SESSION['usuario_id'])) {
 <script src="js/script.js?v=26"></script>
 <script src="js/vendor/gsap.min.js?v=3.12.5"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.12.5"></script>
-<script src="js/cinema.js?v=3"></script>
+<script src="js/cinema.js?v=4"></script>
 <script>
 // Os blocos da pagina aparecem suavemente quando entram na tela
 (function () {
