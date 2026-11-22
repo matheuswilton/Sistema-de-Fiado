@@ -54,7 +54,7 @@ jobs:
           # --exclude: a pasta vendor tem bibliotecas de terceiros (GSAP), que nao sao codigo nosso
           # codigo de saida do Snyk: 0 = nenhum problema, 1 = achou problemas, 2 ou 3 = erro ao rodar
           codigo=0
-          npx --yes snyk@1.1309.0 code test --exclude=vendor --sarif-file-output=snyk.sarif > snyk.txt 2>&1 || codigo=$?
+          npx --yes snyk@1.1309.0 code test --org=matheuswilton --exclude=vendor --sarif-file-output=snyk.sarif > snyk.txt 2>&1 || codigo=$?
           cat snyk.txt
           echo '## Resultado do Snyk Code' >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
