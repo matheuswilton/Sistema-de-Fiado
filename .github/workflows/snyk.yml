@@ -1,0 +1,72 @@
+# Analise de seguranca do codigo com o Snyk Code.
+# Roda sozinha a cada envio para a branch "teste" e em todo Pull Request para a main.
+# Tambem da para rodar na mao: aba Actions > Snyk > Run workflow.
+#
+# Precisa do segredo SNYK_TOKEN (a chave da conta Snyk) em Settings > Secrets and variables > Actions.
+# Sem o segredo, a analise e pulada com um aviso (nada quebra).
+# O resultado aparece no resumo da execucao e na aba Security > Code scanning do GitHub.
+name: Snyk
+
+on:
+  push:
+    branches: [teste]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  snyk-code:
+    name: Snyk Code (seguranca do codigo)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conferir se a chave do Snyk foi cadastrada
+        id: chave
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then
+            echo "tem=nao" >> "$GITHUB_OUTPUT"
+            echo "::warning::Falta o segredo SNYK_TOKEN. Cadastre em Settings > Secrets and variables > Actions para ligar a analise do Snyk."
+          else
+            echo "tem=sim" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Baixar o codigo
+        if: steps.chave.outputs.tem == 'sim'
+        uses: actions/checkout@v4
+
+      - name: Instalar o Node
+        if: steps.chave.outputs.tem == 'sim'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Rodar o Snyk Code
+        id: analise
+        if: steps.chave.outputs.tem == 'sim'
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          # --exclude: a pasta vendor tem bibliotecas de terceiros (GSAP), que nao sao codigo nosso
+          # codigo de saida do Snyk: 0 = nenhum problema, 1 = achou problemas, 2 ou 3 = erro ao rodar
+          codigo=0
+          npx --yes snyk@1.1309.0 code test --org=matheuswilton --exclude=vendor --sarif-file-output=snyk.sarif > snyk.txt 2>&1 || codigo=$?
+          cat snyk.txt
+          echo '## Resultado do Snyk Code' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat snyk.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          # fica vermelho quando acha problema, para chamar a atencao (nao bloqueia a publicacao)
+          exit $codigo
+
+      - name: Mandar o resultado para a aba Security do GitHub
+        if: always() && steps.chave.outputs.tem == 'sim' && hashFiles('snyk.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+          category: snyk-code
+        continue-on-error: true

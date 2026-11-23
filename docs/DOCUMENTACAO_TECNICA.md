@@ -463,6 +463,11 @@ Os dados do FTP ficam nos **Secrets** do GitHub (`FTP_SERVER`, `FTP_USERNAME`, `
 Cada envio para a branch `teste` que passa nos testes é publicado automaticamente num **site de teste** separado (https://fiadofacilteste.free.je), com banco próprio. A publicação cria o `config.local.php` a partir dos segredos `FTP_TESTE_SERVIDOR`, `FTP_TESTE_USUARIO`, `FTP_TESTE_SENHA`, `BANCO_TESTE_SERVIDOR` e `BANCO_TESTE_NOME` (o usuário e a senha do banco são os do FTP, a menos que existam `BANCO_TESTE_USUARIO` e `BANCO_TESTE_SENHA`). O site de teste mostra uma faixa amarela de aviso e pede aos buscadores para não indexar (`X-Robots-Tag: noindex`). Enquanto os segredos não existem, a publicação de teste é pulada.
 
 
+### Análise de segurança (Snyk Code)
+O workflow `.github/workflows/snyk.yml` roda o **Snyk Code** a cada envio para a branch `teste` e em todo Pull Request para a `main`. Ele procura falhas de segurança no código (SQL Injection, XSS, caminhos de arquivo e outras). O resultado aparece no resumo da execução, na aba **Actions**, e na aba **Security > Code scanning**. Quando acha problema, a execução fica vermelha para chamar a atenção, mas não bloqueia a publicação. A chave fica no segredo `SNYK_TOKEN`; sem ele, a análise é pulada com um aviso.
+
+No computador, a mesma análise roda com `npm run seguranca`, dentro da pasta `testes`.
+
 ---
 
 ## 15. Testes
