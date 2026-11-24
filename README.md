@@ -2,7 +2,23 @@
 
 A web system that helps small stores track purchases on credit ("fiado", very common in Brazilian neighborhood shops), payments and customer debts, with reports, a reliability ranking and an area where customers check what they owe.
 
-🔗 **Live site:** https://fiadofacil.free.je (test accounts below)
+🔗 **Live site:** https://fiadofacil.free.je (test accounts below) · **Staging:** https://fiadofacilteste.free.je
+
+[![Tests](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/testes.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/testes.yml)
+[![Snyk Code](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/snyk.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/snyk.yml)
+[![Deploy](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/deploy.yml)
+
+## At a glance
+
+- **Multi-tenant web app (PHP 8 + MySQL):** several stores share one database with full data isolation; customers have a single CPF-based account across stores.
+- **Business rules in the backend:** credit limits enforced inside locked transactions (`SELECT ... FOR UPDATE`), oldest-first payment allocation, automatic overdue status and a reliability score.
+- **Integrations:** Pix QR codes built to the Central Bank BR Code standard (EMV + CRC16), WhatsApp collection messages, ViaCEP address lookup and a REST API with hashed access keys.
+- **CI/CD like a company:** every change goes to a `teste` branch, runs browser tests (Playwright on a fresh MariaDB) and a Snyk Code security scan, is published to a staging site, and reaches production only through a pull request.
+- **Security:** prepared statements, bcrypt, CSRF and XSS protection, IDOR checks, login rate limiting, safe image uploads and HTTPS.
+
+| Store sign-in (each store has its own photo) | Store home | Customer on a phone |
+|---|---|---|
+| ![Store sign-in page](docs/img/telas/02-login-loja.jpg) | ![Store home page](docs/img/telas/03-inicio.jpg) | ![Customer page on a phone](docs/img/telas/19-celular-cliente.jpg) |
 
 Capstone project (Projeto Integrador) for the IT Management program at FPM (Goiânia, Brazil), built by Matheus Wilton.
 
@@ -28,8 +44,6 @@ The problem is big: in 2026 Serasa recorded more than 84 million Brazilians in d
 | [Pitch](docs/PITCH.md) | Presentation script, data behind the project, comparison with other solutions and sources |
 | [Live demo](docs/APRESENTACAO.md) | Script to show the system on a computer and on a phone |
 | [Images](docs/img/) | Diagrams as PNG files for the slides, and [screenshots](docs/img/telas/) |
-
-![Store home page](docs/img/telas/03-inicio.jpg)
 
 ![Database diagram](docs/img/banco-der.png)
 
