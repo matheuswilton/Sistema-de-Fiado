@@ -145,7 +145,7 @@ Clientes de exemplo: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888
 2. No XAMPP, ligue o **Apache** e o **MySQL**.
 3. Em `http://localhost/phpmyadmin`, crie um banco chamado `sistema_fiado` (utf8mb4). Pode deixar o banco vazio: na primeira visita o sistema cria as tabelas e os dados de exemplo sozinho. (Se preferir, importe `fiadofacil/sql/banco.sql` em **Importar**.)
 4. Copie `config.local.example.php` para `config.local.php` (dentro de `fiadofacil`) e confira os valores. O padrão do XAMPP é servidor `localhost`, usuário `root`, senha vazia e banco `sistema_fiado`.
-5. Abra `http://localhost/fiadofacil/login.php`.
+5. Abra `http://localhost/fiadofacil/`. No computador o site abre em `http`, sem pedir HTTPS, e os endereços das lojas funcionam dentro da pasta (ex.: `http://localhost/fiadofacil/loja/mercearia-do-ze`).
 
 <details>
 <summary><b>Publicação automática na InfinityFree</b></summary>

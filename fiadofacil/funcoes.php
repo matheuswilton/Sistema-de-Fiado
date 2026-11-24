@@ -623,11 +623,17 @@ function total_pedidos_pendentes($conn, $loja) {
 // ---------- Foto da loja (fundo do login, com tratamento de cinema) ----------
 const PASTA_FOTOS_LOJAS = __DIR__ . '/uploads/lojas';
 // Endereco da foto da loja (ou null se ela ainda nao enviou). O ?v= faz o navegador buscar a foto nova ao trocar.
+// Pasta onde o sistema esta no endereco: "/" no site e "/fiadofacil/" no XAMPP (localhost/fiadofacil).
+// Usada nos enderecos que precisam valer de qualquer pagina, sem depender de onde o sistema foi instalado.
+function base_url() {
+    $pasta = str_replace('\\', '/', dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/')));
+    return rtrim($pasta, '/') . '/';
+}
 function foto_da_loja($loja_id) {
     $arquivo = PASTA_FOTOS_LOJAS . '/' . (int)$loja_id . '.jpg';
-    // Endereco absoluto (com / no inicio): a foto e usada dentro do CSS, que fica na pasta css/,
+    // Endereco completo a partir da pasta do sistema: a foto e usada dentro do CSS, que fica na pasta css/,
     // e um endereco relativo seria procurado em css/uploads/ e nao apareceria.
-    return is_file($arquivo) ? '/uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
+    return is_file($arquivo) ? base_url() . 'uploads/lojas/' . (int)$loja_id . '.jpg?v=' . filemtime($arquivo) : null;
 }
 // Recebe a foto enviada: confere se e imagem de verdade, diminui para ate 1920 px e regrava em JPEG.
 // Regravar a imagem descarta qualquer conteudo escondido no arquivo original. Devolve [true/false, mensagem].

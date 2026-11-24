@@ -417,9 +417,11 @@ O acesso antigo do cliente (usuário e senha numa loja, `solicitar_acesso.php` e
 ### No computador (XAMPP)
 1. Copie a pasta `fiadofacil` para `C:\xampp\htdocs\fiadofacil`.
 2. No XAMPP, ligue o **Apache** e o **MySQL**.
-3. Em `http://localhost/phpmyadmin`, crie o banco `sistema_fiado` (utf8mb4) e importe `fiadofacil/sql/banco.sql`.
+3. Em `http://localhost/phpmyadmin`, crie o banco `sistema_fiado` (utf8mb4). Pode deixar vazio: o sistema cria as tabelas sozinho (ou importe `fiadofacil/sql/banco.sql`, se preferir).
 4. Copie `config.local.example.php` para `config.local.php` e confira os dados (no XAMPP: host `localhost`, usuário `root`, senha vazia, banco `sistema_fiado`).
-5. Abra `http://localhost/fiadofacil/`. Na primeira visita, as migrações criam as tabelas novas e as lojas de exemplo.
+5. Abra `http://localhost/fiadofacil/`. Na primeira visita, as migrações criam as tabelas e as lojas de exemplo.
+
+No computador o site abre em `http` (o `.htaccess` só exige HTTPS fora do `localhost`), e todos os endereços funcionam dentro da subpasta, inclusive `/fiadofacil/loja/mercearia-do-ze` e a página 404 própria: o sistema descobre sozinho a pasta onde está (`base_url()` em `funcoes.php`).
 
 ### Configuração (`config.local.php`)
 | Variável | Conteúdo |
