@@ -1,6 +1,6 @@
 # Pitch: FiadoFácil
 
-Roteiro para uma apresentação de **5 a 7 minutos**: 9 slides, cerca de 40 segundos cada, mais a demonstração ao vivo.
+Roteiro para uma apresentação de **8 a 10 minutos**: 13 slides, cerca de 30 a 40 segundos cada, mais a demonstração ao vivo (o roteiro dela está em [APRESENTACAO.md](APRESENTACAO.md)).
 Os diagramas para os slides estão em [`docs/img/`](img/).
 
 > **Antes de apresentar:** abra cada link da seção [Fontes](#fontes) e confira o número e a data. Os dados de inadimplência da Serasa saem todo mês; use o mais recente.
@@ -40,48 +40,72 @@ O caderninho:
 
 ## Slide 5: A solução, o FiadoFácil
 Sistema web gratuito, que roda no **navegador do computador e do celular**, sem instalar nada.
-1. **Cadastro de clientes** com limite de crédito.
-2. **Compra no fiado em segundos**: o sistema **bloqueia** a compra se passar do limite.
-3. **Pagamento** parcial ou "quitar tudo"; não deixa pagar mais do que deve.
-4. **Situação automática**: em dia, devendo ou **inadimplente** (mais de 30 dias).
-5. **Relatórios**: quem deve, quanto e desde quando, com versão para imprimir.
-6. **Ranking de confiabilidade**: em quem dá para confiar mais crédito.
-7. **O cliente consulta a própria dívida** com login próprio, sem precisar ligar ou ir à loja. Acabam as discussões.
-8. **Perfis**: administrador (dono) e atendente; o atendente não muda limites nem exclui clientes.
+1. **Limite de crédito:** a compra é **recusada** se passar do limite do cliente.
+2. **Dívida automática:** compras menos pagamentos, sempre certa. Pagamento parcial ou total, nunca maior que a dívida.
+3. **Situação automática:** em dia, devendo ou **inadimplente** (mais de 30 dias).
+4. **Cobranças:** quem vence nos próximos 3 dias e quem já está atrasado, com a mensagem pronta para o WhatsApp.
+5. **Relatórios:** dívidas por período (com versão para imprimir), ranking de confiabilidade e resumo financeiro.
+6. **Conta do cliente pelo CPF:** o cliente vê o fiado de **todas as lojas** onde compra, numa conta só.
+7. **Perfis:** dono da loja, atendente, cliente e o dono da plataforma, cada um só com o que precisa.
+8. **Computador e celular:** menu simples, modo noturno e instalável na tela inicial do celular.
 
-## Slide 6: Demonstração ao vivo
-Ver o roteiro em [APRESENTACAO.md](APRESENTACAO.md). Mostre no **computador** e no **celular**.
-
-## Slide 7: Como funciona por dentro
-- **Tecnologias:** PHP 8, MySQL, HTML, CSS e JavaScript; hospedagem gratuita na InfinityFree.
-- **Banco:** 4 tabelas (clientes, usuários, compras, pagamentos). Mostrar `img/banco-der.png`.
-- **A dívida é calculada** (compras − pagamentos) e nunca digitada à mão, por isso não fica errada.
-- **Segurança:** senhas com hash (bcrypt), proteção contra SQL Injection (prepared statements) e contra CSRF, sessão que cai na hora se o usuário for bloqueado, e transação com trava para duas compras simultâneas não estourarem o limite.
-
-## Slide 7b: Uma plataforma, várias lojas
-- Cada comércio tem **endereço, login e visual próprios** (ex.: `/loja/padaria-pao-quente`).
+## Slide 6: Uma plataforma, várias lojas
+- Cada comércio tem **endereço, login, equipe e foto próprios** (ex.: `/loja/padaria-pao-quente`).
 - **Isolamento de dados:** uma loja nunca vê clientes, compras ou funcionários de outra. Toda consulta filtra pela loja da sessão, e cada ação confere se o registro é da loja (proteção contra IDOR).
+- **Conta única do cliente:** pelo CPF, ele vê as dívidas de todas as lojas que confirmaram que é ele.
 - **Painel do dono da plataforma:** cria lojas, bloqueia e entra em qualquer uma como administrador.
 
-*Fala:* "O mesmo sistema pode atender várias lojas ao mesmo tempo, cada uma com os seus dados separados, como um SaaS."
+*Fala:* "O mesmo sistema pode atender várias lojas ao mesmo tempo, cada uma com os seus dados separados, como um SaaS. As três lojas que vou mostrar são de demonstração."
 
-## Slide 8: Soluções existentes × FiadoFácil
+## Slide 7: Integrações
+| Integração | O que faz |
+|---|---|
+| **Pix** | QR Code no padrão do Banco Central (BR Code), com o valor da dívida já preenchido |
+| **WhatsApp** | Abre a conversa com a mensagem de cobrança pronta: valor, prazo e chave Pix |
+| **ViaCEP** | Digitou o CEP, o endereço do cliente se preenche sozinho |
+| **API própria** | Outro programa (um app, uma planilha) lê os dados da loja com uma chave de acesso |
+
+*Fala:* "O Pix cai direto na conta da loja, sem intermediário. A cobrança pelo WhatsApp abre pronta, mas só sai quando o comerciante aperta enviar."
+
+## Slide 8: Demonstração ao vivo
+Siga o roteiro em [APRESENTACAO.md](APRESENTACAO.md). Mostre no **computador** e no **celular**.
+
+## Slide 9: Como funciona por dentro
+- **Tecnologias:** PHP 8, MySQL, HTML, CSS e JavaScript (com GSAP nas animações); hospedagem gratuita na InfinityFree. Mostrar `img/fluxo-compra.png`.
+- **A dívida é calculada** (compras − pagamentos) e nunca digitada à mão, por isso não fica errada.
+- **Transação com trava:** duas compras ao mesmo tempo para o mesmo cliente não conseguem estourar o limite.
+
+## Slide 10: Banco de dados
+- **7 tabelas:** lojas (`comercios`), clientes, compras, pagamentos, usuários, contas dos clientes por CPF e os vínculos entre conta e loja. Mostrar `img/banco-der.png`.
+- O banco **se atualiza sozinho** a cada versão do sistema (migrações): num banco vazio, ele cria as tabelas e as lojas de exemplo.
+
+## Slide 11: Qualidade e segurança
+- **Fluxo de empresa:** branch `teste` → testes automáticos e análise de segurança → site de teste → Pull Request → site oficial.
+- **Testes automáticos:** um navegador de verdade (Playwright) testa o limite, os pagamentos, a conta por CPF, a API e o isolamento entre lojas, num banco novo a cada execução.
+- **Site de teste:** fiadofacilteste.free.je, com banco próprio.
+- **Snyk Code:** analisa o código a cada envio. Achou 2 problemas de gravidade média (um redirecionamento aberto e um valor do banco usado num comando SQL sem filtro), corrigidos; hoje, zero.
+- **Segurança:** senhas com bcrypt, prepared statements contra SQL Injection, proteção contra XSS e CSRF, limite de tentativas de login e HTTPS.
+
+*Fala:* "Nenhuma mudança chega ao site oficial sem passar pelos testes e pela análise de segurança."
+
+## Slide 12: Soluções existentes × FiadoFácil
 | | Caderninho | Planilha | ERP pago | **FiadoFácil** |
 |---|---|---|---|---|
 | Custo | grátis | grátis | mensalidade | **grátis** |
-| Funciona no celular | — | ruim | às vezes | **sim** |
+| Funciona no celular | não | ruim | às vezes | **sim** |
 | Bloqueia compra acima do limite | não | não | sim | **sim** |
 | Mostra quem está atrasado | não | manual | sim | **sim, automático** |
-| Cliente consulta a dívida | não | não | raramente | **sim** |
+| Cobrança e Pix | não | não | às vezes | **WhatsApp e QR Code** |
+| Cliente consulta a dívida | não | não | raramente | **sim, todas as lojas** |
 | Fácil de aprender | sim | médio | difícil | **sim** |
 
-Também existem apps de "caderneta digital" no celular. O FiadoFácil se diferencia por ter **vários funcionários com permissões diferentes**, **acesso do cliente** e **código aberto**.
+Também existem apps de "caderneta digital" no celular. O FiadoFácil se diferencia por ter **várias lojas na mesma plataforma**, **funcionários com permissões diferentes**, **conta única do cliente** e **código aberto**.
 
-## Slide 9: Próximos passos e encerramento
-- Lembrete de cobrança pelo **WhatsApp**.
-- Pagamento por **Pix** com QR Code.
-- Gráficos de evolução das vendas a prazo.
-- Versão instalável no celular (PWA).
+## Slide 13: Próximos passos e encerramento
+- **Acesso por link no WhatsApp:** o cliente entra na hora, sem esperar a loja aprovar.
+- **Pix confirmado automaticamente:** o banco avisa o pagamento e a dívida baixa sozinha.
+- **Gráficos** de evolução das vendas a prazo e dos recebimentos.
+- **Cadastro da loja pelo próprio comerciante**, num plano pago.
 
 *Fala final:* "O FiadoFácil troca o caderninho por um controle simples, seguro e gratuito, que cabe no bolso do comerciante. Obrigado! O site está no ar em **fiadofacil.free.je** e o código está no GitHub."
 
