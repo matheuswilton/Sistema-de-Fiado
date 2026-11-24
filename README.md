@@ -1,220 +1,221 @@
-# FiadoFácil: Store Credit System
+# FiadoFácil: sistema de controle de fiado
 
-A web system that helps small stores track purchases on credit ("fiado", very common in Brazilian neighborhood shops), payments and customer debts, with reports, a reliability ranking and an area where customers check what they owe.
+Sistema web que ajuda o pequeno comércio a controlar as vendas no fiado: compras a prazo, pagamentos e dívidas dos clientes, com relatórios, ranking de confiabilidade e uma área onde o cliente confere quanto deve.
 
-🔗 **Live site:** https://fiadofacil.free.je (test accounts below) · **Staging:** https://fiadofacilteste.free.je
+🔗 **Site no ar:** https://fiadofacil.free.je (contas de teste mais abaixo) · **Site de teste:** https://fiadofacilteste.free.je
 
-[![Tests](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/testes.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/testes.yml)
+[![Testes](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/testes.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/testes.yml)
 [![Snyk Code](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/snyk.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/snyk.yml)
-[![Deploy](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/deploy.yml)
+[![Publicação](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/matheuswilton/Sistema-de-Fiado/actions/workflows/deploy.yml)
 
-## At a glance
+Projeto Integrador do curso de Gestão da Tecnologia da Informação da FPM (Goiânia/GO), desenvolvido por **Matheus Wilton**.
 
-- **Multi-tenant web app (PHP 8 + MySQL):** several stores share one database with full data isolation; customers have a single CPF-based account across stores.
-- **Business rules in the backend:** credit limits enforced inside locked transactions (`SELECT ... FOR UPDATE`), oldest-first payment allocation, automatic overdue status and a reliability score.
-- **Integrations:** Pix QR codes built to the Central Bank BR Code standard (EMV + CRC16), WhatsApp collection messages, ViaCEP address lookup and a REST API with hashed access keys.
-- **CI/CD like a company:** every change goes to a `teste` branch, runs browser tests (Playwright on a fresh MariaDB) and a Snyk Code security scan, is published to a staging site, and reaches production only through a pull request.
-- **Security:** prepared statements, bcrypt, CSRF and XSS protection, IDOR checks, login rate limiting, safe image uploads and HTTPS.
+## Resumo
 
-| Store sign-in (each store has its own photo) | Store home | Customer on a phone |
+- **Aplicação web com várias lojas (PHP 8 + MySQL):** as lojas dividem o mesmo banco com os dados totalmente separados, e o cliente tem uma conta única pelo CPF que mostra todas as lojas onde compra.
+- **Regras de negócio no servidor:** limite de crédito conferido dentro de uma transação com trava (`SELECT ... FOR UPDATE`), pagamentos que quitam as compras mais antigas primeiro, situação de atraso automática e score de confiabilidade.
+- **Integrações:** QR Code do Pix no padrão BR Code do Banco Central (EMV + CRC16), cobrança pelo WhatsApp, endereço pelo CEP (ViaCEP) e uma API REST com chaves de acesso guardadas como hash.
+- **Fluxo de trabalho de empresa:** toda mudança vai para a branch `teste`, passa pelos testes no navegador (Playwright num MariaDB novo) e pela análise de segurança do Snyk Code, é publicada no site de teste e só chega ao site oficial por um Pull Request.
+- **Segurança:** prepared statements, bcrypt, proteção contra CSRF e XSS, conferência contra IDOR, limite de tentativas de login, envio de fotos seguro e HTTPS.
+
+| Tela de entrar (cada loja tem a sua foto) | Início da loja | Cliente no celular |
 |---|---|---|
-| ![Store sign-in page](docs/img/telas/02-login-loja.jpg) | ![Store home page](docs/img/telas/03-inicio.jpg) | ![Customer page on a phone](docs/img/telas/19-celular-cliente.jpg) |
+| ![Tela de entrar da loja](docs/img/telas/02-login-loja.jpg) | ![Início da loja](docs/img/telas/03-inicio.jpg) | ![Tela do cliente no celular](docs/img/telas/19-celular-cliente.jpg) |
 
-Capstone project (Projeto Integrador) for the IT Management program at FPM (Goiânia, Brazil), built by Matheus Wilton.
+## Por que este projeto existe
 
-> The system itself is in Portuguese, because it was built for Brazilian stores.
+Muitos comércios de bairro ainda anotam o fiado num caderno. É difícil saber quem está devendo há muito tempo, quanto cada cliente ainda pode comprar e quem paga em dia. O FiadoFácil organiza isso: toda compra respeita o limite de crédito do cliente, todo pagamento quita primeiro a dívida mais antiga, e o dono vê num relatório quem está em dia, devendo ou inadimplente.
 
-## Why this project exists
+O problema é grande: em 2026 a Serasa registrou mais de 84 milhões de brasileiros inadimplentes (metade dos adultos), e pesquisas do Sebrae mostram que cerca de 4 em cada 10 microempreendedores vendem fiado, muitas vezes controlando tudo no papel. Os números e as fontes estão no [pitch](docs/PITCH.md).
 
-Many neighborhood stores still write down credit purchases in a notebook. It's hard to know who has owed money for too long, how much each customer can still buy and who pays on time. FiadoFácil organizes this: every purchase respects the customer's credit limit, every payment pays off the oldest debt first, and the owner sees in one report who is up to date, owing or in default.
+## Documentação do Projeto Integrador
 
-The problem is big: in 2026 Serasa recorded more than 84 million Brazilians in default (half of all adults), and Sebrae surveys show that about 4 in 10 micro-entrepreneurs sell on credit, often tracking everything on paper. Numbers and sources are in the [pitch](docs/PITCH.md).
+**Comece por aqui: [índice da documentação](docs/README.md).**
 
-## Capstone documentation (in Portuguese)
-
-**Start here: [full documentation index](docs/README.md).**
-
-| Document | Contents |
+| Documento | Conteúdo |
 |---|---|
-| [Technical documentation](docs/DOCUMENTACAO_TECNICA.md) | Requirements, roles, business rules, architecture, data dictionary, multi-store, customer account, security, integrations, setup, deploy, tests |
-| [User manual](docs/MANUAL_DO_USUARIO.md) | Step by step for each screen and role, with screenshots |
-| [API reference](docs/API.md) | Authentication, endpoints, responses and error codes |
-| [Diagrams](docs/DIAGRAMAS.md) | Database (ERD and UML class diagram), use cases, system flow, purchase and payment flows, customer states, sequence and architecture |
-| [Case study](docs/CASE.md) | Problem, requirements, solution and results |
-| [Pitch](docs/PITCH.md) | Presentation script, data behind the project, comparison with other solutions and sources |
-| [Live demo](docs/APRESENTACAO.md) | Script to show the system on a computer and on a phone |
-| [Images](docs/img/) | Diagrams as PNG files for the slides, and [screenshots](docs/img/telas/) |
+| [Documentação técnica](docs/DOCUMENTACAO_TECNICA.md) | Requisitos, perfis, regras de negócio, arquitetura, dicionário de dados, várias lojas, conta do cliente, segurança, integrações, instalação, publicação e testes |
+| [Manual do usuário](docs/MANUAL_DO_USUARIO.md) | Passo a passo de cada tela e perfil, com fotos |
+| [Referência da API](docs/API.md) | Autenticação, endereços, respostas e códigos de erro |
+| [Diagramas](docs/DIAGRAMAS.md) | Banco de dados (DER e diagrama de classes UML), casos de uso, fluxo do sistema, fluxos da compra e do pagamento, estados do cliente, sequência e arquitetura |
+| [Case](docs/CASE.md) | Problema, requisitos, solução e resultados |
+| [Pitch](docs/PITCH.md) | Roteiro da apresentação, dados que justificam o projeto, comparação com outras soluções e fontes |
+| [Demonstração ao vivo](docs/APRESENTACAO.md) | Roteiro para mostrar o sistema no computador e no celular |
+| [Imagens](docs/img/) | Diagramas em PNG para os slides e [fotos das telas](docs/img/telas/) |
 
-![Database diagram](docs/img/banco-der.png)
+![Diagrama do banco de dados](docs/img/banco-der.png)
 
-## Tech
+## Tecnologias
 
-PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout: works on desktop and mobile) · GSAP (scroll-driven animation) · Git and GitHub · GitHub Actions (tests and automatic deploy) · Playwright (browser tests) · Snyk Code (security analysis) · InfinityFree hosting
+PHP · MySQL (SQL e transações) · HTML · CSS · JavaScript (layout responsivo: computador e celular) · GSAP (animação ligada à rolagem) · Git e GitHub · GitHub Actions (testes e publicação automática) · Playwright (testes no navegador) · Snyk Code (análise de segurança) · hospedagem InfinityFree
 
-## Technical highlights
+## Destaques técnicos
 
-- **Relational database with 7 tables** (`comercios`, `clientes`, `usuarios`, `compras`, `pagamentos`, `contas_clientes`, `contas_vinculos`) and reports built with SQL queries (filters by period and status, top debtors, financial summary).
-- **Locked transactions** (`SELECT ... FOR UPDATE`): two purchases made at the same time can't push a customer over their credit limit.
-- **Security**:
-  - prepared statements, against SQL injection;
-  - passwords stored with `password_hash`;
-  - CSRF protection on forms;
-  - output escaped with `htmlspecialchars`, against XSS;
-  - `HttpOnly` and `SameSite` session cookie, and a new session on every login;
-  - the database password stays out of the code.
-- **Role-based access**: administrator, regular user and customer (read only).
-- **Company-style workflow**: every change goes to the `teste` branch first; GitHub Actions runs the browser tests (Playwright, on a fresh MariaDB database) and publishes to a **staging site** (fiadofacilteste.free.je). A pull request then takes it to `main`, the tests run again, and only then the live site is updated by FTP.
-- **Security analysis**: Snyk Code scans the code on every push and pull request; results show in the repository's Security tab. Its first scan found 2 medium issues (an open redirect and an unfiltered value from the database in an SQL command), both fixed.
+- **Banco de dados relacional com 7 tabelas** (`comercios`, `clientes`, `usuarios`, `compras`, `pagamentos`, `contas_clientes`, `contas_vinculos`) e relatórios feitos com consultas SQL (filtros por período e situação, maiores devedores, resumo financeiro).
+- **Transações com trava** (`SELECT ... FOR UPDATE`): duas compras feitas ao mesmo tempo não conseguem passar o cliente do limite de crédito.
+- **Segurança**:
+  - prepared statements, contra SQL Injection;
+  - senhas guardadas com `password_hash`;
+  - proteção contra CSRF nos formulários;
+  - saída tratada com `htmlspecialchars`, contra XSS;
+  - cookie de sessão `HttpOnly` e `SameSite`, e sessão nova a cada login;
+  - a senha do banco fica fora do código.
+- **Acesso por perfil**: administrador, usuário comum e cliente (só leitura).
+- **Fluxo de empresa**: toda mudança vai primeiro para a branch `teste`; o GitHub Actions roda os testes no navegador (Playwright, num banco MariaDB novo) e publica no **site de teste** (fiadofacilteste.free.je). Depois, um Pull Request leva a mudança para a `main`, os testes rodam de novo e só então o site oficial é atualizado por FTP.
+- **Análise de segurança**: o Snyk Code analisa o código a cada envio e em todo Pull Request; o resultado aparece na aba Security do repositório. Na primeira análise ele achou 2 problemas de gravidade média (um redirecionamento aberto e um valor do banco usado num comando SQL sem filtro), e os dois foram corrigidos.
 
-## Features
+## Funcionalidades
 
-- Login with two staff roles: **Administrator** and **Regular user**.
-- Add, edit, search (by name or phone) and delete customers. Only the administrator can delete.
-- Statement for each customer with debt, available limit, purchases and payments.
-- Credit purchases with credit limit validation.
-- Payments, blocking payments larger than the debt, plus a "Pay off full debt" button.
-- Debt report with filters by period and status, ready to print.
-- Customer reliability ranking.
-- Financial summary and top debtors (administrator only).
-- Staff management: create, block, unblock and reset passwords (administrator only).
-- Everyone can change their own password and switch dark mode under "Minha conta".
-- **Collections ("Cobranças")**: who will be overdue in the next 3 days and who already is, with a ready WhatsApp message.
-- **Store photo**: each store uploads a photo shown behind its sign-in page (re-encoded on the server for safety).
-- Lean text-only menu: a "Nova venda" button (purchase or payment), 4 main items and 2 secondary ones; grouped pages show tabs.
-- **Customer access (read only):** the customer creates one account with their CPF and sees their debt at every store that confirmed them (see "Customer account" below). The older per-store login request still works.
+- Login com dois perfis de funcionário: **Administrador** e **Usuário comum**.
+- Cadastrar, editar, buscar (por nome ou telefone) e excluir clientes. Só o administrador exclui.
+- Extrato de cada cliente com a dívida, o limite disponível, as compras e os pagamentos.
+- Compras no fiado com conferência do limite de crédito.
+- Pagamentos, sem deixar pagar mais do que a dívida, e o botão "Quitar dívida inteira".
+- Relatório de dívidas com filtros por período e situação, pronto para imprimir.
+- Ranking de confiabilidade dos clientes.
+- Resumo financeiro e maiores devedores (só administrador).
+- Gestão de funcionários: criar, bloquear, desbloquear e trocar a senha (só administrador).
+- Cada pessoa troca a própria senha e liga o modo noturno em "Minha conta".
+- **Cobranças**: quem vira inadimplente nos próximos 3 dias e quem já está atrasado, com a mensagem pronta para o WhatsApp.
+- **Foto da loja**: cada loja envia uma foto que aparece no fundo da tela de entrar (regravada no servidor, por segurança).
+- Menu enxuto, só com texto: o botão "Nova venda" (compra ou pagamento), 4 itens principais e 2 secundários; as páginas agrupadas mostram abas.
+- **Acesso do cliente (só leitura):** o cliente cria uma conta com o CPF e vê a dívida em todas as lojas que confirmaram que é ele (veja "Conta do cliente" abaixo). O pedido de acesso antigo, por loja, continua funcionando.
 
-## Multi-store (each store has its own login)
+## Várias lojas (cada loja com o seu login)
 
-Each store has its own address, login, data and look, and no store can see another store's data:
+Cada loja tem o seu endereço, login, dados e visual, e nenhuma loja vê os dados de outra:
 
-| Store | Address |
+| Loja | Endereço |
 |---|---|
 | Mercearia do Zé | `/loja/mercearia-do-ze` |
 | Padaria Pão Quente | `/loja/padaria-pao-quente` |
 | Açougue Bom Corte | `/loja/acougue-bom-corte` |
 
-- Every query is filtered by the logged-in store (`comercio_id` taken from the session, never from the form or URL), and every action by id checks that the record belongs to the store (protection against IDOR).
-- The platform owner uses `painel.php` to see all stores, create and block stores, and enter any store as administrator.
-- The database is upgraded automatically on the first visit after the update (`migracoes.php`): existing data becomes the "Loja principal" (`/loja/principal`).
+- Toda consulta filtra pela loja de quem está logado (o `comercio_id` vem da sessão, nunca do formulário ou do endereço), e toda ação por id confere se o registro é da loja (proteção contra IDOR).
+- O dono da plataforma usa o `painel.php` para ver todas as lojas, criar e bloquear lojas e entrar em qualquer uma como administrador.
+- O banco é atualizado sozinho na primeira visita depois de uma atualização (`migracoes.php`): os dados que já existiam viram a "Loja principal" (`/loja/principal`).
 
-## Customer account (one login for every store)
+## Conta do cliente (um login para todas as lojas)
 
-- **Staff** open the site, type the store name ("Qual é a sua loja?") and then their username and password. The direct address `/loja/store-name` still works, in any letter case.
-- **Customers** create one account with their **CPF** (Brazilian ID number) and a password, and see their store credit at **every** store on a single page, each with its own Pix QR code.
-- Safety: the account can only be created if a store already has that CPF **with the same phone number**, and each store must **confirm** the link before its data shows up. Stores never see what the customer owes at other stores.
-- CPF is checked (check digits), unique per store, and shown masked (`***.982.247-**`).
+- **Funcionários** abrem o site, digitam o nome da loja ("Qual é a sua loja?") e depois o usuário e a senha. O endereço direto `/loja/nome-da-loja` continua funcionando, com letras maiúsculas ou minúsculas.
+- **Clientes** criam uma conta com o **CPF** e uma senha e veem o fiado de **todas** as lojas numa página só, cada uma com o próprio QR Code do Pix.
+- Segurança: a conta só é criada se alguma loja já tiver aquele CPF **com o mesmo telefone**, e cada loja precisa **confirmar** o vínculo antes de os dados dela aparecerem. Uma loja nunca vê quanto o cliente deve em outra.
+- O CPF é conferido (dígitos verificadores), é único por loja e aparece mascarado (`***.982.247-**`).
 
-## Integrations (APIs)
+## Integrações (APIs)
 
-Each store administrator manages them in **Minha loja** (`minha_loja.php`):
+O administrador de cada loja cuida delas em **Minha loja** (`minha_loja.php`):
 
-| Integration | What it does | How |
+| Integração | O que faz | Como funciona |
 |---|---|---|
-| **Pix QR code** | The customer sees a Pix QR code and a "copy and paste" code with the debt amount on the "Minha dívida" page | Static BR Code (Central Bank EMV format with CRC16) built in PHP from the store's Pix key; QR drawn in the browser |
-| **WhatsApp** | "Cobrar no WhatsApp" button on the statement and on the home page opens a chat with a ready reminder (amount + Pix key) | `wa.me` click-to-chat link, no key needed |
-| **ViaCEP** | Typing a postcode fills in the customer's address | Public API called from the browser |
-| **FiadoFácil API** | Read-only REST API returning the store's data in JSON (`resumo`, `clientes`, `cliente&id=N`) | `api.php` with the store key in the `X-Api-Key` header; only the SHA-256 hash of the key is stored |
+| **QR Code do Pix** | O cliente vê o QR Code do Pix e o código "copia e cola" com o valor da dívida | BR Code estático (formato EMV do Banco Central, com CRC16) montado em PHP a partir da chave Pix da loja; o QR Code é desenhado no navegador |
+| **WhatsApp** | O botão "Cobrar no WhatsApp", no extrato e na tela inicial, abre a conversa com a mensagem pronta (valor e chave Pix) | Link `wa.me`, sem precisar de chave |
+| **ViaCEP** | Digitou o CEP, o endereço do cliente se preenche sozinho | API pública chamada pelo navegador |
+| **API do FiadoFácil** | API REST só de leitura, que devolve os dados da loja em JSON (`resumo`, `clientes`, `cliente&id=N`) | `api.php` com a chave da loja no cabeçalho `X-Api-Key`; só o hash SHA-256 da chave fica guardado |
 
-Pix payments are confirmed by the store, which then records the payment. Automatic confirmation (webhook from a payment provider) and e-mail need paid hosting, because InfinityFree blocks outgoing server calls. Its anti-bot protection also blocks API calls made outside a browser, so the API is fully usable on XAMPP or paid hosting.
+O pagamento pelo Pix é conferido pela loja, que então registra o pagamento. A confirmação automática (aviso de um provedor de pagamento) e o envio de e-mail precisam de hospedagem paga, porque a InfinityFree bloqueia chamadas saindo do servidor. A proteção contra robôs dela também bloqueia chamadas à API feitas fora do navegador; por isso a API funciona completa no XAMPP ou em hospedagem paga.
 
-## Business rules
+## Regras de negócio
 
-- **Customer status**: *em dia* (no debt), *devendo* (owing) or *inadimplente* (in default: the oldest unpaid purchase is more than 30 days old). Payments pay off the oldest purchases first.
-- **Ranking score**: starts at 100, loses 2 points per day open beyond 7 days, loses 10 if the debt is over 50% of the limit, and gains 5 if the customer has paid at least once.
-- Regular users add customers with a default limit of R$ 500. Only the administrator changes limits.
-- A customer with open debt can't be deleted. Deleting a customer erases their history and access.
+- **Situação do cliente**: *em dia* (sem dívida), *devendo* ou *inadimplente* (a compra mais antiga ainda não paga tem mais de 30 dias). Os pagamentos quitam primeiro as compras mais antigas.
+- **Score do ranking**: começa em 100, perde 2 pontos por dia em aberto acima de 7 dias, perde 10 se a dívida passa da metade do limite e ganha 5 se o cliente já pagou pelo menos uma vez.
+- O usuário comum cadastra clientes com o limite padrão de R$ 500. Só o administrador muda limites.
+- Cliente com dívida em aberto não pode ser excluído. Excluir um cliente apaga o histórico e os acessos dele.
 
-## Test accounts
+## Contas de teste
 
-| Role | User | Password |
+| Perfil | Usuário | Senha |
 |---|---|---|
-| Administrator | `admin` | `admin123` |
-| Regular user | `usuario` | `user123` |
+| Administrador | `admin` | `admin123` |
+| Usuário comum | `usuario` | `user123` |
 
-Sample customers: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, Carlos Pereira `(62) 97777-7777` and Ana Lima `(62) 96666-6666`.
+Clientes de exemplo: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, Carlos Pereira `(62) 97777-7777` e Ana Lima `(62) 96666-6666`.
 
-> The test accounts are public. When installing the system for real use, change the passwords on first login (menu **Minha conta**). The system shows a warning while a sample password is still in use.
+> As contas de teste são públicas. Ao instalar o sistema para uso de verdade, troque as senhas no primeiro acesso (menu **Minha conta**). O sistema mostra um aviso enquanto uma senha de exemplo ainda estiver em uso.
 
-## Team
+## Autor
 
-| Member | Responsibilities |
+| Nome | Responsabilidades |
 |---|---|
-| Matheus Wilton | Responsible for the whole site: business rules, development and database |
+| Matheus Wilton | Responsável por todo o sistema: regras de negócio, desenvolvimento e banco de dados |
 
-## Running locally (XAMPP)
+## Rodar no computador (XAMPP)
 
-1. Copy the `fiadofacil` folder to `C:\xampp\htdocs\fiadofacil`. `login.php` must be directly inside it.
-2. In XAMPP, start **Apache** and **MySQL**.
-3. At `http://localhost/phpmyadmin`, create a database called `sistema_fiado` (utf8mb4), select it, go to **Import** and upload `fiadofacil/sql/banco.sql`.
-4. Copy `config.local.example.php` to `config.local.php` (inside `fiadofacil`) and check the values. XAMPP defaults are host `localhost`, user `root`, empty password and database `sistema_fiado`.
-5. Open `http://localhost/fiadofacil/login.php`.
+1. Copie a pasta `fiadofacil` para `C:\xampp\htdocs\fiadofacil`. O `login.php` precisa ficar direto dentro dela.
+2. No XAMPP, ligue o **Apache** e o **MySQL**.
+3. Em `http://localhost/phpmyadmin`, crie um banco chamado `sistema_fiado` (utf8mb4). Pode deixar o banco vazio: na primeira visita o sistema cria as tabelas e os dados de exemplo sozinho. (Se preferir, importe `fiadofacil/sql/banco.sql` em **Importar**.)
+4. Copie `config.local.example.php` para `config.local.php` (dentro de `fiadofacil`) e confira os valores. O padrão do XAMPP é servidor `localhost`, usuário `root`, senha vazia e banco `sistema_fiado`.
+5. Abra `http://localhost/fiadofacil/login.php`.
 
 <details>
-<summary><b>Automatic deploy to InfinityFree</b></summary>
+<summary><b>Publicação automática na InfinityFree</b></summary>
 
-Every time `main` receives changes in the `fiadofacil` folder, GitHub Actions uploads the files by FTP to the InfinityFree `htdocs` folder. `config.local.php` and the `sql` folder are never uploaded.
+Toda vez que a `main` recebe mudanças na pasta `fiadofacil`, o GitHub Actions roda os testes e, se passarem, envia os arquivos por FTP para a pasta `htdocs` da InfinityFree. O `config.local.php` e a pasta `sql` nunca são enviados.
 
-One-time setup: on GitHub, under **Settings → Secrets and variables → Actions → New repository secret**, create:
+Configuração feita uma vez só: no GitHub, em **Settings → Secrets and variables → Actions → New repository secret**, crie:
 
-| Name | Value (InfinityFree panel → FTP Details) |
+| Nome | Valor (painel da InfinityFree → FTP Details) |
 |---|---|
-| `FTP_SERVER` | FTP Hostname (e.g. `ftpupload.net`) |
-| `FTP_USERNAME` | FTP Username (e.g. `if0_12345678`) |
+| `FTP_SERVER` | FTP Hostname (ex.: `ftpupload.net`) |
+| `FTP_USERNAME` | FTP Username (ex.: `if0_12345678`) |
 | `FTP_PASSWORD` | FTP Password |
 
-To publish right away without changing code: **Actions → Publicar na InfinityFree → Run workflow**.
+Para publicar na hora, sem mudar código: **Actions → Publicar na InfinityFree → Run workflow**.
 
 </details>
 
 <details>
-<summary><b>Manual deploy to InfinityFree</b></summary>
+<summary><b>Publicação manual na InfinityFree</b></summary>
 
-1. In the panel, create the MySQL database and write down host, user, password and database name.
-2. In the host's phpMyAdmin, select the database, go to **Import** and upload `sql/banco.sql`. Importing again doesn't duplicate data.
-3. Upload the contents of the `fiadofacil` folder to `htdocs`, without an extra subfolder. **You don't need to upload the `sql` folder.**
-4. Edit `config.local.php` with the database details **directly on the server** (or fill it in before uploading).
-5. Open the site address. `index.php` redirects to the login page.
+1. No painel, crie o banco MySQL e anote o servidor, o usuário, a senha e o nome do banco.
+2. Envie o conteúdo da pasta `fiadofacil` para a `htdocs`, sem uma subpasta a mais. **Não precisa enviar a pasta `sql`.**
+3. Edite o `config.local.php` com os dados do banco **direto no servidor** (ou preencha antes de enviar).
+4. Abra o endereço do site. Na primeira visita, o sistema cria as tabelas sozinho.
 
 </details>
 
 <details>
-<summary><b>Troubleshooting</b></summary>
+<summary><b>Problemas comuns</b></summary>
 
-- **404 when opening the login page:** the folder isn't in `htdocs` or is nested twice (`fiadofacil\fiadofacil`).
-- **"Falta o arquivo config.local.php" (missing config file):** copy `config.local.example.php` to `config.local.php` and fill it in.
-- **"Não foi possível conectar ao banco" (can't connect to the database):** check host, user, password and database name in `config.local.php`.
-- **MySQL won't start in XAMPP:** another Windows MySQL service may be using port 3306. Stop it in `services.msc`.
+- **Erro 404 ao abrir o login:** a pasta não está na `htdocs` ou está dentro de outra com o mesmo nome (`fiadofacil\fiadofacil`).
+- **"Falta o arquivo config.local.php":** copie `config.local.example.php` para `config.local.php` e preencha.
+- **"Não foi possível conectar ao banco":** confira o servidor, o usuário, a senha e o nome do banco no `config.local.php`.
+- **O MySQL não liga no XAMPP:** outro serviço MySQL do Windows pode estar usando a porta 3306. Pare ele em `services.msc`.
 
 </details>
 
-## Configuration security
+## Segurança da configuração
 
-- The database password **never** goes in the code. It only lives in `config.local.php`, which is in `.gitignore`. **Careful: GitHub's "Upload files" button ignores `.gitignore`, so don't upload `config.local.php` through it.**
-- If a database password was ever published on GitHub, change it in the hosting panel. Deleting it from the file isn't enough, because Git history keeps the old version.
-- New passwords must have at least 8 characters.
+- A senha do banco **nunca** vai no código. Ela fica só no `config.local.php`, que está no `.gitignore`. **Cuidado: o botão "Upload files" do GitHub ignora o `.gitignore`, então não envie o `config.local.php` por ele.**
+- Se uma senha de banco já foi publicada no GitHub, troque no painel da hospedagem. Apagar do arquivo não basta, porque o histórico do Git guarda a versão antiga.
+- Senhas novas precisam ter pelo menos 8 caracteres.
 
-## Structure
+## Estrutura
 
 ```
 fiadofacil/
-├── *.php                       system pages
-├── cabecalho.php / rodape.php  shared layout and menu
-├── funcoes.php                 shared functions (session, security, purchase and payment rules, customer status)
-├── conexao.php                 connects to the database using config.local.php
-├── config.local.example.php    config file template
-├── css/estilo.css              styles (desktop and mobile)
-├── api.php                     read-only REST API (JSON) for each store
-├── minha_loja.php              store integrations: Pix key, WhatsApp and API key
-├── js/script.js                mobile menu, tables as cards on mobile, confirmations, phone mask, Pix QR, postcode lookup
-├── js/qrcode.js                QR code generator (MIT, Kazuhiko Arase)
-├── manifest.json               lets users add the site to the phone's home screen
-├── img/                        app icons
-└── sql/banco.sql               table creation and sample data
+├── *.php                       páginas do sistema
+├── cabecalho.php / rodape.php  layout e menu comuns
+├── funcoes.php                 funções comuns (sessão, segurança, regras de compra e pagamento, situação do cliente)
+├── conexao.php                 conecta ao banco usando o config.local.php
+├── migracoes.php               cria e atualiza as tabelas sozinho
+├── config.local.example.php    modelo do arquivo de configuração
+├── css/estilo.css              estilos (computador e celular)
+├── api.php                     API REST só de leitura (JSON) de cada loja
+├── minha_loja.php              foto e integrações da loja: chave Pix, WhatsApp e chave da API
+├── js/script.js                menu do celular, tabelas em cartões, confirmações, máscaras, QR Code do Pix, busca de CEP
+├── js/cinema.js                animação da página inicial ligada à rolagem (GSAP)
+├── js/qrcode.js                gerador de QR Code (MIT, Kazuhiko Arase)
+├── manifest.json               permite instalar o site na tela inicial do celular
+├── img/                        ícones e fotos das lojas de exemplo
+└── sql/banco.sql               criação das tabelas e dados de exemplo
+testes/                         testes automáticos no navegador (Playwright)
+.github/workflows/              testes, análise do Snyk e publicação
 ```
 
-## Next steps
+## Próximos passos
 
-- Automatic Pix confirmation through a payment provider webhook (needs paid hosting).
-- E-mail for password recovery and overdue reminders.
-- Customer access link sent by WhatsApp, so the customer gets in without waiting for approval.
-- Export the report to CSV.
+- Link de acesso do cliente enviado pelo WhatsApp, para ele entrar sem esperar aprovação.
+- Confirmação automática do Pix por um provedor de pagamento (precisa de hospedagem paga).
+- E-mail para recuperar a senha e lembrar dos atrasos.
+- Exportar o relatório em CSV.
