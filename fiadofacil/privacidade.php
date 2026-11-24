@@ -60,7 +60,7 @@ topo_publico("Política de Privacidade", "Quais dados o FiadoFácil guarda, para
         <h2>Mudanças nesta política</h2>
         <p>Se esta política mudar, a nova versão será publicada nesta página, com a data de atualização no topo.</p>
 
-        <p class="texto-legal-voltar"><a href="/index.php" class="botao botao-secundario">&larr; Voltar ao início</a></p>
+        <p class="texto-legal-voltar"><a href="<?php echo base_url(); ?>index.php" class="botao botao-secundario">&larr; Voltar ao início</a></p>
     </div>
 </section>
 <?php rodape_publico(); ?>
