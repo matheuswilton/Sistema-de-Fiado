@@ -35,7 +35,7 @@ The problem is big: in 2026 Serasa recorded more than 84 million Brazilians in d
 
 ## Tech
 
-PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout: works on desktop and mobile) · Git and GitHub · GitHub Actions (automatic deploy) · InfinityFree hosting
+PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout: works on desktop and mobile) · GSAP (scroll-driven animation) · Git and GitHub · GitHub Actions (tests and automatic deploy) · Playwright (browser tests) · Snyk Code (security analysis) · InfinityFree hosting
 
 ## Technical highlights
 
@@ -49,7 +49,8 @@ PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout
   - `HttpOnly` and `SameSite` session cookie, and a new session on every login;
   - the database password stays out of the code.
 - **Role-based access**: administrator, regular user and customer (read only).
-- **Automatic deploy**: GitHub Actions publishes the site by FTP whenever the app changes on `main`.
+- **Company-style workflow**: every change goes to the `teste` branch first; GitHub Actions runs the browser tests (Playwright, on a fresh MariaDB database) and publishes to a **staging site** (fiadofacilteste.free.je). A pull request then takes it to `main`, the tests run again, and only then the live site is updated by FTP.
+- **Security analysis**: Snyk Code scans the code on every push and pull request; results show in the repository's Security tab. Its first scan found 2 medium issues (an open redirect and an unfiltered value from the database in an SQL command), both fixed.
 
 ## Features
 
@@ -62,8 +63,11 @@ PHP · MySQL (SQL, transactions) · HTML · CSS · JavaScript (responsive layout
 - Customer reliability ranking.
 - Financial summary and top debtors (administrator only).
 - Staff management: create, block, unblock and reset passwords (administrator only).
-- Everyone can change their own password under "Minha senha".
-- **Customer access (read only):** the customer requests a login on the sign-in page, the administrator approves it and the customer can then see only their own debt.
+- Everyone can change their own password and switch dark mode under "Minha conta".
+- **Collections ("Cobranças")**: who will be overdue in the next 3 days and who already is, with a ready WhatsApp message.
+- **Store photo**: each store uploads a photo shown behind its sign-in page (re-encoded on the server for safety).
+- Lean text-only menu: a "Nova venda" button (purchase or payment), 4 main items and 2 secondary ones; grouped pages show tabs.
+- **Customer access (read only):** the customer creates one account with their CPF and sees their debt at every store that confirmed them (see "Customer account" below). The older per-store login request still works.
 
 ## Multi-store (each store has its own login)
 
@@ -115,7 +119,7 @@ Pix payments are confirmed by the store, which then records the payment. Automat
 
 Sample customers: João Silva `(62) 99999-9999`, Maria Souza `(62) 98888-8888`, Carlos Pereira `(62) 97777-7777` and Ana Lima `(62) 96666-6666`.
 
-> The test accounts are public. When installing the system for real use, change the passwords on first login (menu **Minha senha**). The system shows a warning while a sample password is still in use.
+> The test accounts are public. When installing the system for real use, change the passwords on first login (menu **Minha conta**). The system shows a warning while a sample password is still in use.
 
 ## Team
 
@@ -198,5 +202,5 @@ fiadofacil/
 
 - Automatic Pix confirmation through a payment provider webhook (needs paid hosting).
 - E-mail for password recovery and overdue reminders.
-- Automated tests for the business rules (credit limit, status, score).
+- Customer access link sent by WhatsApp, so the customer gets in without waiting for approval.
 - Export the report to CSV.
