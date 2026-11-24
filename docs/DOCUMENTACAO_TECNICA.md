@@ -334,7 +334,7 @@ O modelo é **multi-tenant com banco compartilhado**: todas as lojas usam o mesm
 - **A loja vem da sessão:** a função `loja_id()` lê a loja só da sessão, nunca de formulário ou URL. Toda consulta tem `WHERE comercio_id = ?`.
 - **Proteção contra IDOR:** antes de mostrar ou alterar um registro por id, o sistema confere se ele é da loja (`cliente_da_loja()`). Se não for, responde como se não existisse.
 - **Mesmo usuário em lojas diferentes:** "joao" da Mercearia e "joao" da Padaria são pessoas diferentes.
-- **Visual por loja:** cada loja tem um tema de cores e o próprio nome no letreiro 3D do login.
+- **Visual por loja:** cada loja tem uma cor de destaque, a própria foto e o próprio nome na tela de entrar.
 - **Bloqueio de loja:** a cada página o sistema confere se a loja está ativa; bloqueada, todos daquela loja saem no clique seguinte.
 - **Painel da plataforma (`painel.php`):** login próprio, só para o nível `plataforma`. Lista as lojas com números, cria loja nova (com o administrador dela), bloqueia, desbloqueia e entra em qualquer loja como administrador. Dentro da loja aparece uma faixa avisando.
 
@@ -399,9 +399,10 @@ O acesso antigo do cliente (usuário e senha numa loja, `solicitar_acesso.php` e
 
 - **Responsiva:** no celular, o menu vira um botão e as tabelas viram cartões (o JavaScript copia o nome da coluna para cada célula).
 - **Modo claro e noturno** com variáveis CSS, salvo no aparelho; na primeira visita segue o tema do sistema.
-- **Tema por loja** (verde, caramelo, vinho) e letreiro 3D com o nome da loja no login.
+- **Cor de destaque por loja** (verde, caramelo, vinho), usada na tela de entrar e nos detalhes do menu.
 - **Menu lateral enxuto**, só com texto: o nome da loja no topo, o botão **Nova venda** (abre a escolha entre compra e pagamento), quatro itens principais (Início, Clientes, Cobranças e Relatórios) e dois secundários (Loja e equipe, Minha conta). As páginas agrupadas mostram **abas** no topo (`$grupos_menu` em `cabecalho.php`): Relatórios reúne Relatório, Ranking e Resumo; Loja e equipe reúne Minha loja, Usuários, Aprovar acessos e Acessos de clientes. O modo noturno fica em Minha conta.
 - **Modo noturno das lojas em grafite**: fundo neutro, e a cor da loja aparece só nos detalhes (botões, item escolhido do menu, contadores).
+- **Sistema de cores das telas internas**: fundo neutro e cartões com borda fina; a cor da loja é identidade, não ação; um botão principal escuro por tela; vermelho, verde e amarelo só quando têm significado (devendo, em dia, atenção).
 - **Letra Manrope** (Google Fonts) em todo o sistema.
 - **Página de apresentação cinematográfica:** uma cena conta a história quando aparece na tela, sem prender a rolagem (o caderninho é escrito, vira bagunça e se transforma no FiadoFácil no celular), feita com GSAP + ScrollTrigger. Títulos com a fonte Bricolage Grotesque. Sem JavaScript ou com "reduzir movimento", a cena aparece parada.
 - **Acessibilidade:** contraste conferido, cor sempre acompanhada de texto e animações desligadas para quem ativa "reduzir movimento".

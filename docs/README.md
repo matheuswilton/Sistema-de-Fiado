@@ -28,9 +28,10 @@ Sistema web para pequenos comércios controlarem as vendas no fiado: limite de c
 | **Problema** | O fiado do comércio de bairro é anotado num caderno: sem limite, sem saber quem está atrasado e com risco de perder tudo. |
 | **Solução** | Sistema web que bloqueia compras acima do limite, abate os pagamentos da compra mais antiga e mostra sozinho quem está inadimplente. |
 | **Quem usa** | Dono da loja (administrador), atendente, cliente e o dono da plataforma. |
-| **Tecnologias** | PHP 8, MySQL/MariaDB, HTML, CSS e JavaScript puros, Git, GitHub Actions e hospedagem InfinityFree. |
+| **Tecnologias** | PHP 8, MySQL/MariaDB, HTML, CSS e JavaScript puros, GSAP, Git, GitHub Actions, Playwright (testes), Snyk (segurança) e hospedagem InfinityFree. |
 | **Destaques** | Várias lojas isoladas no mesmo banco, conta única do cliente por CPF, Pix com QR Code, cobrança pelo WhatsApp, API REST, versão para celular e modo noturno. |
-| **Segurança** | Prepared statements, senhas com bcrypt, proteção contra CSRF, XSS e IDOR, HTTPS, limite de tentativas de login. |
+| **Segurança** | Prepared statements, senhas com bcrypt, proteção contra CSRF, XSS e IDOR, HTTPS, limite de tentativas de login e análise do código com o Snyk a cada envio. |
+| **Qualidade** | Testes automáticos no navegador a cada mudança, site de teste separado e publicação no site oficial só depois do Pull Request. |
 
 ## Imagens
 

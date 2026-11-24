@@ -25,19 +25,25 @@ Uma mercearia de bairro em Goiânia/GO, com o dono e uma atendente, vende fiado 
 - RF06: Gerar relatório de dívidas por período e situação, com impressão.
 - RF07: Ranking de confiabilidade dos clientes.
 - RF08: Dois perfis de funcionário: administrador e atendente.
-- RF09: O cliente pode solicitar acesso e consultar somente a própria dívida.
+- RF09: O cliente pode consultar somente a própria dívida, com uma conta única pelo CPF que mostra todas as lojas onde ele compra (cada loja confirma que é ele).
+- RF10: Várias lojas na mesma plataforma, com endereço, equipe e dados separados, e um painel para o dono da plataforma.
+- RF11: Lista de cobranças (quem vence nos próximos 3 dias e quem está atrasado), com a mensagem pronta para o WhatsApp.
+- RF12: Pagamento pelo Pix com QR Code, com o valor da dívida já preenchido.
+- RF13: Endereço preenchido pelo CEP e uma API para outros programas lerem os dados da loja.
 
 **Não funcionais**
 - RNF01: Funcionar no navegador do computador e do celular (layout responsivo).
 - RNF02: Custo zero de hospedagem.
 - RNF03: Senhas guardadas com hash; proteção contra SQL Injection e CSRF.
 - RNF04: Interface simples, em português, para quem não tem prática com sistemas.
+- RNF05: Toda mudança é testada automaticamente e analisada pelo Snyk antes de chegar ao site oficial, passando por um site de teste.
 
 ## 4. A solução aplicada
 1. O dono (administrador) cadastrou os clientes e definiu um limite para cada um, de R$ 200 a R$ 500.
 2. A atendente passou a lançar cada compra pelo celular no balcão. Quando um cliente tenta passar do limite, o sistema bloqueia e mostra quanto ainda está disponível.
 3. Toda semana o dono abre o **Relatório de dívidas** filtrando "inadimplentes" e sabe exatamente quem cobrar.
-4. Os clientes que pediram acesso conferem a própria dívida pelo celular, e as discussões no balcão acabaram.
+4. Os clientes criaram a conta pelo CPF e conferem a própria dívida pelo celular, e as discussões no balcão acabaram.
+5. Na tela **Cobranças**, o dono vê quem vence nos próximos dias e manda a cobrança pelo WhatsApp com um clique. O cliente paga pelo **Pix** lendo o QR Code, e a loja registra o pagamento depois de conferir no banco.
 
 ## 5. Exemplo com os dados do sistema
 | Cliente | Limite | Compras | Pagamentos | Dívida | Situação |
@@ -63,5 +69,18 @@ O FiadoFácil foi feito para atender várias lojas ao mesmo tempo. Cada comérci
 
 Lojas de exemplo para a demonstração: Mercearia do Zé, Padaria Pão Quente e Açougue Bom Corte.
 
-## 8. Diagramas relacionados
+## 8. Integrações
+| Integração | Para que serve no dia a dia |
+|---|---|
+| **Pix** (padrão do Banco Central) | O cliente paga lendo o QR Code, com o valor já preenchido; o dinheiro cai direto na conta da loja |
+| **WhatsApp** | A cobrança abre pronta, com valor, prazo e chave Pix; a loja só aperta enviar |
+| **ViaCEP** | O endereço do cliente se preenche pelo CEP no cadastro |
+| **API própria** | Outro programa lê os dados da loja com uma chave de acesso (detalhes em [API.md](API.md)) |
+
+## 9. Qualidade e segurança
+- Toda mudança vai primeiro para um **site de teste**, com banco próprio, e só chega ao site oficial depois de aprovada num Pull Request.
+- **Testes automáticos** num navegador de verdade conferem as regras de negócio, a conta por CPF, a API e o isolamento entre as lojas a cada mudança.
+- O **Snyk Code** analisa o código a cada envio. Na primeira análise achou 2 problemas de gravidade média, que foram corrigidos; hoje não há nenhum.
+
+## 10. Diagramas relacionados
 Veja [DIAGRAMAS.md](DIAGRAMAS.md): banco de dados (DER/UML), casos de uso, fluxo geral, fluxo da compra e do pagamento, estados do cliente e arquitetura.
